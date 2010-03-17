@@ -40,13 +40,29 @@ namespace Mips
 
   public abstract class Visitor
   {
-    public abstract void visit_abs (Abs inst);
+    public abstract void visit_fpu_abs (Fpu.Abs inst);
+    public abstract void visit_fpu_sqrt (Fpu.Sqrt inst);
+    public abstract void visit_fpu_mov (Fpu.Mov inst);
+    public abstract void visit_fpu_sub (Fpu.Sub inst);
+    public abstract void visit_fpu_mul (Fpu.Mul inst);
+    public abstract void visit_fpu_div (Fpu.Div inst);
+    public abstract void visit_fpu_truncw (Fpu.Truncw inst);
+    public abstract void visit_fpu_cvtd (Fpu.Cvtd inst);
+    public abstract void visit_fpu_cvts (Fpu.Cvts inst);
+    public abstract void visit_fpu_add (Fpu.Add inst);
+    public abstract void visit_fpu_ccond (Fpu.Ccond inst);
+    public abstract void visit_fpu_bc (Fpu.Bc inst);
+    public abstract void visit_fpu_mtc1 (Fpu.Mtc1 inst);
+    public abstract void visit_fpu_mfc1 (Fpu.Mfc1 inst);
+    public abstract void visit_fpu_movci (Fpu.Movci inst);
     public abstract void visit_add (Add inst);
     public abstract void visit_lui (Lui inst);
     public abstract void visit_addiu (Addiu inst);
     public abstract void visit_addu (Addu inst);
     public abstract void visit_subu (Subu inst);
     public abstract void visit_sw (Sw inst);
+    public abstract void visit_swl (Swl inst);
+    public abstract void visit_swr (Swr inst);
     public abstract void visit_lb (Lb inst);
     public abstract void visit_sh (Sh inst);
     public abstract void visit_lh (Lh inst);
@@ -96,6 +112,10 @@ namespace Mips
     public abstract void visit_break (Break inst);
     public abstract void visit_movz (Movz inst);
     public abstract void visit_movn (Movn inst);
+    public abstract void visit_sdc1 (Sdc1 inst);
+    public abstract void visit_ldc1 (Ldc1 inst);
+    public abstract void visit_lwc1 (Lwc1 inst);
+    public abstract void visit_swc1 (Swc1 inst);
   }
 
   public abstract class Instruction
@@ -103,7 +123,7 @@ namespace Mips
     public abstract void accept (Visitor visitor);
   }
 
-  public class Abs : Instruction
+  public class Fpu.Abs : Instruction
   {
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
@@ -126,7 +146,34 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_abs (this);
+      visitor.visit_fpu_abs (this);
+    }
+  }
+
+  public class Fpu.Sqrt : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public uint8 fmt;
+    public uint8 fs;
+    public uint8 fd;
+
+    public Sqrt (uint8 fmt, uint8 fs, uint8 fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Sqrt.from_code (int code)
+    {
+      this (get_five1 (code), get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_fpu_sqrt (this);
     }
   }
 
@@ -1633,6 +1680,546 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_blezl (this);
+    }
+  }
+
+  public class Swl : Instruction
+  {
+    /* SWL
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public uint8 @base;
+    public uint8 rt;
+    public uint16 offset;
+
+    public Swl (uint8 @base, uint8 rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Swl.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_swl (this);
+    }
+  }
+
+  public class Swr : Instruction
+  {
+    /* SWR
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public uint8 @base;
+    public uint8 rt;
+    public uint16 offset;
+
+    public Swr (uint8 @base, uint8 rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Swr.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_swr (this);
+    }
+  }
+
+  public class Sdc1 : Instruction
+  {
+    /* SDC1
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public uint8 @base;
+    public uint8 ft;
+    public uint16 offset;
+
+    public Sdc1 (uint8 @base, uint8 ft, uint16 offset)
+      {
+        this.@base = @base;
+        this.ft = ft;
+        this.offset = offset;
+      }
+
+    public Sdc1.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_sdc1 (this);
+    }
+  }
+
+  public class Ldc1 : Instruction
+  {
+    /* LDC1
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public uint8 @base;
+    public uint8 ft;
+    public uint16 offset;
+
+    public Ldc1 (uint8 @base, uint8 ft, uint16 offset)
+      {
+        this.@base = @base;
+        this.ft = ft;
+        this.offset = offset;
+      }
+
+    public Ldc1.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_ldc1 (this);
+    }
+  }
+
+  public class Lwc1 : Instruction
+  {
+    /* LWC1
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public uint8 @base;
+    public uint8 ft;
+    public uint16 offset;
+
+    public Lwc1 (uint8 @base, uint8 ft, uint16 offset)
+      {
+        this.@base = @base;
+        this.ft = ft;
+        this.offset = offset;
+      }
+
+    public Lwc1.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_lwc1 (this);
+    }
+  }
+
+  public class Swc1 : Instruction
+  {
+    /* SWC1
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public uint8 @base;
+    public uint8 ft;
+    public uint16 offset;
+
+    public Swc1 (uint8 @base, uint8 ft, uint16 offset)
+      {
+        this.@base = @base;
+        this.ft = ft;
+        this.offset = offset;
+      }
+
+    public Swc1.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_swc1 (this);
+    }
+  }
+
+  public class Fpu.Mov : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public uint8 fmt;
+    public uint8 fs;
+    public uint8 fd;
+
+    public Mov (uint8 fmt, uint8 fs, uint8 fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Mov.from_code (int code)
+    {
+      this (get_five1 (code), get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_fpu_mov (this);
+    }
+  }
+
+  public class Fpu.Truncw : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public uint8 fmt;
+    public uint8 fs;
+    public uint8 fd;
+
+    public Truncw (uint8 fmt, uint8 fs, uint8 fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Truncw.from_code (int code)
+    {
+      this (get_five1 (code), get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_fpu_truncw (this);
+    }
+  }
+
+  public class Fpu.Sub : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public uint8 fmt;
+    public uint8 ft;
+    public uint8 fs;
+    public uint8 fd;
+
+    public Sub (uint8 fmt, uint8 ft, uint8 fs, uint8 fd)
+    {
+      this.fmt = fmt;
+      this.ft = ft;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Sub.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_fpu_sub (this);
+    }
+  }
+
+  public class Fpu.Mul : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public uint8 fmt;
+    public uint8 ft;
+    public uint8 fs;
+    public uint8 fd;
+
+    public Mul (uint8 fmt, uint8 ft, uint8 fs, uint8 fd)
+    {
+      this.fmt = fmt;
+      this.ft = ft;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Mul.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_fpu_mul (this);
+    }
+  }
+
+  public class Fpu.Div : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public uint8 fmt;
+    public uint8 ft;
+    public uint8 fs;
+    public uint8 fd;
+
+    public Div (uint8 fmt, uint8 ft, uint8 fs, uint8 fd)
+    {
+      this.fmt = fmt;
+      this.ft = ft;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Div.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_fpu_div (this);
+    }
+  }
+
+  public class Fpu.Add : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public uint8 fmt;
+    public uint8 ft;
+    public uint8 fs;
+    public uint8 fd;
+
+    public Add (uint8 fmt, uint8 ft, uint8 fs, uint8 fd)
+    {
+      this.fmt = fmt;
+      this.ft = ft;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Add.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_fpu_add (this);
+    }
+  }
+
+  public class Fpu.Cvtd : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public uint8 fmt;
+    public uint8 fs;
+    public uint8 fd;
+
+    public Cvtd (uint8 fmt, uint8 fs, uint8 fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Cvtd.from_code (int code)
+    {
+      this (get_five1 (code), get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_fpu_cvtd (this);
+    }
+  }
+
+  public class Fpu.Cvts : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public uint8 fmt;
+    public uint8 fs;
+    public uint8 fd;
+
+    public Cvts (uint8 fmt, uint8 fs, uint8 fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Cvts.from_code (int code)
+    {
+      this (get_five1 (code), get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_fpu_cvts (this);
+    }
+  }
+
+  public class Fpu.Ccond : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public uint8 fmt;
+    public uint8 ft;
+    public uint8 fs;
+    public uint8 cc;
+    public uint8 cond;
+
+    public Ccond (uint8 fmt, uint8 ft, uint8 fs, uint8 cc, uint8 cond)
+    {
+      this.fmt = fmt;
+      this.ft = ft;
+      this.fs = fs;
+      this.cc = cc;
+      this.cond = cond;
+    }
+
+    public Ccond.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_five3 (code), get_five4 (code) >> 2, (uint8)(code & 0x0F));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_fpu_ccond (this);
+    }
+  }
+
+  public class Fpu.Bc : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+    public enum Branch
+    {
+      FALSE,
+      FALSE_LIKELY,
+      TRUE,
+      TRUE_LIKELY
+    }
+
+    public uint8 cc;
+    public Branch branch;
+    public uint16 offset;
+
+    public Bc (uint8 cc, Branch branch, uint16 offset)
+    {
+      this.cc = cc;
+      this.branch = branch;
+      this.offset = offset;
+    }
+
+    public Bc.from_code (int code)
+    {
+      this (get_five2 (code) >> 2, (Branch)(get_five2 (code) & 0x03), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_fpu_bc (this);
+    }
+  }
+
+  public class Fpu.Mtc1 : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint8 rt;
+    public uint8 fs;
+
+    public Mtc1 (uint8 rt, uint8 fs)
+    {
+      this.rt = rt;
+      this.fs = fs;
+    }
+
+    public Mtc1.from_code (int code)
+    {
+      this (get_five2 (code), get_five3 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_fpu_mtc1 (this);
+    }
+  }
+
+  public class Fpu.Mfc1 : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint8 rt;
+    public uint8 fs;
+
+    public Mfc1 (uint8 rt, uint8 fs)
+    {
+      this.rt = rt;
+      this.fs = fs;
+    }
+
+    public Mfc1.from_code (int code)
+    {
+      this (get_five2 (code), get_five3 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_fpu_mfc1 (this);
+    }
+  }
+
+  public class Fpu.Movci : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint8 rs;
+    public uint8 cc;
+    public bool test_true;
+    public uint8 rd;
+
+    public Movci (uint8 rs, uint8 cc, bool test_true, uint8 rd)
+    {
+      this.rs = rs;
+      this.cc = cc;
+      this.test_true = test_true;
+      this.rd = rd;
+    }
+
+    public Movci.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code) >> 2, code & 0x10000, get_five3 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_fpu_movci (this);
     }
   }
 }

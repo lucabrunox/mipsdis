@@ -4,6 +4,53 @@ namespace Mips
   {
     INVALID_OPCODE,
     INVALID_FPU_FORMAT,
+    INVALID_FPU_COND,
+  }
+
+  public static string fpu_cond_to_string (int cond, int opcode) throws OpcodeError
+  {
+    if (opcode == COP1)
+      {
+        switch (cond)
+          {
+          case 0:
+            return "F";
+          case 1:
+            return "UN";
+          case 2:
+            return "EQ";
+          case 3:
+            return "UEQ";
+          case 4:
+            return "OLT";
+          case 5:
+            return "ULT";
+          case 6:
+            return "OLE";
+          case 7:
+            return "ULE";
+          case 8:
+            return "SF";
+          case 9:
+            return "NGLE";
+          case 10:
+            return "SEQ";
+          case 11:
+            return "NGL";
+          case 12:
+            return "LT";
+          case 13:
+            return "NGE";
+          case 14:
+            return "LE";
+          case 15:
+            return "NGT";
+          default:
+            throw new OpcodeError.INVALID_FPU_COND ("Unknown cond %d for COP1", cond);
+          }
+      }
+    else
+      throw new OpcodeError.INVALID_OPCODE ("Unknown opcode %d\n", opcode);
   }
 
   public static string fpu_fmt_to_string (int fmt, int opcode) throws OpcodeError
@@ -23,7 +70,7 @@ namespace Mips
           case 0x16:
             return "PS";
           default:
-            throw new OpcodeError.INVALID_FPU_FORMAT ("Unknown format %d for opcode %d\n", fmt, opcode);
+            throw new OpcodeError.INVALID_FPU_FORMAT ("Unknown format %d for COP1", fmt);
           }
       }
     else if (opcode == COP1X)
@@ -41,7 +88,7 @@ namespace Mips
           case 6:
             return "PS";
           default:
-            throw new OpcodeError.INVALID_FPU_FORMAT ("Unknown format %d for opcode %d\n", fmt, opcode);
+            throw new OpcodeError.INVALID_FPU_FORMAT ("Unknown format %d for COP1X", fmt);
           }
       }
     else
@@ -60,7 +107,7 @@ namespace Mips
       return ret;
     }
 
-    public override void visit_abs (Abs inst)
+    public override void visit_fpu_abs (Fpu.Abs inst)
     {
       try
         {
@@ -70,6 +117,164 @@ namespace Mips
       {
         builder.append (e.message);
       }
+    }
+
+    public override void visit_fpu_sqrt (Fpu.Sqrt inst)
+    {
+      try
+        {
+          builder.append_printf ("SQRT.%s 0x%x, 0x%x", fpu_fmt_to_string (inst.fmt, COP1), inst.fd, inst.fs);
+        }
+      catch (OpcodeError e)
+      {
+        builder.append (e.message);
+      }
+    }
+
+    public override void visit_fpu_truncw (Fpu.Truncw inst)
+    {
+      try
+        {
+          builder.append_printf ("TRUNC.W.%s 0x%x, 0x%x", fpu_fmt_to_string (inst.fmt, COP1), inst.fd, inst.fs);
+        }
+      catch (OpcodeError e)
+      {
+        builder.append (e.message);
+      }
+    }
+
+    public override void visit_fpu_cvtd (Fpu.Cvtd inst)
+    {
+      try
+        {
+          builder.append_printf ("CVT.D.%s 0x%x, 0x%x", fpu_fmt_to_string (inst.fmt, COP1), inst.fd, inst.fs);
+        }
+      catch (OpcodeError e)
+      {
+        builder.append (e.message);
+      }
+    }
+
+    public override void visit_fpu_cvts (Fpu.Cvts inst)
+    {
+      try
+        {
+          if (inst.fmt == 0x16)
+            builder.append_printf ("CVT.S.PU 0x%x, 0x%x", inst.fd, inst.fs);
+          else
+            builder.append_printf ("CVT.S.%s 0x%x, 0x%x", fpu_fmt_to_string (inst.fmt, COP1), inst.fd, inst.fs);
+        }
+      catch (OpcodeError e)
+      {
+        builder.append (e.message);
+      }
+    }
+
+    public override void visit_fpu_mov (Fpu.Mov inst)
+    {
+      try
+        {
+          builder.append_printf ("MOV.%s 0x%x, 0x%x", fpu_fmt_to_string (inst.fmt, COP1), inst.fd, inst.fs);
+        }
+      catch (OpcodeError e)
+      {
+        builder.append (e.message);
+      }
+    }
+
+    public override void visit_fpu_sub (Fpu.Sub inst)
+    {
+      try
+        {
+          builder.append_printf ("SUB.%s 0x%x, 0x%x, 0x%x", fpu_fmt_to_string (inst.fmt, COP1), inst.fd, inst.fs, inst.ft);
+        }
+      catch (OpcodeError e)
+      {
+        builder.append (e.message);
+      }
+    }
+
+    public override void visit_fpu_mul (Fpu.Mul inst)
+    {
+      try
+        {
+          builder.append_printf ("MUL.%s 0x%x, 0x%x, 0x%x", fpu_fmt_to_string (inst.fmt, COP1), inst.fd, inst.fs, inst.ft);
+        }
+      catch (OpcodeError e)
+      {
+        builder.append (e.message);
+      }
+    }
+
+    public override void visit_fpu_div (Fpu.Div inst)
+    {
+      try
+        {
+          builder.append_printf ("DIV.%s 0x%x, 0x%x, 0x%x", fpu_fmt_to_string (inst.fmt, COP1), inst.fd, inst.fs, inst.ft);
+        }
+      catch (OpcodeError e)
+      {
+        builder.append (e.message);
+      }
+    }
+
+    public override void visit_fpu_add (Fpu.Add inst)
+    {
+      try
+        {
+          builder.append_printf ("ADD.%s 0x%x, 0x%x, 0x%x", fpu_fmt_to_string (inst.fmt, COP1), inst.fd, inst.fs, inst.ft);
+        }
+      catch (OpcodeError e)
+      {
+        builder.append (e.message);
+      }
+    }
+
+    public override void visit_fpu_ccond (Fpu.Ccond inst)
+    {
+      try
+        {
+          if (inst.cc == 0)
+            builder.append_printf ("C.%s.%s 0x%x, 0x%x\t(cc = 0 implied)", fpu_cond_to_string (inst.cond, COP1), fpu_fmt_to_string (inst.fmt, COP1), inst.fs, inst.ft);
+          else
+            builder.append_printf ("C.%s.%s %d, 0x%x, 0x%x", fpu_cond_to_string (inst.cond, COP1), fpu_fmt_to_string (inst.fmt, COP1), inst.cc, inst.fs, inst.ft);  
+        }
+      catch (OpcodeError e)
+      {
+        builder.append (e.message);
+      }
+    }
+
+    public override void visit_fpu_bc (Fpu.Bc inst)
+    {
+      if (inst.branch == Fpu.Bc.Branch.FALSE)
+        builder.append_printf ("BC1F 0x%x, 0x%x", inst.cc, inst.offset);
+      else if (inst.branch == Fpu.Bc.Branch.FALSE_LIKELY)
+        builder.append_printf ("BC1FL 0x%x, 0x%x", inst.cc, inst.offset);
+      else if (inst.branch == Fpu.Bc.Branch.TRUE)
+        builder.append_printf ("BC1T 0x%x, 0x%x", inst.cc, inst.offset);
+      else if (inst.branch == Fpu.Bc.Branch.TRUE_LIKELY)
+        builder.append_printf ("BC1TL 0x%x, 0x%x", inst.cc, inst.offset);
+      else
+        assert_not_reached ();
+    }
+
+    public override void visit_fpu_mfc1 (Fpu.Mfc1 inst)
+    {
+      builder.append_printf ("MFC1\t0x%x, 0x%x", inst.rt, inst.fs);
+    }
+
+    public override void visit_fpu_mtc1 (Fpu.Mtc1 inst)
+    {
+      builder.append_printf ("MTC1\t0x%x, 0x%x", inst.rt, inst.fs);
+    }
+
+    public override void visit_fpu_movci (Fpu.Movci inst)
+    {
+      if (inst.test_true)
+        builder.append_printf ("MOVT 0x%x, 0x%x, %d", inst.rd, inst.rs, inst.cc)
+      else
+        builder.append_printf ("MOVF 0x%x, 0x%x, %d", inst.rd, inst.rs, inst.cc)
     }
 
     public override void visit_add (Add inst)
@@ -95,6 +300,16 @@ namespace Mips
     public override void visit_sw (Sw inst)
     {
       builder.append_printf ("SW\t0x%x, %d(0x%x)", inst.rt, inst.offset, inst.@base);
+    }
+
+    public override void visit_swl (Swl inst)
+    {
+      builder.append_printf ("SWL\t0x%x, %d(0x%x)", inst.rt, inst.offset, inst.@base);
+    }
+
+    public override void visit_swr (Swr inst)
+    {
+      builder.append_printf ("SWR\t0x%x, %d(0x%x)", inst.rt, inst.offset, inst.@base);
     }
 
     public override void visit_bgezal (Bgezal inst)
@@ -360,6 +575,26 @@ namespace Mips
     public override void visit_blezl (Blezl inst)
     {
       builder.append_printf ("BLEZL\t0x%x, 0x%x", inst.rs, inst.offset);
+    }
+
+    public override void visit_sdc1 (Sdc1 inst)
+    {
+      builder.append_printf ("SDC1\t0x%x, %d(0x%x)", inst.ft, inst.offset, inst.@base);
+    }
+
+    public override void visit_ldc1 (Ldc1 inst)
+    {
+      builder.append_printf ("LDC1\t0x%x, %d(0x%x)", inst.ft, inst.offset, inst.@base);
+    }
+
+    public override void visit_lwc1 (Lwc1 inst)
+    {
+      builder.append_printf ("LWC1\t0x%x, %d(0x%x)", inst.ft, inst.offset, inst.@base);
+    }
+
+    public override void visit_swc1 (Swc1 inst)
+    {
+      builder.append_printf ("SWC1\t0x%x, %d(0x%x)", inst.ft, inst.offset, inst.@base);
     }
   }
 }

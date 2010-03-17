@@ -42,6 +42,10 @@ namespace Mips
             if (get_five1 (code) != 0)
               throw new ParserError.UNKNOWN_INSTRUCTION ("SLL 25-21 not zero");
             return new Sll.from_code (code);
+          case 0x01:
+            if (!(code & 0x20000) && get_five4 (code) == 0)
+              return new Fpu.Movci.from_code (code);
+            return new Fpu.Movcf.from_code (code);
           case 0x02:
             if (get_five1 (code) != 0 && get_five1 (code) != 1)
               throw new ParserError.UNKNOWN_INSTRUCTION ("SRL 25-21 not zero or one");
@@ -163,15 +167,61 @@ namespace Mips
           }
 
       case COP1:
-        int func = code & 0x3F;
+        if (((code >> 4) & 0x0F) == 0x03) // 7-4
+          return new Fpu.Ccond.from_code (code);
+
+        int func = get_five1 (code);
         switch (func)
           {
+          case 0x00:
+            if ((code & 0x3FF) == 0)
+              return new Fpu.Mfc1.from_code (code);
+            break;
+          case 0x04:
+            if ((code & 0x3FF) == 0)
+              return new Fpu.Mtc1.from_code (code);
+            break;
+          case 0x08:
+            return new Fpu.Bc.from_code (code);
+          }
+
+        func = code & 0x3F;
+        switch (func)
+          {
+          case 0x00:
+            return new Fpu.Add.from_code (code);
+          case 0x01:
+            return new Fpu.Sub.from_code (code);
+          case 0x02:
+            return new Fpu.Mul.from_code (code);
+          case 0x03:
+            return new Fpu.Div.from_code (code);
+          case 0x04:
+            if (get_five2 (code) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("SQRT 20-16 not zero");
+            return new Fpu.Sqrt.from_code (code);
           case 0x05:
             if (get_five2 (code) != 0)
               throw new ParserError.UNKNOWN_INSTRUCTION ("ABS 20-16 not zero");
-            return new Abs.from_code (code);
+            return new Fpu.Abs.from_code (code);
+          case 0x06:
+            if (get_five2 (code) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("MOV 20-16 not zero");
+            return new Fpu.Mov.from_code (code);
+          case 0x0D:
+            if (get_five2 (code) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("TRUNC.W 20-16 not zero");
+            return new Fpu.Truncw.from_code (code);
+          case 0x20:
+            if (get_five2 (code) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("CVT.S 20-16 not zero");
+            return new Fpu.Cvts.from_code (code);
+          case 0x21:
+            if (get_five2 (code) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("CVT.D 20-16 not zero");
+            return new Fpu.Cvtd.from_code (code);
           default:
-            throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown COP1 instruction 0x%x", func);
+            throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown COP1 instruction 0x%x (0x%x)", func, code);
           }
 
       case SPECIAL2:
@@ -261,8 +311,26 @@ namespace Mips
       case 0x29:
         return new Sh.from_code (code);
 
+      case 0x2A:
+        return new Swl.from_code (code);
+
       case 0x2B:
         return new Sw.from_code (code);
+
+      case 0x2E:
+        return new Swr.from_code (code);
+
+      case 0x31:
+        return new Lwc1.from_code (code);
+
+      case 0x35:
+        return new Ldc1.from_code (code);
+
+      case 0x39:
+        return new Swc1.from_code (code);
+
+      case 0x3D:
+        return new Sdc1.from_code (code);
 
       default:
         throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown instruction 0x%x (0x%x)", opcode, code);
