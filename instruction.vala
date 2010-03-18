@@ -40,25 +40,27 @@ namespace Mips
 
   public abstract class Visitor
   {
-    public abstract void visit_fpu_abs (Fpu.Abs inst);
-    public abstract void visit_fpu_sqrt (Fpu.Sqrt inst);
-    public abstract void visit_fpu_mov (Fpu.Mov inst);
-    public abstract void visit_fpu_sub (Fpu.Sub inst);
-    public abstract void visit_fpu_mul (Fpu.Mul inst);
-    public abstract void visit_fpu_div (Fpu.Div inst);
-    public abstract void visit_fpu_truncw (Fpu.Truncw inst);
-    public abstract void visit_fpu_cvtd (Fpu.Cvtd inst);
-    public abstract void visit_fpu_cvts (Fpu.Cvts inst);
-    public abstract void visit_fpu_add (Fpu.Add inst);
-    public abstract void visit_fpu_ccond (Fpu.Ccond inst);
-    public abstract void visit_fpu_bc (Fpu.Bc inst);
-    public abstract void visit_fpu_mtc1 (Fpu.Mtc1 inst);
-    public abstract void visit_fpu_mfc1 (Fpu.Mfc1 inst);
-    public abstract void visit_fpu_movci (Fpu.Movci inst);
-    public abstract void visit_fpu_movcf (Fpu.Movcf inst);
+    public abstract void visit_cop1_abs (Cop1.Abs inst);
+    public abstract void visit_cop1_sqrt (Cop1.Sqrt inst);
+    public abstract void visit_cop1_mov (Cop1.Mov inst);
+    public abstract void visit_cop1_sub (Cop1.Sub inst);
+    public abstract void visit_cop1_mul (Cop1.Mul inst);
+    public abstract void visit_cop1_div (Cop1.Div inst);
+    public abstract void visit_cop1_truncw (Cop1.Truncw inst);
+    public abstract void visit_cop1_cvtd (Cop1.Cvtd inst);
+    public abstract void visit_cop1_cvts (Cop1.Cvts inst);
+    public abstract void visit_cop1_add (Cop1.Add inst);
+    public abstract void visit_cop1_ccond (Cop1.Ccond inst);
+    public abstract void visit_cop1_bc (Cop1.Bc inst);
+    public abstract void visit_cop2_bc (Cop2.Bc inst);
+    public abstract void visit_cop1_mtc1 (Cop1.Mtc1 inst);
+    public abstract void visit_cop1_mfc1 (Cop1.Mfc1 inst);
+    public abstract void visit_cop1_movci (Cop1.Movci inst);
+    public abstract void visit_cop1_movcf (Cop1.Movcf inst);
     public abstract void visit_add (Add inst);
     public abstract void visit_lui (Lui inst);
     public abstract void visit_addiu (Addiu inst);
+    public abstract void visit_addi (Addi inst);
     public abstract void visit_addu (Addu inst);
     public abstract void visit_subu (Subu inst);
     public abstract void visit_sw (Sw inst);
@@ -68,6 +70,7 @@ namespace Mips
     public abstract void visit_sh (Sh inst);
     public abstract void visit_lh (Lh inst);
     public abstract void visit_bgezal (Bgezal inst);
+    public abstract void visit_bgezall (Bgezall inst);
     public abstract void visit_nop (Nop inst);
     public abstract void visit_lw (Lw inst);
     public abstract void visit_lwl (Lwl inst);
@@ -81,6 +84,7 @@ namespace Mips
     public abstract void visit_sra (Sra inst);
     public abstract void visit_srl (Srl inst);
     public abstract void visit_beq (Beq inst);
+    public abstract void visit_beql (Beql inst);
     public abstract void visit_bne (Bne inst);
     public abstract void visit_lbu (Lbu inst);
     public abstract void visit_sb (Sb inst);
@@ -124,7 +128,7 @@ namespace Mips
     public abstract void accept (Visitor visitor);
   }
 
-  public class Fpu.Abs : Instruction
+  public class Cop1.Abs : Instruction
   {
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
@@ -147,11 +151,11 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_fpu_abs (this);
+      visitor.visit_cop1_abs (this);
     }
   }
 
-  public class Fpu.Sqrt : Instruction
+  public class Cop1.Sqrt : Instruction
   {
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
@@ -174,7 +178,7 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_fpu_sqrt (this);
+      visitor.visit_cop1_sqrt (this);
     }
   }
 
@@ -258,6 +262,34 @@ namespace Mips
     }
   }
 
+  public class Addi : Instruction
+  {
+    /*
+      001001 rs(5) rt(5) immediate(16)
+    */
+
+    public uint8 rs;
+    public uint8 rt;
+    public int16 immediate;
+
+    public Addi (uint8 rs, uint8 rt, int16 immediate)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.immediate = immediate;
+    }
+
+    public Addi.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), (int16)get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_addi (this);
+    }
+  }
+
   public class Addu : Instruction
   {
     /* SPECIAL
@@ -319,21 +351,48 @@ namespace Mips
     /* REGIMM
        000001 00000 10001 offset(16)
     */
+    public uint8 rs;
     public uint16 offset;
 
-    public Bgezal (uint16 offset)
+    public Bgezal (uint8 rs, uint16 offset)
       {
+        this.rs = rs;
         this.offset = offset;
       }
 
     public Bgezal.from_code (int code)
     {
-      this (get_half (code));
+      this (get_five1 (code), get_half (code));
     }
 
     public override void accept (Visitor visitor)
     {
       visitor.visit_bgezal (this);
+    }
+  }
+
+  public class Bgezall : Instruction
+  {
+    /* REGIMM
+       000001 00000 10001 offset(16)
+    */
+    public uint8 rs;
+    public uint16 offset;
+
+    public Bgezall (uint8 rs, uint16 offset)
+      {
+        this.rs = rs;
+        this.offset = offset;
+      }
+
+    public Bgezall.from_code (int code)
+    {
+      this (get_five1 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_bgezall (this);
     }
   }
 
@@ -518,6 +577,39 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_beq (this);
+    }
+  }
+
+  public class Beql : Instruction
+  {
+    /* BEQL
+       000100 rs(5) rt(5) immediate(16)
+    */
+
+    public uint8 rs;
+    public uint8 rt;
+    public int16 offset;
+
+    public Beql (uint8 rs, uint8 rt, int16 offset)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.offset = offset;
+    }
+
+    public Beql.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), (int16)get_half (code));
+    }
+
+    public bool is_unconditional ()
+    {
+      return rs == 0 && rt == 0;
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_beql (this);
     }
   }
 
@@ -1852,7 +1944,7 @@ namespace Mips
     }
   }
 
-  public class Fpu.Mov : Instruction
+  public class Cop1.Mov : Instruction
   {
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
@@ -1875,11 +1967,11 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_fpu_mov (this);
+      visitor.visit_cop1_mov (this);
     }
   }
 
-  public class Fpu.Truncw : Instruction
+  public class Cop1.Truncw : Instruction
   {
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
@@ -1902,11 +1994,11 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_fpu_truncw (this);
+      visitor.visit_cop1_truncw (this);
     }
   }
 
-  public class Fpu.Sub : Instruction
+  public class Cop1.Sub : Instruction
   {
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
@@ -1931,11 +2023,11 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_fpu_sub (this);
+      visitor.visit_cop1_sub (this);
     }
   }
 
-  public class Fpu.Mul : Instruction
+  public class Cop1.Mul : Instruction
   {
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
@@ -1960,11 +2052,11 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_fpu_mul (this);
+      visitor.visit_cop1_mul (this);
     }
   }
 
-  public class Fpu.Div : Instruction
+  public class Cop1.Div : Instruction
   {
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
@@ -1989,11 +2081,11 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_fpu_div (this);
+      visitor.visit_cop1_div (this);
     }
   }
 
-  public class Fpu.Add : Instruction
+  public class Cop1.Add : Instruction
   {
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
@@ -2018,11 +2110,11 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_fpu_add (this);
+      visitor.visit_cop1_add (this);
     }
   }
 
-  public class Fpu.Cvtd : Instruction
+  public class Cop1.Cvtd : Instruction
   {
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
@@ -2045,11 +2137,11 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_fpu_cvtd (this);
+      visitor.visit_cop1_cvtd (this);
     }
   }
 
-  public class Fpu.Cvts : Instruction
+  public class Cop1.Cvts : Instruction
   {
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
@@ -2072,11 +2164,11 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_fpu_cvts (this);
+      visitor.visit_cop1_cvts (this);
     }
   }
 
-  public class Fpu.Ccond : Instruction
+  public class Cop1.Ccond : Instruction
   {
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
@@ -2103,11 +2195,11 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_fpu_ccond (this);
+      visitor.visit_cop1_ccond (this);
     }
   }
 
-  public class Fpu.Bc : Instruction
+  public class Cop1.Bc : Instruction
   {
     /* COP1
        010001 01000 cc(3) nd(1) tf(1) offset(16)
@@ -2138,11 +2230,46 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_fpu_bc (this);
+      visitor.visit_cop1_bc (this);
     }
   }
 
-  public class Fpu.Mtc1 : Instruction
+  public class Cop2.Bc : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+    public enum Branch
+    {
+      FALSE,
+      FALSE_LIKELY,
+      TRUE,
+      TRUE_LIKELY
+    }
+
+    public uint8 cc;
+    public Branch branch;
+    public uint16 offset;
+
+    public Bc (uint8 cc, Branch branch, uint16 offset)
+    {
+      this.cc = cc;
+      this.branch = branch;
+      this.offset = offset;
+    }
+
+    public Bc.from_code (int code)
+    {
+      this (get_five2 (code) >> 2, (Branch)(get_five2 (code) & 0x03), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop2_bc (this);
+    }
+  }
+
+  public class Cop1.Mtc1 : Instruction
   {
     /* COP1
        010001 01000 cc(3) nd(1) tf(1) offset(16)
@@ -2164,11 +2291,11 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_fpu_mtc1 (this);
+      visitor.visit_cop1_mtc1 (this);
     }
   }
 
-  public class Fpu.Mfc1 : Instruction
+  public class Cop1.Mfc1 : Instruction
   {
     /* COP1
        010001 01000 cc(3) nd(1) tf(1) offset(16)
@@ -2190,11 +2317,11 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_fpu_mfc1 (this);
+      visitor.visit_cop1_mfc1 (this);
     }
   }
 
-  public class Fpu.Movci : Instruction
+  public class Cop1.Movci : Instruction
   {
     /* COP1
        010001 01000 cc(3) nd(1) tf(1) offset(16)
@@ -2220,11 +2347,11 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_fpu_movci (this);
+      visitor.visit_cop1_movci (this);
     }
   }
 
-  public class Fpu.Movcf : Instruction
+  public class Cop1.Movcf : Instruction
   {
     /* COP1
        010001 01000 cc(3) nd(1) tf(1) offset(16)
@@ -2252,7 +2379,7 @@ namespace Mips
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_fpu_movcf (this);
+      visitor.visit_cop1_movcf (this);
     }
   }
 }
