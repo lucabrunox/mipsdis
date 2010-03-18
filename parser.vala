@@ -177,6 +177,22 @@ namespace Mips
             throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown REGIMM instruction 0x%x (0x%x)", func, code);
           }
 
+      case COP0:
+        int func = code & 0x3F;
+        switch (func)
+          {
+          case 0x18:
+            if (code != 0x42000018)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("Invalid ERET");
+            return new Cop0.Eret ();
+          case 0x1F:
+            if (code != 0x4200001F)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("Invalid DERET");
+            return new Cop0.Deret ();
+          default:
+            throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown COP0 instruction 0x%x (0x%x)", func, code);
+          }
+
       case COP1:
         if (((code >> 4) & 0x0F) == 0x03) // 7-4
           return new Cop1.Ccond.from_code (code);
@@ -231,6 +247,14 @@ namespace Mips
             if (get_five2 (code) != 0)
               throw new ParserError.UNKNOWN_INSTRUCTION ("TRUNC.W 20-16 not zero");
             return new Cop1.Truncw.from_code (code);
+          case 0x0E:
+            if (get_five2 (code) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("CEIL.W 20-16 not zero");
+            return new Cop1.Ceilw.from_code (code);
+          case 0x0F:
+            if (get_five2 (code) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("FLOOR.W 20-16 not zero");
+            return new Cop1.Floorw.from_code (code);
           case 0x20:
             if (get_five2 (code) != 0)
               throw new ParserError.UNKNOWN_INSTRUCTION ("CVT.S 20-16 not zero");
@@ -239,6 +263,10 @@ namespace Mips
             if (get_five2 (code) != 0)
               throw new ParserError.UNKNOWN_INSTRUCTION ("CVT.D 20-16 not zero");
             return new Cop1.Cvtd.from_code (code);
+          case 0x24:
+            if (get_five2 (code) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("CVT.W 20-16 not zero");
+            return new Cop1.Cvtw.from_code (code);
           default:
             throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown COP1 instruction 0x%x (0x%x)", func, code);
           }
@@ -247,6 +275,10 @@ namespace Mips
         int func = code & 0x3F;
         switch (func)
           {
+          case 0x00:
+            if (get_five3 (code) != 0 || get_five4 (code) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("MADD 15-6 not zero");
+            return new Madd.from_code (code);
           case 0x02:
             if (get_five4 (code) != 0)
               throw new ParserError.UNKNOWN_INSTRUCTION ("MUL 10-6 not zero");
@@ -278,6 +310,12 @@ namespace Mips
           default:
             throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown COP2 instruction 0x%x (0x%x)", func, code);
           }
+
+      case 0x02:
+        return new Jump.from_code (code);
+
+      case 0x03:
+        return new Jal.from_code (code);
 
       case 0x04:
         return new Beq.from_code (code);
@@ -373,11 +411,20 @@ namespace Mips
       case 0x2E:
         return new Swr.from_code (code);
 
+      case 0x30:
+        return new Ll.from_code (code);
+
       case 0x31:
         return new Lwc1.from_code (code);
 
+      case 0x32:
+        return new Lwc2.from_code (code);
+
       case 0x35:
         return new Ldc1.from_code (code);
+
+      case 0x36:
+        return new Ldc2.from_code (code);
 
       case 0x39:
         return new Swc1.from_code (code);

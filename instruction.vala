@@ -2,6 +2,7 @@ namespace Mips
 {
   static const uint8 SPECIAL = 0x00;
   static const uint8 REGIMM = 0x01;
+  static const uint8 COP0 = 0x10;
   static const uint8 COP1 = 0x11;
   static const uint8 COP1X = 0x13;
   static const uint8 COP2 = 0x12;
@@ -41,6 +42,8 @@ namespace Mips
 
   public abstract class Visitor
   {
+    public abstract void visit_cop0_eret (Cop0.Eret inst);
+    public abstract void visit_cop0_deret (Cop0.Deret inst);
     public abstract void visit_cop1_abs (Cop1.Abs inst);
     public abstract void visit_cop1_cf (Cop1.Cf inst);
     public abstract void visit_cop1_ct (Cop1.Ct inst);
@@ -53,7 +56,9 @@ namespace Mips
     public abstract void visit_cop1_div (Cop1.Div inst);
     public abstract void visit_cop1_truncw (Cop1.Truncw inst);
     public abstract void visit_cop1_ceilw (Cop1.Ceilw inst);
+    public abstract void visit_cop1_floorw (Cop1.Floorw inst);
     public abstract void visit_cop1_cvtd (Cop1.Cvtd inst);
+    public abstract void visit_cop1_cvtw (Cop1.Cvtw inst);
     public abstract void visit_cop1_cvts (Cop1.Cvts inst);
     public abstract void visit_cop1_add (Cop1.Add inst);
     public abstract void visit_cop1_ccond (Cop1.Ccond inst);
@@ -63,6 +68,8 @@ namespace Mips
     public abstract void visit_cop1_mfc1 (Cop1.Mfc1 inst);
     public abstract void visit_cop1_movci (Cop1.Movci inst);
     public abstract void visit_cop1_movcf (Cop1.Movcf inst);
+    public abstract void visit_jump (Jump inst);
+    public abstract void visit_jal (Jal inst);
     public abstract void visit_add (Add inst);
     public abstract void visit_lui (Lui inst);
     public abstract void visit_addiu (Addiu inst);
@@ -75,6 +82,7 @@ namespace Mips
     public abstract void visit_swl (Swl inst);
     public abstract void visit_swr (Swr inst);
     public abstract void visit_lb (Lb inst);
+    public abstract void visit_ll (Ll inst);
     public abstract void visit_sh (Sh inst);
     public abstract void visit_lh (Lh inst);
     public abstract void visit_regimm_bgezal (Regimm.Bgezal inst);
@@ -130,10 +138,13 @@ namespace Mips
     public abstract void visit_divu (Divu inst);
     public abstract void visit_break (Break inst);
     public abstract void visit_movz (Movz inst);
+    public abstract void visit_madd (Madd inst);
     public abstract void visit_movn (Movn inst);
     public abstract void visit_sdc1 (Sdc1 inst);
     public abstract void visit_ldc1 (Ldc1 inst);
+    public abstract void visit_ldc2 (Ldc2 inst);
     public abstract void visit_lwc1 (Lwc1 inst);
+    public abstract void visit_lwc2 (Lwc2 inst);
     public abstract void visit_swc1 (Swc1 inst);
     public abstract void visit_swc2 (Swc2 inst);
   }
@@ -141,6 +152,30 @@ namespace Mips
   public abstract class Instruction
   {
     public abstract void accept (Visitor visitor);
+  }
+
+  public class Cop0.Deret : Instruction
+  {
+    /* COP0
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_deret (this);
+    }
+  }
+
+  public class Cop0.Eret : Instruction
+  {
+    /* COP0
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_eret (this);
+    }
   }
 
   public class Cop1.Abs : Instruction
@@ -1405,6 +1440,34 @@ namespace Mips
     }
   }
 
+  public class Ll : Instruction
+  {
+    /* LL
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public uint8 @base;
+    public uint8 rt;
+    public uint16 offset;
+
+    public Ll (uint8 @base, uint8 rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Ll.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_ll (this);
+    }
+  }
+
   public class Regimm.Bltz : Instruction
   {
     /* REGIMM
@@ -2028,6 +2091,32 @@ namespace Mips
     }
   }
 
+  public class Madd : Instruction
+  {
+    /*
+      001001 rs(5) rt(5) immediate(16)
+    */
+
+    public uint8 rs;
+    public uint8 rt;
+
+    public Madd (uint8 rs, uint8 rt)
+    {
+      this.rs = rs;
+      this.rt = rt;
+    }
+
+    public Madd.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_madd (this);
+    }
+  }
+
   public class Movn : Instruction
   {
     /*
@@ -2220,6 +2309,34 @@ namespace Mips
     }
   }
 
+  public class Ldc2 : Instruction
+  {
+    /* LDC2
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public uint8 @base;
+    public uint8 ft;
+    public uint16 offset;
+
+    public Ldc2 (uint8 @base, uint8 ft, uint16 offset)
+      {
+        this.@base = @base;
+        this.ft = ft;
+        this.offset = offset;
+      }
+
+    public Ldc2.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_ldc2 (this);
+    }
+  }
+
   public class Lwc1 : Instruction
   {
     /* LWC1
@@ -2245,6 +2362,34 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_lwc1 (this);
+    }
+  }
+
+  public class Lwc2 : Instruction
+  {
+    /* LWC2
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public uint8 @base;
+    public uint8 ft;
+    public uint16 offset;
+
+    public Lwc2 (uint8 @base, uint8 ft, uint16 offset)
+      {
+        this.@base = @base;
+        this.ft = ft;
+        this.offset = offset;
+      }
+
+    public Lwc2.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_lwc2 (this);
     }
   }
 
@@ -2382,6 +2527,33 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_ceilw (this);
+    }
+  }
+
+  public class Cop1.Floorw : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public uint8 fmt;
+    public uint8 fs;
+    public uint8 fd;
+
+    public Floorw (uint8 fmt, uint8 fs, uint8 fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Floorw.from_code (int code)
+    {
+      this (get_five1 (code), get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_floorw (this);
     }
   }
 
@@ -2525,6 +2697,33 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_cvtd (this);
+    }
+  }
+
+  public class Cop1.Cvtw : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public uint8 fmt;
+    public uint8 fs;
+    public uint8 fd;
+
+    public Cvtw (uint8 fmt, uint8 fs, uint8 fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Cvtw.from_code (int code)
+    {
+      this (get_five1 (code), get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_cvtw (this);
     }
   }
 
@@ -2767,6 +2966,54 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_movcf (this);
+    }
+  }
+
+  public class Jump : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint instr_index;
+
+    public Jump (uint instr_index)
+    {
+      this.instr_index = instr_index;
+    }
+
+    public Jump.from_code (int code)
+    {
+      this (code & 0x3FFFFFF);
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_jump (this);
+    }
+  }
+
+  public class Jal : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint instr_index;
+
+    public Jal (uint instr_index)
+    {
+      this.instr_index = instr_index;
+    }
+
+    public Jal.from_code (int code)
+    {
+      this (code & 0x3FFFFFF);
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_jal (this);
     }
   }
 }
