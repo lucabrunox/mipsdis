@@ -134,6 +134,18 @@ namespace Mips
       }
     }
 
+    public override void visit_cop1_ceilw (Cop1.Ceilw inst)
+    {
+      try
+        {
+          builder.append_printf ("CEIL.W.%s 0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+        }
+      catch (OpcodeError e)
+      {
+        builder.append (e.message);
+      }
+    }
+
     public override void visit_cop1_cvtd (Cop1.Cvtd inst)
     {
       try
@@ -269,6 +281,26 @@ namespace Mips
       builder.append_printf ("MFC1\t0x%x, 0x%x", inst.rt, inst.fs);
     }
 
+    public override void visit_cop1_cf (Cop1.Cf inst)
+    {
+      builder.append_printf ("CFC1\t0x%x, 0x%x", inst.rt, inst.fs);
+    }
+
+    public override void visit_cop1_ct (Cop1.Ct inst)
+    {
+      builder.append_printf ("CTC1\t0x%x, 0x%x", inst.rt, inst.fs);
+    }
+
+    public override void visit_cop2_cf (Cop2.Cf inst)
+    {
+      builder.append_printf ("CFC2\t0x%x, 0x%x", inst.rt, inst.rd);
+    }
+
+    public override void visit_cop2_ct (Cop2.Ct inst)
+    {
+      builder.append_printf ("CTC2\t0x%x, 0x%x", inst.rt, inst.rd);
+    }
+
     public override void visit_cop1_mtc1 (Cop1.Mtc1 inst)
     {
       builder.append_printf ("MTC1\t0x%x, 0x%x", inst.rt, inst.fs);
@@ -327,6 +359,16 @@ namespace Mips
       builder.append_printf ("SW\t0x%x, %d(0x%x)", inst.rt, inst.offset, inst.@base);
     }
 
+    public override void visit_cache (Cache inst)
+    {
+      builder.append_printf ("CACHE\t0x%x, %d(0x%x)", inst.op, inst.offset, inst.@base);
+    }
+
+    public override void visit_sync (Sync inst)
+    {
+      builder.append_printf ("SYNC");
+    }
+
     public override void visit_swl (Swl inst)
     {
       builder.append_printf ("SWL\t0x%x, %d(0x%x)", inst.rt, inst.offset, inst.@base);
@@ -337,7 +379,7 @@ namespace Mips
       builder.append_printf ("SWR\t0x%x, %d(0x%x)", inst.rt, inst.offset, inst.@base);
     }
 
-    public override void visit_bgezal (Bgezal inst)
+    public override void visit_regimm_bgezal (Regimm.Bgezal inst)
     {
       if (inst.rs == 0)
         builder.append_printf ("BAL\t%d", inst.offset);
@@ -345,7 +387,7 @@ namespace Mips
         builder.append_printf ("BGEZAL\t0x%x, %d", inst.rs, inst.offset);
     }
 
-    public override void visit_bgezall (Bgezall inst)
+    public override void visit_regimm_bgezall (Regimm.Bgezall inst)
     {
       builder.append_printf ("BGEZALL\t0x%x, %d", inst.rs, inst.offset);
     }
@@ -386,9 +428,14 @@ namespace Mips
         builder.append_printf ("JR\t0x%x", inst.rs);
     }
 
-    public override void visit_bltzal (Bltzal inst)
+    public override void visit_regimm_bltzal (Regimm.Bltzal inst)
     {
       builder.append_printf ("BLTZAL\t0x%x, 0x%x", inst.rs, inst.offset);
+    }
+
+    public override void visit_regimm_bltzall (Regimm.Bltzall inst)
+    {
+      builder.append_printf ("BLTZALL\t0x%x, 0x%x", inst.rs, inst.offset);
     }
 
     public override void visit_sll (Sll inst)
@@ -412,6 +459,11 @@ namespace Mips
     public override void visit_bne (Bne inst)
     {
       builder.append_printf ("BNE\t0x%x, 0x%x, %d", inst.rs, inst.rt, inst.offset);
+    }
+
+    public override void visit_bnel (Bnel inst)
+    {
+      builder.append_printf ("BNEL\t0x%x, 0x%x, %d", inst.rs, inst.rt, inst.offset);
     }
 
     public override void visit_lbu (Lbu inst)
@@ -492,7 +544,7 @@ namespace Mips
       builder.append_printf ("ANDI\t0x%x, 0x%x, %d", inst.rs, inst.rt, inst.immediate);
     }
 
-    public override void visit_bgez (Bgez inst)
+    public override void visit_regimm_bgez (Regimm.Bgez inst)
     {
       builder.append_printf ("BGEZ\t0x%x, 0x%x", inst.rs, inst.offset);
     }
@@ -507,9 +559,19 @@ namespace Mips
       builder.append_printf ("LB\t0x%x, %d(0x%x)", inst.rt, inst.offset, inst.@base);
     }
 
-    public override void visit_bltz (Bltz inst)
+    public override void visit_regimm_bltz (Regimm.Bltz inst)
     {
       builder.append_printf ("BLTZ\t0x%x, 0x%x", inst.rs, inst.offset);
+    }
+
+    public override void visit_regimm_bltzl (Regimm.Bltzl inst)
+    {
+      builder.append_printf ("BLTZL\t0x%x, 0x%x", inst.rs, inst.offset);
+    }
+
+    public override void visit_regimm_bgezl (Regimm.Bgezl inst)
+    {
+      builder.append_printf ("BGEZL\t0x%x, 0x%x", inst.rs, inst.offset);
     }
 
     public override void visit_slt (Slt inst)
@@ -542,6 +604,11 @@ namespace Mips
       builder.append_printf ("BGTZ\t0x%x, 0x%x", inst.rs, inst.offset);
     }
 
+    public override void visit_bgtzl (Bgtzl inst)
+    {
+      builder.append_printf ("BGTZL\t0x%x, 0x%x", inst.rs, inst.offset);
+    }
+
     public override void visit_xori (Xori inst)
     {
       builder.append_printf ("XORI\t0x%x, 0x%x, %d", inst.rt, inst.rs, inst.immediate);
@@ -550,6 +617,11 @@ namespace Mips
     public override void visit_clo (Clo inst)
     {
       builder.append_printf ("CLO\t0x%x, 0x%x", inst.rd, inst.rs);
+    }
+
+    public override void visit_clz (Clz inst)
+    {
+      builder.append_printf ("CLZ\t0x%x, 0x%x", inst.rd, inst.rs);
     }
 
     public override void visit_mul (Mul inst)
@@ -633,6 +705,11 @@ namespace Mips
     public override void visit_swc1 (Swc1 inst)
     {
       builder.append_printf ("SWC1\t0x%x, %d(0x%x)", inst.ft, inst.offset, inst.@base);
+    }
+
+    public override void visit_swc2 (Swc2 inst)
+    {
+      builder.append_printf ("SWC2\t0x%x, %d(0x%x)", inst.ft, inst.offset, inst.@base);
     }
   }
 }

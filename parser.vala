@@ -87,6 +87,8 @@ namespace Mips
             return new Movn.from_code (code);
           case 0x0D:
             return new Break.from_code (code);
+          case 0x0F:
+            return new Sync.from_code (code);
           case 0x10:
             if (get_five1 (code) != 0 || get_five2 (code) != 0 || get_five4 (code) != 0)
               throw new ParserError.UNKNOWN_INSTRUCTION ("MFHI 25-16 or 10-6 not zero");
@@ -156,15 +158,21 @@ namespace Mips
         switch (func)
           {
           case 0x00:
-            return new Bltz.from_code (code);
+            return new Regimm.Bltz.from_code (code);
           case 0x01:
-            return new Bgez.from_code (code);
+            return new Regimm.Bgez.from_code (code);
+          case 0x02:
+            return new Regimm.Bltzl.from_code (code);
+          case 0x03:
+            return new Regimm.Bgezl.from_code (code);
           case 0x10:
-            return new Bltzal.from_code (code);
+            return new Regimm.Bltzal.from_code (code);
           case 0x11:
-            return new Bgezal.from_code (code);
+            return new Regimm.Bgezal.from_code (code);
+          case 0x12:
+            return new Regimm.Bltzall.from_code (code);
           case 0x13:
-            return new Bgezall.from_code (code);
+            return new Regimm.Bgezall.from_code (code);
           default:
             throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown REGIMM instruction 0x%x (0x%x)", func, code);
           }
@@ -177,13 +185,21 @@ namespace Mips
         switch (func)
           {
           case 0x00:
-            if ((code & 0x3FF) == 0)
-              return new Cop1.Mfc1.from_code (code);
-            break;
+            if ((code & 0x3FF) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("MFC1 10-0 not zero");
+            return new Cop1.Mfc1.from_code (code);
+          case 0x02:
+            if ((code & 0x3FF) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("CFC1 10-0 not zero");
+            return new Cop1.Cf.from_code (code);
           case 0x04:
-            if ((code & 0x3FF) == 0)
-              return new Cop1.Mtc1.from_code (code);
-            break;
+            if ((code & 0x3FF) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("MTC1 10-0 not zero");
+            return new Cop1.Mtc1.from_code (code);
+          case 0x06:
+            if ((code & 0x3FF) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("CTC1 10-0 not zero");
+            return new Cop1.Ct.from_code (code);
           case 0x08:
             return new Cop1.Bc.from_code (code);
           }
@@ -235,12 +251,32 @@ namespace Mips
             if (get_five4 (code) != 0)
               throw new ParserError.UNKNOWN_INSTRUCTION ("MUL 10-6 not zero");
             return new Mul.from_code (code);
+          case 0x20:
+            if (get_five4 (code) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("CLZ 10-6 not zero");
+            return new Clz.from_code (code);
           case 0x21:
             if (get_five4 (code) != 0)
               throw new ParserError.UNKNOWN_INSTRUCTION ("CLO 10-6 not zero");
             return new Clo.from_code (code);
           default:
             throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown SPECIAL2 instruction 0x%x (0x%x)", func, code);
+          }
+
+      case COP2:
+        int func = get_five1 (code);
+        switch (func)
+          {
+          case 0x02:
+            if ((code & 0x3FF) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("CFC2 10-0 not zero");
+            return new Cop2.Cf.from_code (code);
+          case 0x06:
+            if ((code & 0x3FF) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("CTC2 10-0 not zero");
+            return new Cop2.Ct.from_code (code);
+          default:
+            throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown COP2 instruction 0x%x (0x%x)", func, code);
           }
 
       case 0x04:
@@ -288,10 +324,18 @@ namespace Mips
       case 0x14:
         return new Beql.from_code (code);
 
+      case 0x15:
+        return new Bnel.from_code (code);
+
       case 0x16:
         if (get_five2 (code) != 0)
           throw new ParserError.UNKNOWN_INSTRUCTION ("BLEZL 20-16 not zero");
         return new Blezl.from_code (code);
+
+      case 0x17:
+        if (get_five2 (code) != 0)
+          throw new ParserError.UNKNOWN_INSTRUCTION ("BGTZL 20-16 not zero");
+        return new Bgtzl.from_code (code);
 
       case 0x20:
         return new Lb.from_code (code);
@@ -337,6 +381,9 @@ namespace Mips
 
       case 0x39:
         return new Swc1.from_code (code);
+
+      case 0x3A:
+        return new Swc2.from_code (code);
 
       case 0x3D:
         return new Sdc1.from_code (code);
