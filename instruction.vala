@@ -55,6 +55,7 @@ namespace Mips
     public abstract void visit_fpu_mtc1 (Fpu.Mtc1 inst);
     public abstract void visit_fpu_mfc1 (Fpu.Mfc1 inst);
     public abstract void visit_fpu_movci (Fpu.Movci inst);
+    public abstract void visit_fpu_movcf (Fpu.Movcf inst);
     public abstract void visit_add (Add inst);
     public abstract void visit_lui (Lui inst);
     public abstract void visit_addiu (Addiu inst);
@@ -195,7 +196,7 @@ namespace Mips
 
     public Add.from_code (int code)
       {
-        this (get_five1 (rs), get_five2 (rt), get_five3 (rd));
+        this (get_five1 (code), get_five2 (code), get_five3 (code));
       }
 
     public override void accept (Visitor visitor)
@@ -2214,12 +2215,44 @@ namespace Mips
 
     public Movci.from_code (int code)
     {
-      this (get_five1 (code), get_five2 (code) >> 2, code & 0x10000, get_five3 (code));
+      this (get_five1 (code), get_five2 (code) >> 2, (code & 0x10000) == 1, get_five3 (code));
     }
 
     public override void accept (Visitor visitor)
     {
       visitor.visit_fpu_movci (this);
+    }
+  }
+
+  public class Fpu.Movcf : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint8 fmt;
+    public uint8 cc;
+    public bool test_true;
+    public uint8 fs;
+    public uint8 fd;
+
+    public Movcf (uint8 fmt, uint8 cc, bool test_true, uint8 fs, uint8 fd)
+    {
+      this.fmt = fmt;
+      this.cc = cc;
+      this.test_true = test_true;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Movcf.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code) >> 2, (code & 0x10000) == 1, get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_fpu_movcf (this);
     }
   }
 }

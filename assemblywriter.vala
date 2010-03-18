@@ -272,9 +272,24 @@ namespace Mips
     public override void visit_fpu_movci (Fpu.Movci inst)
     {
       if (inst.test_true)
-        builder.append_printf ("MOVT 0x%x, 0x%x, %d", inst.rd, inst.rs, inst.cc)
+        builder.append_printf ("MOVT 0x%x, 0x%x, %d", inst.rd, inst.rs, inst.cc);
       else
-        builder.append_printf ("MOVF 0x%x, 0x%x, %d", inst.rd, inst.rs, inst.cc)
+        builder.append_printf ("MOVF 0x%x, 0x%x, %d", inst.rd, inst.rs, inst.cc);
+    }
+
+    public override void visit_fpu_movcf (Fpu.Movcf inst)
+    {
+      try
+        {
+          if (inst.test_true)
+            builder.append_printf ("MOVT.%s 0x%x, 0x%x, %d", fpu_fmt_to_string (inst.fmt, COP1), inst.fd, inst.fs, inst.cc);
+          else
+            builder.append_printf ("MOVF.%s 0x%x, 0x%x, %d", fpu_fmt_to_string (inst.fmt, COP1), inst.fd, inst.fs, inst.cc);
+        }
+      catch (OpcodeError e)
+        {
+          builder.append (e.message);
+        }
     }
 
     public override void visit_add (Add inst)

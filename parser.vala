@@ -43,9 +43,12 @@ namespace Mips
               throw new ParserError.UNKNOWN_INSTRUCTION ("SLL 25-21 not zero");
             return new Sll.from_code (code);
           case 0x01:
-            if (!(code & 0x20000) && get_five4 (code) == 0)
+            if ((code & 0x20000) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("SPECIAL MOV bit 17 != 0");
+            if (get_five4 (code) == 0)
               return new Fpu.Movci.from_code (code);
-            return new Fpu.Movcf.from_code (code);
+            else
+              return new Fpu.Movcf.from_code (code);
           case 0x02:
             if (get_five1 (code) != 0 && get_five1 (code) != 1)
               throw new ParserError.UNKNOWN_INSTRUCTION ("SRL 25-21 not zero or one");
