@@ -158,10 +158,18 @@ namespace Mips
             if (get_five4 (code) != 0)
               throw new ParserError.UNKNOWN_INSTRUCTION ("SLTU 10-6 not zero");
             return new Sltu.from_code (code);
-          case 0x2F:
-            return new Cache.from_code (code);
+          case 0x32:
+            return new Tlt.from_code (code);
           case 0x33:
-            return new Pref.from_code (code);
+            return new Tltu.from_code (code);
+          case 0x34:
+            return new Teq.from_code (code);
+          case 0x36:
+            return new Tne.from_code (code);
+          case 0x38:
+            return new Tge.from_code (code);
+          case 0x39:
+            return new Tgeu.from_code (code);
           default:
             throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown SPECIAL instruction 0x%x (0x%x)", func, code);
           }
@@ -178,6 +186,10 @@ namespace Mips
             return new Regimm.Bltzl.from_code (code);
           case 0x03:
             return new Regimm.Bgezl.from_code (code);
+          case 0x08:
+            return new Regimm.Tgei.from_code (code);
+          case 0x09:
+            return new Regimm.Tgeiu.from_code (code);
           case 0x10:
             return new Regimm.Bltzal.from_code (code);
           case 0x11:
@@ -186,6 +198,14 @@ namespace Mips
             return new Regimm.Bltzall.from_code (code);
           case 0x13:
             return new Regimm.Bgezall.from_code (code);
+          case 0x0A:
+            return new Regimm.Tlti.from_code (code);
+          case 0x0B:
+            return new Regimm.Tltiu.from_code (code);
+          case 0x0C:
+            return new Regimm.Teqi.from_code (code);
+          case 0x0E:
+            return new Regimm.Tnei.from_code (code);
           case 0x1F:
             return new Regimm.Synci.from_code (code);
           default:
@@ -205,17 +225,41 @@ namespace Mips
               return new Cop0.Mt.from_code (code);
             break;
           case 0x0A:
-            if ((code & 0x3FF) == 0)
+            if ((code & 0x7FF) == 0)
               return new Cop0.Rdpgpr.from_code (code);
+            break;
+          case 0x0E:
+            if ((code & 0x7FF) == 0)
+              return new Cop0.Wrpgpr.from_code (code);
             break;
           }
 
         func = code & 0x3F;
         switch (func)
           {
+          case 0x01:
+            if (code != 0x42000001)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("Invalid TLBR");
+            return new Cop0.Tlbr ();
+          case 0x02:
+            if (code != 0x42000001)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("Invalid TLBWI");
+            return new Cop0.Tlbwi ();
+          case 0x06:
+            if (code != 0x42000006)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("Invalid TLBWR");
+            return new Cop0.Tlbwr ();
+          case 0x08:
+            if (code != 0x42000008)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("Invalid TLBP");
+            return new Cop0.Tlbp ();
           case 0x18:
             if (code != 0x42000018)
               throw new ParserError.UNKNOWN_INSTRUCTION ("Invalid ERET");
+            return new Cop0.Eret ();
+          case 0x20:
+            if (((code >> 24) & 1) != 1)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("Invalid WAIT");
             return new Cop0.Eret ();
           case 0x1F:
             if (code != 0x4200001F)
@@ -291,6 +335,10 @@ namespace Mips
             if (get_five2 (code) != 0)
               throw new ParserError.UNKNOWN_INSTRUCTION ("ROUND.L 20-16 not zero");
             return new Cop1.Roundl.from_code (code);
+          case 0x09:
+            if (get_five2 (code) != 0)
+              throw new ParserError.UNKNOWN_INSTRUCTION ("TRUNC.L 20-16 not zero");
+            return new Cop1.Truncl.from_code (code);
           case 0x0C:
             if (get_five2 (code) != 0)
               throw new ParserError.UNKNOWN_INSTRUCTION ("ROUND.W 20-16 not zero");
@@ -448,7 +496,9 @@ namespace Mips
           case 0x20:
             if (get_five1 (code) != 0)
               throw new ParserError.UNKNOWN_INSTRUCTION ("BSHFL 25-21 not zerO");
-            if (get_five4 (code) == 0x10)
+            if (get_five4 (code) == 0x04)
+              return new Wsbh.from_code (code);
+            else if (get_five4 (code) == 0x10)
               return new Seb.from_code (code);
             else if (get_five4 (code) == 0x18)
               return new Seh.from_code (code);
@@ -562,6 +612,9 @@ namespace Mips
       case 0x2E:
         return new Swr.from_code (code);
 
+      case 0x2F:
+        return new Cache.from_code (code);
+
       case 0x30:
         return new Ll.from_code (code);
 
@@ -570,6 +623,9 @@ namespace Mips
 
       case 0x32:
         return new Lwc2.from_code (code);
+
+      case 0x33:
+        return new Pref.from_code (code);
 
       case 0x35:
         return new Ldc1.from_code (code);

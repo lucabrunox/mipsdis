@@ -16,6 +16,8 @@ namespace Mips
   static const int FIVE4_BITS = 6;
   static const int HALF_MASK = 0xFFFF;
   static const int THREE_MASK = 0x7;
+  static const int TEN_MASK = 0x3FF;
+  static const int TEN_BITS = 6;
 
   public inline static uint8 get_five1 (int code)
   {
@@ -45,6 +47,11 @@ namespace Mips
   public inline static uint8 get_three (int code)
   {
     return (uint8)(code & THREE_MASK);
+  }
+
+  public inline static uint16 get_ten (int code)
+  {
+    return (uint16)((code >> TEN_BITS) & TEN_MASK);
   }
 
   public abstract class Visitor
@@ -196,6 +203,26 @@ namespace Mips
     public abstract void visit_lwc2 (Lwc2 inst);
     public abstract void visit_swc1 (Swc1 inst);
     public abstract void visit_swc2 (Swc2 inst);
+    public abstract void visit_teq (Teq inst);
+    public abstract void visit_regimm_teqi (Regimm.Teqi inst);
+    public abstract void visit_tge (Tge inst);
+    public abstract void visit_regimm_tgei (Regimm.Tgei inst);
+    public abstract void visit_regimm_tgeiu (Regimm.Tgeiu inst);
+    public abstract void visit_tgeu (Tgeu inst);
+    public abstract void visit_cop0_tlbp (Cop0.Tlbp inst);
+    public abstract void visit_cop0_tlbr (Cop0.Tlbr inst);
+    public abstract void visit_cop0_tlbwi (Cop0.Tlbwi inst);
+    public abstract void visit_cop0_tlbwr (Cop0.Tlbwr inst);
+    public abstract void visit_tlt (Tlt inst);
+    public abstract void visit_regimm_tlti (Regimm.Tlti inst);
+    public abstract void visit_regimm_tltiu (Regimm.Tltiu inst);
+    public abstract void visit_tltu (Tltu inst);
+    public abstract void visit_tne (Tne inst);
+    public abstract void visit_regimm_tnei (Regimm.Tnei inst);
+    public abstract void visit_cop1_truncl (Cop1.Truncl inst);
+    public abstract void visit_cop0_wait (Cop0.Wait inst);
+    public abstract void visit_cop0_wrpgpr (Cop0.Wrpgpr inst);
+    public abstract void visit_wsbh (Wsbh inst);
   }
 
   public abstract class Instruction
@@ -809,6 +836,162 @@ namespace Mips
     }
   }
 
+  public class Regimm.Teqi : Instruction
+  {
+    /* TEQI
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public uint8 rs;
+    public uint16 immediate;
+
+    public Teqi (uint8 rs, uint16 immediate)
+      {
+        this.rs = rs;
+        this.immediate = immediate;
+      }
+
+    public Teqi.from_code (int code)
+    {
+      this (get_five1 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_teqi (this);
+    }
+  }
+
+  public class Regimm.Tnei : Instruction
+  {
+    /* TNEI
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public uint8 rs;
+    public uint16 immediate;
+
+    public Tnei (uint8 rs, uint16 immediate)
+      {
+        this.rs = rs;
+        this.immediate = immediate;
+      }
+
+    public Tnei.from_code (int code)
+    {
+      this (get_five1 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_tnei (this);
+    }
+  }
+
+  public class Regimm.Tlti : Instruction
+  {
+    /* TLTI
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public uint8 rs;
+    public uint16 immediate;
+
+    public Tlti (uint8 rs, uint16 immediate)
+      {
+        this.rs = rs;
+        this.immediate = immediate;
+      }
+
+    public Tlti.from_code (int code)
+    {
+      this (get_five1 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_tlti (this);
+    }
+  }
+
+  public class Regimm.Tltiu : Instruction
+  {
+    /* TLTIU
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public uint8 rs;
+    public uint16 immediate;
+
+    public Tltiu (uint8 rs, uint16 immediate)
+      {
+        this.rs = rs;
+        this.immediate = immediate;
+      }
+
+    public Tltiu.from_code (int code)
+    {
+      this (get_five1 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_tltiu (this);
+    }
+  }
+
+  public class Regimm.Tgei : Instruction
+  {
+    /* TGEI
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public uint8 rs;
+    public uint16 immediate;
+
+    public Tgei (uint8 rs, uint16 immediate)
+      {
+        this.rs = rs;
+        this.immediate = immediate;
+      }
+
+    public Tgei.from_code (int code)
+    {
+      this (get_five1 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_tgei (this);
+    }
+  }
+
+  public class Regimm.Tgeiu : Instruction
+  {
+    /* TGEIU
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public uint8 rs;
+    public uint16 immediate;
+
+    public Tgeiu (uint8 rs, uint16 immediate)
+      {
+        this.rs = rs;
+        this.immediate = immediate;
+      }
+
+    public Tgeiu.from_code (int code)
+    {
+      this (get_five1 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_tgeiu (this);
+    }
+  }
+
   public class Regimm.Bgezal : Instruction
   {
     /* REGIMM
@@ -1258,6 +1441,32 @@ namespace Mips
     }
   }
 
+  public class Wsbh : Instruction
+  {
+    /* WSBH
+       101000 base(5) rt(5) offset(16)
+    */
+
+    public uint8 rt;
+    public uint8 rd;
+
+    public Wsbh (uint8 rt, uint8 rd)
+      {
+        this.rt = rt;
+        this.rd = rd;
+      }
+
+    public Wsbh.from_code (int code)
+    {
+      this (get_five2 (code), get_five3 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_wsbh (this);
+    }
+  }
+
   public class Seh : Instruction
   {
     /* SEH
@@ -1505,6 +1714,34 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_or (this);
+    }
+  }
+
+  public class Xor : Instruction
+  {
+    /* SPECIAL
+       000000 rs(5) rt(5) rd(5) 00000 100001
+    */
+
+    public uint8 rs;
+    public uint8 rt;
+    public uint8 rd;
+
+    public Xor (uint8 rs, uint8 rt, uint8 rd)
+      {
+        this.rs = rs;
+        this.rt = rt;
+        this.rd = rd;
+      }
+
+    public Xor.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_five3 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_xor (this);
     }
   }
 
@@ -2215,34 +2452,6 @@ namespace Mips
     }
   }
 
-  public class Xor : Instruction
-  {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
-    public uint8 rs;
-    public uint8 rt;
-    public uint8 rd;
-
-    public Xor (uint8 rs, uint8 rt, uint8 rd)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.rd = rd;
-    }
-
-    public Xor.from_code (int code)
-    {
-      this (get_five1 (code), get_five2 (code), get_five3 (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_xor (this);
-    }
-  }
-
   public class Srlv : Instruction
   {
     /*
@@ -2353,6 +2562,54 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_break (this);
+    }
+  }
+
+  public class Cop0.Tlbp : Instruction
+  {
+    /* SPECIAL
+       000000 code(20) 001101
+    */
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_tlbp (this);
+    }
+  }
+
+  public class Cop0.Tlbr : Instruction
+  {
+    /* SPECIAL
+       000000 code(20) 001101
+    */
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_tlbr (this);
+    }
+  }
+
+  public class Cop0.Tlbwi : Instruction
+  {
+    /* SPECIAL
+       000000 code(20) 001101
+    */
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_tlbwi (this);
+    }
+  }
+
+  public class Cop0.Tlbwr : Instruction
+  {
+    /* SPECIAL
+       000000 code(20) 001101
+    */
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_tlbwr (this);
     }
   }
 
@@ -3114,6 +3371,33 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_truncw (this);
+    }
+  }
+
+  public class Cop1.Truncl : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public uint8 fmt;
+    public uint8 fs;
+    public uint8 fd;
+
+    public Truncl (uint8 fmt, uint8 fs, uint8 fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Truncl.from_code (int code)
+    {
+      this (get_five1 (code), get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_truncl (this);
     }
   }
 
@@ -3901,6 +4185,30 @@ namespace Mips
     }
   }
 
+  public class Cop0.Wait : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint code;
+
+    public Wait (uint code)
+    {
+      this.code = code;
+    }
+
+    public Wait.from_code (int code)
+    {
+      this (code & 0x7FFFF);
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_wait (this);
+    }
+  }
+
   public class Jal : Instruction
   {
     /* COP1
@@ -3970,6 +4278,174 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_syscall (this);
+    }
+  }
+
+  public class Teq : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint8 rs;
+    public uint8 rt;
+    public uint16 code;
+
+    public Teq (uint8 rs, uint8 rt, uint16 code)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.code = code;
+    }
+
+    public Teq.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_ten (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_teq (this);
+    }
+  }
+
+  public class Tltu : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint8 rs;
+    public uint8 rt;
+    public uint16 code;
+
+    public Tltu (uint8 rs, uint8 rt, uint16 code)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.code = code;
+    }
+
+    public Tltu.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_ten (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_tltu (this);
+    }
+  }
+
+  public class Tne : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint8 rs;
+    public uint8 rt;
+    public uint16 code;
+
+    public Tne (uint8 rs, uint8 rt, uint16 code)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.code = code;
+    }
+
+    public Tne.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_ten (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_tne (this);
+    }
+  }
+
+  public class Tlt : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint8 rs;
+    public uint8 rt;
+    public uint16 code;
+
+    public Tlt (uint8 rs, uint8 rt, uint16 code)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.code = code;
+    }
+
+    public Tlt.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_ten (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_tlt (this);
+    }
+  }
+
+  public class Tgeu : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint8 rs;
+    public uint8 rt;
+    public uint16 code;
+
+    public Tgeu (uint8 rs, uint8 rt, uint16 code)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.code = code;
+    }
+
+    public Tgeu.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_ten (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_tgeu (this);
+    }
+  }
+
+  public class Tge : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint8 rs;
+    public uint8 rt;
+    public uint16 code;
+
+    public Tge (uint8 rs, uint8 rt, uint16 code)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.code = code;
+    }
+
+    public Tge.from_code (int code)
+    {
+      this (get_five1 (code), get_five2 (code), get_ten (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_tge (this);
     }
   }
 
@@ -4178,6 +4654,32 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_rdpgpr (this);
+    }
+  }
+
+  public class Cop0.Wrpgpr : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint8 rt;
+    public uint8 rd;
+
+    public Wrpgpr (uint8 rt, uint8 rd)
+    {
+      this.rt = rt;
+      this.rd = rd;
+    }
+
+    public Wrpgpr.from_code (int code)
+    {
+      this (get_five2 (code), get_five3 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_wrpgpr (this);
     }
   }
 }

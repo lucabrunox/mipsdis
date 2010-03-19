@@ -146,6 +146,18 @@ namespace Mips
       }
     }
 
+    public override void visit_cop1_truncl (Cop1.Truncl inst)
+    {
+      try
+        {
+          builder.append_printf ("TRUNC.L.%s 0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+        }
+      catch (OpcodeError e)
+      {
+        builder.append (e.message);
+      }
+    }
+
     public override void visit_cop1_ceilw (Cop1.Ceilw inst)
     {
       try
@@ -649,6 +661,11 @@ namespace Mips
       builder.append_printf ("RDPGPR 0x%x, 0x%x", inst.rd, inst.rt);
     }
 
+    public override void visit_cop0_wrpgpr (Cop0.Wrpgpr inst)
+    {
+      builder.append_printf ("WRPGPR 0x%x, 0x%x", inst.rd, inst.rt);
+    }
+
     public override void visit_cop1_recip (Cop1.Recip inst)
     {
       try
@@ -743,6 +760,11 @@ namespace Mips
     public override void visit_seb (Seb inst)
     {
       builder.append_printf ("SEB\t0x%x, 0x%x", inst.rd, inst.rt);
+    }
+
+    public override void visit_wsbh (Wsbh inst)
+    {
+      builder.append_printf ("WSBH\t0x%x, 0x%x", inst.rd, inst.rt);
     }
 
     public override void visit_seh (Seh inst)
@@ -1054,6 +1076,91 @@ namespace Mips
     public override void visit_syscall (Syscall inst)
     {
       builder.append_printf ("SYSCALL\t0x%x", inst.code);
+    }
+
+    public override void visit_teq (Teq inst)
+    {
+      builder.append_printf ("TEQ\t0x%x, 0x%x", inst.rs, inst.rt);
+    }
+
+    public override void visit_regimm_teqi (Regimm.Teqi inst)
+    {
+      builder.append_printf ("TEQI\t0x%x, %d", inst.rs, inst.immediate);
+    }
+
+    public override void visit_tge (Tge inst)
+    {
+      builder.append_printf ("TGE\t0x%x, 0x%x", inst.rs, inst.rt);
+    }
+
+    public override void visit_regimm_tgei (Regimm.Tgei inst)
+    {
+      builder.append_printf ("TGEI\t0x%x, %u", inst.rs, inst.immediate);
+    }
+
+    public override void visit_regimm_tgeiu (Regimm.Tgeiu inst)
+    {
+      builder.append_printf ("TGEIU\t0x%x, %u", inst.rs, inst.immediate);
+    }
+
+    public override void visit_tgeu (Tgeu inst)
+    {
+      builder.append_printf ("TGEU\t0x%x, 0x%x", inst.rs, inst.rt);
+    }
+
+    public override void visit_cop0_tlbp (Cop0.Tlbp inst)
+    {
+      builder.append_printf ("TLBP");
+    }
+
+    public override void visit_cop0_tlbr (Cop0.Tlbr inst)
+    {
+      builder.append_printf ("TLBR");
+    }
+
+    public override void visit_cop0_tlbwi (Cop0.Tlbwi inst)
+    {
+      builder.append_printf ("TLBWI");
+    }
+
+    public override void visit_cop0_tlbwr (Cop0.Tlbwr inst)
+    {
+      builder.append_printf ("TLBWR");
+    }
+
+    public override void visit_cop0_wait (Cop0.Wait inst)
+    {
+      builder.append_printf ("WAIT");
+    }
+
+    public override void visit_tlt (Tlt inst)
+    {
+      builder.append_printf ("TLT\t0x%x, 0x%x", inst.rs, inst.rt);
+    }
+
+    public override void visit_regimm_tlti (Regimm.Tlti inst)
+    {
+      builder.append_printf ("TLTI\t0x%x, %u", inst.rs, inst.immediate);
+    }
+
+    public override void visit_regimm_tltiu (Regimm.Tltiu inst)
+    {
+      builder.append_printf ("TLTIU\t0x%x, %u", inst.rs, inst.immediate);
+    }
+   
+    public override void visit_tltu (Tltu inst)
+    {
+      builder.append_printf ("TLTU\t0x%x, 0x%x", inst.rs, inst.rt);
+    }
+
+    public override void visit_tne (Tne inst)
+    {
+      builder.append_printf ("TNE\t0x%x, 0x%x", inst.rs, inst.rt);
+    }
+
+    public override void visit_regimm_tnei (Regimm.Tnei inst)
+    {
+      builder.append_printf ("TNEI\t0x%x, %u", inst.rs, inst.immediate);
     }
   }
 }
