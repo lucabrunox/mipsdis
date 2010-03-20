@@ -148,10 +148,9 @@ namespace Mips
   {
     public enum Info
       {
-        NOTYPE,
-        OBJECT,
-        FUNC,
-        SECTION
+        NOTYPE = 0,
+        OBJECT = 0x11,
+        FUNC = 0x12,
       }
     public enum Other
       {
@@ -205,7 +204,7 @@ namespace Mips
 
     public Symbol symbol_at_gp_offset (int16 offset)
     {
-      return symbols[(global_gp - offset)/4 + first_got_index];
+      return symbols[(offset - global_gp)/4 + first_got_index];
     }
 
     public int get_size ()

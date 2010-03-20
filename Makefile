@@ -1,5 +1,5 @@
 VALAC = valac
-SRCS = main.vala parser.vala instruction.vala assemblywriter.vala header.vala binarycode.vala
+SRCS = main.vala parser.vala instruction.vala assemblywriter.vala header.vala binarycode.vala resolver.vala
 PREFIX = /usr/local
 DESTDIR = $(PREFIX)
 

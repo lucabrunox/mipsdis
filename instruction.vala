@@ -1067,6 +1067,7 @@ namespace Mips
     public uint8 @base;
     public uint8 rt;
     public int16 offset;
+    public weak BinaryReference reference;
 
     public Lw (uint8 @base, uint8 rt, int16 offset)
       {

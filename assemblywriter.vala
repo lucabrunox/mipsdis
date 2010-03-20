@@ -92,8 +92,10 @@ namespace Mips
 
     public string write (BinaryCode binary_code)
     {
-      foreach (var binary_instruction in binary_code.binary_instructions)
+      foreach (var binary_instruction in binary_code.text_section.binary_instructions)
         {
+          if (binary_instruction.is_func_start && binary_instruction.label != null)
+            builder.append_printf (";; function <%s>:\n", binary_instruction.label);
           builder.append_printf ("%.8x:\t%.8x\t", binary_instruction.virtual_address, binary_instruction.file_value);
           binary_instruction.instruction.accept (this);
           builder.append_c ('\n');
@@ -683,7 +685,10 @@ namespace Mips
 
     public override void visit_lw (Lw inst)
     {
-      builder.append_printf ("LW\t0x%x, %d(0x%x)", inst.rt, inst.offset, inst.@base);
+      if (inst.reference != null)
+        builder.append_printf ("LW\t0x%x, %s", inst.rt, inst.reference.to_string ());
+      else
+        builder.append_printf ("LW\t0x%x, %d(0x%x)", inst.rt, inst.offset, inst.@base);
     }
 
     public override void visit_lwl (Lwl inst)

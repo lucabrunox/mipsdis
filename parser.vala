@@ -55,10 +55,11 @@ namespace Mips
       var fini_address = dynamic_header.get_section_by_type(DynamicSection.Type.FINI).value;
       var init_file_offset = init_address - base_address;
       var fini_file_offset = fini_address - base_address;
-      binary_code.set_instructions ((int)((fini_file_offset - init_file_offset)/4));
       stream.skip (init_file_offset - offset, null);
       offset = init_file_offset;
 
+      binary_code.text_section = new TextSection (init_file_offset, init_address);
+      binary_code.text_section.set_instructions ((int)((fini_file_offset - init_file_offset)/4));
       while (offset < fini_file_offset)
         {
           var code = stream.read_int32 (null);
@@ -72,7 +73,7 @@ namespace Mips
             stderr.printf ("At file offset 0x%x\n", offset);
             throw e;
           }
-          binary_code.add_instruction (new BinaryInstruction (instruction, offset, code, offset + base_address));
+          binary_code.text_section.add_instruction (new BinaryInstruction (instruction, offset, code, offset + base_address));
           offset += 4;
         }
 
