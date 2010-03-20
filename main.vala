@@ -17,26 +17,14 @@ public class Mips.Disassembler
     try
       {
         var fstream = File.new_for_path(binary[0]).read (null);
-        fstream.seek (offset, SeekType.SET, null);
         var stream = new DataInputStream (fstream);
+
         var parser = new Parser (stream);
+        var binary_code = parser.parse ();
+
         var writer = new AssemblyWriter ();
-        bool has_next = true;
-        while (has_next)
-          {
-            int code;
-            try
-              {
-                var instruction = parser.next_instruction (out has_next, out code);
-                var result = writer.write_instruction (instruction);
-                stdout.printf ("%x:\t%.8x\t%s\n", (uint)(parser.offset + offset), code, result);
-              }
-            catch (Error e)
-            {
-              stderr.printf ("%x:\t%.8x\t%s\n", (uint)(parser.offset + offset), code, e.message);
-              return 1;
-            }
-          }
+        var result = writer.write (binary_code);
+        stdout.puts (result);
       }
     catch (Error e)
     {

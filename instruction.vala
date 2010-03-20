@@ -1066,9 +1066,9 @@ namespace Mips
 
     public uint8 @base;
     public uint8 rt;
-    public uint16 offset;
+    public int16 offset;
 
-    public Lw (uint8 @base, uint8 rt, uint16 offset)
+    public Lw (uint8 @base, uint8 rt, int16 offset)
       {
         this.@base = @base;
         this.rt = rt;
@@ -1077,7 +1077,7 @@ namespace Mips
 
     public Lw.from_code (int code)
     {
-      this (get_five1 (code), get_five2 (code), get_half (code));
+      this (get_five1 (code), get_five2 (code), (int16)get_half (code));
     }
 
     public override void accept (Visitor visitor)

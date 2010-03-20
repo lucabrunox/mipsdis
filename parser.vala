@@ -8,22 +8,54 @@ namespace Mips
   public class Parser
   {
     private DataInputStream stream;
-    public int offset = -4;
+    private BinaryCode binary_code = new BinaryCode ();
 
-    public Parser (DataInputStream stream) throws Error
+    public Parser (DataInputStream stream)
     {
       this.stream = stream;
-      this.stream.set_byte_order (DataStreamByteOrder.BIG_ENDIAN);
     }
 
-    public Instruction next_instruction (out bool has_next, out int code) throws Error, ParserError
+    public BinaryCode parse () throws Error
     {
-      code = stream.read_int32 (null);
-      offset += 4;
-      var instruction = instruction_from_code (code);
-      var res = stream.fill (4, null);
-      has_next = res > 0;
-      return instruction;
+      uint offset = 0;
+      stream.set_byte_order (DataStreamByteOrder.BIG_ENDIAN);
+      var elfh = new ELFHeader.from_stream (stream);
+      offset += elfh.ehsize;
+
+      stream.skip (elfh.phoff-offset, null);
+      ProgramHeader? dynamic = null;
+      for (int i=0; i < elfh.phnum; i++)
+        {
+          var phdr = new ProgramHeader.from_stream (stream);
+          if (phdr.type == ProgramHeader.Type.DYNAMIC)
+            dynamic = phdr;
+        }
+      offset += elfh.phentsize * elfh.phnum;
+
+      stream.skip (dynamic.offset - offset, null);
+      offset = dynamic.offset;
+      var dynamic_section = new DynamicSection.from_stream (stream);
+      var init_entry = dynamic_section.get_entry_by_type (DynamicSection.Entry.Type.INIT);
+      var fini_entry = dynamic_section.get_entry_by_type (DynamicSection.Entry.Type.FINI);
+      var base_address_entry = dynamic_section.get_entry_by_type (DynamicSection.Entry.Type.MIPS_BASE_ADDRESS);
+      offset += dynamic_section.get_size() * 8;
+
+      // Start disassembling from (INIT) to (FINI)
+      var init_file_offset = init_entry.value - base_address_entry.value;
+      var fini_file_offset = fini_entry.value - base_address_entry.value;
+      binary_code.set_instructions ((int)((fini_file_offset - init_file_offset)/4));
+      stream.skip (init_file_offset - offset, null);
+      offset = init_file_offset;
+
+      while (offset < fini_file_offset)
+        {
+          var code = stream.read_int32 (null);
+          var instruction = instruction_from_code (code);
+          binary_code.add_instruction (new BinaryInstruction (instruction, offset, code, offset + base_address_entry.value));
+          offset += 4;
+        }
+
+      return binary_code;
     }
 
     private Instruction instruction_from_code (int code) throws ParserError

@@ -90,12 +90,15 @@ namespace Mips
   {
     private StringBuilder builder = new StringBuilder ();
 
-    public string write_instruction (Instruction instruction)
+    public string write (BinaryCode binary_code)
     {
-      instruction.accept (this);
-      var ret = builder.str;
-      builder.truncate (0);
-      return ret;
+      foreach (var binary_instruction in binary_code.binary_instructions)
+        {
+          builder.append_printf ("%.8x:\t%.8x\t", binary_instruction.virtual_address, binary_instruction.file_value);
+          binary_instruction.instruction.accept (this);
+          builder.append_c ('\n');
+        }
+      return builder.str;
     }
 
     public override void visit_cop1_abs (Cop1.Abs inst)
