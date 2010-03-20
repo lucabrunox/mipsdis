@@ -20,15 +20,28 @@ namespace Mips
       if (register == Register.GP)
         {
           var symbol = binary_code.symbol_table.symbol_at_gp_offset (offset);
-          if (symbol.value != 0 && symbol.info == Symbol.Info.FUNC)
+          if (symbol.value != 0)
             {
-              var binary_instruction = binary_code.text_section.instruction_at_address (symbol.value);
-              if (binary_instruction != null)
+              if (symbol.info == Symbol.Info.FUNC)
                 {
+                  var binary_instruction = binary_code.text_section.instruction_at_address (symbol.value);
+                  if (binary_instruction != null)
+                    {
+                      if (binary_instruction.label == null)
+                        {
+                          var str = binary_code.string_table.string_at_offset (symbol.name);
+                          binary_instruction.label = str;
+                        }
+                      binary_instruction.is_func_start = true;
+                      return binary_instruction;
+                    }
+                }
+              else if (symbol.info == Symbol.Info.OBJECT)
+                {
+                  // FIXME:
                   var str = binary_code.string_table.string_at_offset (symbol.name);
-                  binary_instruction.label = str;
-                  binary_instruction.is_func_start = true;
-                  return binary_instruction;
+                  BinaryObject* object = new BinaryObject (str);
+                  return object;
                 }
             }
         }
@@ -262,7 +275,7 @@ namespace Mips
     }
     public override void visit_lw (Lw inst)
     {
-      var reference = get_gpr_reference ((Register)inst.@base, inst.offset);
+      var reference = get_gpr_reference (inst.@base, inst.offset);
       inst.reference = reference;
     }
     public override void visit_lwl (Lwl inst)

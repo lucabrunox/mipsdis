@@ -47,6 +47,21 @@ namespace Mips
     }
   }
 
+  public class BinaryObject : BinaryReference
+  {
+    public string name;
+
+    public BinaryObject (string name)
+      {
+        this.name = name;
+      }
+
+    public override string to_string ()
+    {
+      return name;
+    }
+  }
+
   public class BinaryInstruction : BinaryReference
   {
     public Instruction instruction;
