@@ -5,6 +5,80 @@ namespace Mips
     INVALID_OPCODE,
     INVALID_FPU_FORMAT,
     INVALID_FPU_COND,
+    INVALID_REGISTER,
+  }
+
+  public static string gpr_to_string (Register register)
+  {
+    switch (register)
+      {
+      case Register.ZERO:
+        return "zero";
+      case Register.AT:
+        return "$at";
+      case Register.V0:
+        return "$v0";
+      case Register.V1:
+        return "$v1";
+      case Register.A0:
+        return "$a0";
+      case Register.A1:
+        return "$a1";
+      case Register.A2:
+        return "$a2";
+      case Register.A3:
+        return "$a3";
+      case Register.T0:
+        return "$t0";
+      case Register.T1:
+        return "$t1";
+      case Register.T2:
+        return "$t2";
+      case Register.T3:
+        return "$t3";
+      case Register.T4:
+        return "$t4";
+      case Register.T5:
+        return "$t5";
+      case Register.T6:
+        return "$t6";
+      case Register.T7:
+        return "$t7";
+      case Register.S0:
+        return "$s0";
+      case Register.S1:
+        return "$s1";
+      case Register.S2:
+        return "$s2";
+      case Register.S3:
+        return "$s3";
+      case Register.S4:
+        return "$s4";
+      case Register.S5:
+        return "$s5";
+      case Register.S6:
+        return "$s6";
+      case Register.S7:
+        return "$s7";
+      case Register.T8:
+        return "$t8";
+      case Register.T9:
+        return "$t9";
+      case Register.K0:
+        return "$k0";
+      case Register.K1:
+        return "$k1";
+      case Register.GP:
+        return "$gp";
+      case Register.SP:
+        return "$sp";
+      case Register.FP:
+        return "$fp";
+      case Register.RA:
+        return "$ra";
+      default:
+        assert_not_reached ();
+      }
   }
 
   public static string cond_to_string (int cond) throws OpcodeError
@@ -95,7 +169,7 @@ namespace Mips
       foreach (var binary_instruction in binary_code.text_section.binary_instructions)
         {
           if (binary_instruction.is_func_start && binary_instruction.label != null)
-            builder.append_printf (";; function <%s>:\n", binary_instruction.label);
+            builder.append_printf ("# function <%s>:\n", binary_instruction.label);
           builder.append_printf ("%.8x:\t%.8x\t", binary_instruction.virtual_address, binary_instruction.file_value);
           binary_instruction.instruction.accept (this);
           builder.append_c ('\n');
@@ -580,7 +654,7 @@ namespace Mips
 
     public override void visit_sw (Sw inst)
     {
-      builder.append_printf ("SW\t0x%x, %d(0x%x)", inst.rt, inst.offset, inst.@base);
+      builder.append_printf ("SW\t%s, %d(%s)", gpr_to_string (inst.rt), inst.offset, gpr_to_string (inst.@base));
     }
 
     public override void visit_cache (Cache inst)
@@ -686,9 +760,9 @@ namespace Mips
     public override void visit_lw (Lw inst)
     {
       if (inst.reference != null)
-        builder.append_printf ("LW\t0x%x, %s", inst.rt, inst.reference.to_string ());
+        builder.append_printf ("LW\t%s, %s", gpr_to_string (inst.rt), inst.reference.to_string ());
       else
-        builder.append_printf ("LW\t0x%x, %d(0x%x)", inst.rt, inst.offset, inst.@base);
+        builder.append_printf ("LW\t%s, %d(%s)", gpr_to_string (inst.rt), inst.offset, gpr_to_string (inst.@base));
     }
 
     public override void visit_lwl (Lwl inst)

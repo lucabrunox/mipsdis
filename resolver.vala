@@ -15,9 +15,9 @@ namespace Mips
         binary_instruction.instruction.accept (this);
     }
 
-    private BinaryReference? get_gpr_reference (int register, int16 offset)
+    private BinaryReference? get_gpr_reference (Register register, int16 offset)
     {
-      if (register == 0x1c)
+      if (register == Register.GP)
         {
           var symbol = binary_code.symbol_table.symbol_at_gp_offset (offset);
           if (symbol.value != 0 && symbol.info == Symbol.Info.FUNC)
@@ -262,7 +262,7 @@ namespace Mips
     }
     public override void visit_lw (Lw inst)
     {
-      var reference = get_gpr_reference (inst.@base, inst.offset);
+      var reference = get_gpr_reference ((Register)inst.@base, inst.offset);
       inst.reference = reference;
     }
     public override void visit_lwl (Lwl inst)

@@ -1,5 +1,21 @@
 namespace Mips
 {
+  public enum Register
+    {
+      ZERO,
+      AT,
+      V0, V1,
+      A0, A1, A2, A3,
+      T0, T1, T2, T3, T4, T5, T6, T7,
+      S0, S1, S2, S3, S4, S5, S6, S7,
+      T8, T9,
+      K0, K1,
+      GP,
+      SP,
+      FP,
+      RA,
+    }
+
   static const uint8 SPECIAL = 0x00;
   static const uint8 REGIMM = 0x01;
   static const uint8 COP0 = 0x10;
@@ -24,9 +40,19 @@ namespace Mips
     return (uint8)((code >> FIVE1_BITS) & FIVE_MASK);
   }
 
+  public inline static Register get_five1_gpr (int code)
+  {
+    return (Register)((code >> FIVE1_BITS) & FIVE_MASK);
+  }
+
   public inline static uint8 get_five2 (int code)
   {
     return (uint8)((code >> FIVE2_BITS) & FIVE_MASK);
+  }
+
+  public inline static Register get_five2_gpr (int code)
+  {
+    return (Register)((code >> FIVE2_BITS) & FIVE_MASK);
   }
 
   public inline static uint8 get_five3 (int code)
@@ -42,6 +68,11 @@ namespace Mips
   public inline static uint16 get_half (int code)
   {
     return (uint16)(code & HALF_MASK);
+  }
+
+  public inline static int16 get_halfi (int code)
+  {
+    return (int16)(code & HALF_MASK);
   }
 
   public inline static uint8 get_three (int code)
@@ -708,11 +739,11 @@ namespace Mips
        101011 base(5) rt(5) offset(16)
     */
 
-    public uint8 @base;
-    public uint8 rt;
+    public Register @base;
+    public Register rt;
     public uint16 offset;
 
-    public Sw (uint8 @base, uint8 rt, uint16 offset)
+    public Sw (Register @base, Register rt, uint16 offset)
       {
         this.@base = @base;
         this.rt = rt;
@@ -721,7 +752,7 @@ namespace Mips
 
     public Sw.from_code (int code)
     {
-      this (get_five1 (code), get_five2 (code), get_half (code));
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
     }
 
     public override void accept (Visitor visitor)
@@ -1064,12 +1095,12 @@ namespace Mips
        101011 base(5) rt(5) offset(16)
     */
 
-    public uint8 @base;
-    public uint8 rt;
+    public Register @base;
+    public Register rt;
     public int16 offset;
     public weak BinaryReference reference;
 
-    public Lw (uint8 @base, uint8 rt, int16 offset)
+    public Lw (Register @base, Register rt, int16 offset)
       {
         this.@base = @base;
         this.rt = rt;
@@ -1078,7 +1109,7 @@ namespace Mips
 
     public Lw.from_code (int code)
     {
-      this (get_five1 (code), get_five2 (code), (int16)get_half (code));
+      this (get_five1_gpr (code), get_five2_gpr (code), get_halfi (code));
     }
 
     public override void accept (Visitor visitor)
