@@ -1,12 +1,10 @@
 public class Mips.Disassembler
 {
   static bool version;
-  static int offset;
   [CCode (array_length = false, array_null_terminated = true)]
   static string[] binary;
 
   const OptionEntry[] options = {
-    { "offset", 'o', 0, OptionArg.INT, ref offset, "Start disassemble at given offset", "OFFSET" },
     { "version", 0, 0, OptionArg.NONE, ref version, "Display version number", null },
     { "", 0, 0, OptionArg.FILENAME_ARRAY, ref binary, null, "FILE" },
     { null }

@@ -6,7 +6,7 @@ DESTDIR = $(PREFIX)
 all: mipsdis
 
 mipsdis: $(SRCS)
-	$(VALAC) -g --thread --pkg gio-2.0 --pkg elf --vapidir . -o mipsdis $+
+	$(VALAC) -g --thread --pkg gio-2.0 --vapidir . -o mipsdis $+
 
 clean:
 	rm -f mipsdis *.c
