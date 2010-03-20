@@ -34,15 +34,27 @@ namespace Mips
 
       stream.skip (dynamic.offset - offset, null);
       offset = dynamic.offset;
-      var dynamic_section = new DynamicSection.from_stream (stream);
-      var init_entry = dynamic_section.get_entry_by_type (DynamicSection.Entry.Type.INIT);
-      var fini_entry = dynamic_section.get_entry_by_type (DynamicSection.Entry.Type.FINI);
-      var base_address_entry = dynamic_section.get_entry_by_type (DynamicSection.Entry.Type.MIPS_BASE_ADDRESS);
-      offset += dynamic_section.get_size() * 8;
+      var dynamic_header = new DynamicHeader.from_stream (stream);
+      var base_address = dynamic_header.get_section_by_type(DynamicSection.Type.MIPS_BASE_ADDRESS).value;
+      offset += dynamic_header.get_size() * 8;
+
+      var symtab_offset = dynamic_header.get_section_by_type(DynamicSection.Type.SYMTAB).value - base_address;
+      stream.skip (symtab_offset - offset, null);
+      offset = symtab_offset;
+      binary_code.symbol_table = new SymbolTable.from_stream (stream, dynamic_header);
+      offset += binary_code.symbol_table.get_size ();
+
+      var strtab_offset = dynamic_header.get_section_by_type(DynamicSection.Type.STRTAB).value - base_address;
+      stream.skip (strtab_offset - offset, null);
+      offset = strtab_offset;
+      binary_code.string_table = new StringTable.from_stream (stream, dynamic_header);
+      offset += binary_code.string_table.get_size ();
 
       // Start disassembling from (INIT) to (FINI)
-      var init_file_offset = init_entry.value - base_address_entry.value;
-      var fini_file_offset = fini_entry.value - base_address_entry.value;
+      var init_address = dynamic_header.get_section_by_type(DynamicSection.Type.INIT).value;
+      var fini_address = dynamic_header.get_section_by_type(DynamicSection.Type.FINI).value;
+      var init_file_offset = init_address - base_address;
+      var fini_file_offset = fini_address - base_address;
       binary_code.set_instructions ((int)((fini_file_offset - init_file_offset)/4));
       stream.skip (init_file_offset - offset, null);
       offset = init_file_offset;
@@ -50,8 +62,17 @@ namespace Mips
       while (offset < fini_file_offset)
         {
           var code = stream.read_int32 (null);
-          var instruction = instruction_from_code (code);
-          binary_code.add_instruction (new BinaryInstruction (instruction, offset, code, offset + base_address_entry.value));
+          Instruction instruction;
+          try
+            {
+              instruction = instruction_from_code (code);
+            }
+          catch (Error e)
+          {
+            stderr.printf ("At file offset 0x%x\n", offset);
+            throw e;
+          }
+          binary_code.add_instruction (new BinaryInstruction (instruction, offset, code, offset + base_address));
           offset += 4;
         }
 

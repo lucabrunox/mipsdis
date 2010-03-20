@@ -2,6 +2,8 @@ namespace Mips
 {
   public class BinaryCode
   {
+    public SymbolTable symbol_table;
+    public StringTable string_table;
     public BinaryInstruction[] binary_instructions;
     private int binary_instructions_size;
 

@@ -88,55 +88,151 @@ namespace Mips
 
   public class DynamicSection
   {
-    public class Entry
-    {
-      public enum Type
-        {
-          NULL,
-          STRTAB=5,
-          SYMTAB,
-          STRSZ=10,
-          SYMENT,
-          INIT,
-          FINI,
-          MIPS_BASE_ADDRESS = 0x70000006
-        }
+    public enum Type
+      {
+        NULL,
+        STRTAB=5,
+        SYMTAB,
+        STRSZ=10,
+        SYMENT,
+        INIT,
+        FINI,
+        MIPS_BASE_ADDRESS = 0x70000006,
+        MIPS_LOCAL_GOTNO = 0x7000000a,
+        MIPS_SYMTABNO = 0x70000011,
+        MIPS_GOTSYM = 0x70000013
+      }   
       public Type type;
       public uint value;
-    }
-    private Entry[] entries;
+  }
 
-    public DynamicSection.from_stream (DataInputStream stream) throws Error
+  public class DynamicHeader
+  {
+    private DynamicSection[] sections;
+
+    public DynamicHeader.from_stream (DataInputStream stream) throws Error
     {
       while (true)
         {
-          var type = (Entry.Type)stream.read_uint32 (null);
-          if (type == Entry.Type.NULL)
+          var type = (DynamicSection.Type)stream.read_uint32 (null);
+          if (type == DynamicSection.Type.NULL)
             break;
 
-          var entry = new Entry ();
-          entry.type = type;
-          entry.value = stream.read_uint32 (null);
-          entries.resize (entries.length+1);
-          entries[entries.length-1] = entry;
+          var section = new DynamicSection ();
+          section.type = type;
+          section.value = stream.read_uint32 (null);
+          sections.resize (sections.length+1);
+          sections[sections.length-1] = section;
         }
       if (stream.read_uint32(null) != 0)
-        throw new HeaderError.INVALID_SECTION ("Invalid NULL entry in dynamic section");
+        throw new HeaderError.INVALID_SECTION ("Invalid NULL dynamic section");
     }
 
-    public Entry? get_entry_by_type (Entry.Type type)
+    public DynamicSection get_section_by_type (DynamicSection.Type type)
     {
-      foreach (var entry in entries)
+      foreach (var section in sections)
         {
-          if (entry.type == type)
-            return entry;
+          if (section.type == type)
+            return section;
         }
-      return null;
+      assert_not_reached ();
     }
 
     public int get_size ()
     {
-      return entries.length + 1;
+      return sections.length + 1;
+    }
+  }
+
+  public class Symbol
+  {
+    public enum Info
+      {
+        NOTYPE,
+        OBJECT,
+        FUNC,
+        SECTION
+      }
+    public enum Other
+      {
+        DEFAULT,
+        INTERNAL,
+        HIDDEN,
+        PROTECTED
+      }
+
+    public uint name;
+    public uint value;
+    public uint size;
+    public Info info;
+    public Other other;
+    public uint16 shndx;
+
+    public Symbol.from_stream (DataInputStream stream) throws Error
+    {
+      name = stream.read_uint32 (null);
+      value = stream.read_uint32 (null);
+      size = stream.read_uint32 (null);
+      info = (Info) stream.read_byte (null);
+      other = (Other) stream.read_byte (null);
+      shndx = stream.read_uint16 (null);
+    }
+  }
+
+  public class SymbolTable
+  {
+    static const int16 BASE_GP = -0x7ff0;
+
+    private Symbol[] symbols;
+    private uint first_got_index;
+    private int16 global_gp;
+
+    public SymbolTable.from_stream (DataInputStream stream, DynamicHeader dh) throws Error
+    {
+      var sym_no = dh.get_section_by_type(DynamicSection.Type.MIPS_SYMTABNO).value;
+      symbols = new Symbol[sym_no];
+
+      var local_gotno = dh.get_section_by_type(DynamicSection.Type.MIPS_LOCAL_GOTNO).value;
+      global_gp = (int16)(BASE_GP + local_gotno * 4);
+      first_got_index = dh.get_section_by_type(DynamicSection.Type.MIPS_GOTSYM).value;
+
+      for (int i=0; i < sym_no; i++)
+        {
+          var symbol = new Symbol.from_stream (stream);
+          symbols[i] = symbol;
+        }
+    }
+
+    public Symbol symbol_at_gp_offset (int16 offset)
+    {
+      return symbols[(global_gp - offset)/4 + first_got_index];
+    }
+
+    public int get_size ()
+    {
+      return symbols.length * 16;
+    }
+  }
+
+  public class StringTable
+  {
+    private char[] strings;
+
+    public StringTable.from_stream (DataInputStream stream, DynamicHeader dh) throws Error
+    {
+      var table_size = dh.get_section_by_type(DynamicSection.Type.STRSZ).value;
+      strings = new char[table_size];
+      stream.read (strings, strings.length, null);
+    }
+
+    public unowned string string_at_offset (uint offset)
+    {
+      return (string)(&strings[offset]);
+    }
+
+    public int get_size ()
+    {
+      return strings.length;
     }
   }
 }
