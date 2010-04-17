@@ -24,40 +24,44 @@ namespace Mips
 
       stream.skip (elfh.phoff-offset, null);
       ProgramHeader? dynamic = null;
+      binary_code.address_mapping = new AddressMapping ();
       for (int i=0; i < elfh.phnum; i++)
         {
           var phdr = new ProgramHeader.from_stream (stream);
           if (phdr.type == ProgramHeader.Type.DYNAMIC)
             dynamic = phdr;
+          else if (phdr.type == ProgramHeader.Type.LOAD)
+            binary_code.address_mapping.add_header (phdr);
         }
       offset += elfh.phentsize * elfh.phnum;
 
       stream.skip (dynamic.offset - offset, null);
       offset = dynamic.offset;
       var dynamic_header = new DynamicHeader.from_stream (stream);
-      var base_address = dynamic_header.get_section_by_type(DynamicSection.Type.MIPS_BASE_ADDRESS).value;
       offset += dynamic_header.get_size() * 8;
 
-      var symtab_offset = dynamic_header.get_section_by_type(DynamicSection.Type.SYMTAB).value - base_address;
+      var symtab_offset = binary_code.address_mapping.get_physical_address (dynamic_header.get_section_by_type(DynamicSection.Type.SYMTAB).value);
       stream.skip (symtab_offset - offset, null);
       offset = symtab_offset;
       binary_code.symbol_table = new SymbolTable.from_stream (stream, dynamic_header);
       offset += binary_code.symbol_table.get_size ();
 
-      var strtab_offset = dynamic_header.get_section_by_type(DynamicSection.Type.STRTAB).value - base_address;
+      var strtab_offset = binary_code.address_mapping.get_physical_address (dynamic_header.get_section_by_type(DynamicSection.Type.STRTAB).value);
       stream.skip (strtab_offset - offset, null);
       offset = strtab_offset;
-      binary_code.string_table = new StringTable.from_stream (stream, dynamic_header);
+      var strtab_size = dynamic_header.get_section_by_type(DynamicSection.Type.STRSZ).value;
+      binary_code.string_table = new StringTable.from_stream (stream, offset, strtab_size);
       offset += binary_code.string_table.get_size ();
 
       // Start disassembling from (INIT) to (FINI)
       var init_address = dynamic_header.get_section_by_type(DynamicSection.Type.INIT).value;
       var fini_address = dynamic_header.get_section_by_type(DynamicSection.Type.FINI).value;
-      var init_file_offset = init_address - base_address;
-      var fini_file_offset = fini_address - base_address;
+      var init_file_offset = binary_code.address_mapping.get_physical_address (init_address);
+      var fini_file_offset = binary_code.address_mapping.get_physical_address (fini_address);
       stream.skip (init_file_offset - offset, null);
       offset = init_file_offset;
 
+      var base_address = binary_code.address_mapping.get_virtual_base_address (init_address);
       binary_code.text_section = new TextSection (init_file_offset, init_address);
       binary_code.text_section.set_instructions ((int)((fini_file_offset - init_file_offset)/4));
       while (offset < fini_file_offset)
@@ -76,6 +80,18 @@ namespace Mips
           binary_code.text_section.add_instruction (new BinaryInstruction (instruction, offset, code, offset + base_address));
           offset += 4;
         }
+
+      // _fini function is 50 bytes large.
+      var rodata_file_offset = fini_file_offset + 50;
+      stream.skip (rodata_file_offset - offset, null);
+      offset = rodata_file_offset;
+
+      var pltgot_offset = binary_code.address_mapping.get_physical_address (dynamic_header.get_section_by_type(DynamicSection.Type.PLTGOT).value);
+      var rodata_size = pltgot_offset - offset;
+      binary_code.readonly_data = new StringTable.from_stream (stream, offset, rodata_size);
+      offset = pltgot_offset;
+
+      binary_code.plt_table = new PltTable.from_stream (stream, dynamic_header);
 
       return binary_code;
     }

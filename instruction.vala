@@ -13,7 +13,80 @@ namespace Mips
       GP,
       SP,
       FP,
-      RA,
+      RA;
+
+      public string to_string ()
+      {
+        switch (this)
+        {
+        case Register.ZERO:
+          return "zero";
+        case Register.AT:
+          return "at";
+        case Register.V0:
+          return "v0";
+        case Register.V1:
+          return "v1";
+        case Register.A0:
+          return "a0";
+        case Register.A1:
+          return "a1";
+        case Register.A2:
+          return "a2";
+        case Register.A3:
+          return "a3";
+        case Register.T0:
+          return "t0";
+        case Register.T1:
+          return "t1";
+        case Register.T2:
+          return "t2";
+        case Register.T3:
+          return "t3";
+        case Register.T4:
+          return "t4";
+        case Register.T5:
+          return "t5";
+        case Register.T6:
+          return "t6";
+        case Register.T7:
+          return "t7";
+        case Register.S0:
+          return "s0";
+        case Register.S1:
+          return "s1";
+        case Register.S2:
+          return "s2";
+        case Register.S3:
+          return "s3";
+        case Register.S4:
+          return "s4";
+        case Register.S5:
+          return "s5";
+        case Register.S6:
+          return "s6";
+        case Register.S7:
+          return "s7";
+        case Register.T8:
+          return "t8";
+        case Register.T9:
+          return "t9";
+        case Register.K0:
+          return "k0";
+        case Register.K1:
+          return "k1";
+        case Register.GP:
+          return "gp";
+        case Register.SP:
+          return "sp";
+        case Register.FP:
+          return "fp";
+        case Register.RA:
+          return "ra";
+        default:
+          assert_not_reached ();
+        }
+      }
     }
 
   static const uint8 SPECIAL = 0x00;
@@ -58,6 +131,11 @@ namespace Mips
   public inline static uint8 get_five3 (int code)
   {
     return (uint8)((code >> FIVE3_BITS) & FIVE_MASK);
+  }
+
+  public inline static Register get_five3_gpr (int code)
+  {
+    return (Register)((code >> FIVE3_BITS) & FIVE_MASK);
   }
 
   public inline static uint8 get_five4 (int code)
@@ -629,10 +707,10 @@ namespace Mips
     /*
       001111 00000 rt(5) immediate(16)
     */
-    public uint8 rt;
+    public Register rt;
     public uint16 immediate;
 
-    public Lui (uint8 rt, uint16 immediate)
+    public Lui (Register rt, uint16 immediate)
     {
       this.rt = rt;
       this.immediate = immediate;
@@ -640,7 +718,7 @@ namespace Mips
 
     public Lui.from_code (int code)
     {
-      this (get_five2 (code), get_half (code));
+      this (get_five2_gpr (code), get_half (code));
     }
     
     public override void accept (Visitor visitor)
@@ -655,11 +733,12 @@ namespace Mips
       001001 rs(5) rt(5) immediate(16)
     */
 
-    public uint8 rs;
-    public uint8 rt;
+    public Register rs;
+    public Register rt;
     public uint16 immediate;
+    public BinaryReference reference;
 
-    public Addiu (uint8 rs, uint8 rt, uint16 immediate)
+    public Addiu (Register rs, Register rt, uint16 immediate)
     {
       this.rs = rs;
       this.rt = rt;
@@ -668,7 +747,7 @@ namespace Mips
 
     public Addiu.from_code (int code)
     {
-      this (get_five1 (code), get_five2 (code), get_half (code));
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
     }
 
     public override void accept (Visitor visitor)
@@ -711,11 +790,11 @@ namespace Mips
        000000 rs(5) rt(5) rd(5) 00000 100001
     */
 
-    public uint8 rs;
-    public uint8 rt;
-    public uint8 rd;
+    public Register rs;
+    public Register rt;
+    public Register rd;
 
-    public Addu (uint8 rs, uint8 rt, uint8 rd)
+    public Addu (Register rs, Register rt, Register rd)
       {
         this.rs = rs;
         this.rt = rt;
@@ -724,7 +803,7 @@ namespace Mips
 
     public Addu.from_code (int code)
     {
-      this (get_five1 (code), get_five2 (code), get_five3 (code));
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -1098,7 +1177,7 @@ namespace Mips
     public Register @base;
     public Register rt;
     public int16 offset;
-    public weak BinaryReference reference;
+    public BinaryReference reference;
 
     public Lw (Register @base, Register rt, int16 offset)
       {
@@ -3983,7 +4062,7 @@ namespace Mips
     public uint8 rt;
     public uint16 impl;
 
-    public Mt (uint8 rt, uint16 offset)
+    public Mt (uint8 rt, uint16 impl)
     {
       this.rt = rt;
       this.impl = impl;

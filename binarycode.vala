@@ -2,14 +2,71 @@ namespace Mips
 {
   public class BinaryCode
   {
+    public AddressMapping address_mapping;
     public SymbolTable symbol_table;
     public StringTable string_table;
     public TextSection text_section;
+    public StringTable readonly_data;
+    public PltTable plt_table;
   }
 
   public abstract class BinaryReference
   {
     public virtual string to_string () { return "(unnamed reference)"; }
+  }
+
+  public class AddressMapping
+  {
+    private ProgramHeader[] headers;
+
+    public void add_header (ProgramHeader header)
+      requires (header.type == ProgramHeader.Type.LOAD)
+    {
+      headers += header;
+    }
+
+    public bool has_physical_address (uint virtual_address)
+    {
+      foreach (var header in headers)
+        {
+          if (virtual_address >= header.virtual_addr && virtual_address <= (header.virtual_addr + header.file_size))
+            return true;
+        }
+      return false;
+    }
+
+    public uint get_physical_address (uint virtual_address)
+    {
+      foreach (var header in headers)
+        {
+          if (virtual_address >= header.virtual_addr && virtual_address <= (header.virtual_addr + header.file_size))
+            return virtual_address - header.virtual_addr + header.offset;
+        }
+      warning ("Unable to resolve virtual address to physical address: %p", (void*)(long)virtual_address);
+      return virtual_address;
+    }
+
+    public uint get_virtual_base_address (uint virtual_address)
+    {
+      foreach (var header in headers)
+        {
+          if (virtual_address >= header.virtual_addr && virtual_address <= (header.virtual_addr + header.file_size))
+            return header.virtual_addr;
+        }
+      warning ("Unable to resolve virtual address to physical address: %p", (void*)(long)virtual_address);
+      return virtual_address;
+    }
+
+    public uint get_last_address ()
+    {
+      ProgramHeader last_header = headers[0];
+      for (int i=1; i < headers.length; i++)
+        {
+          if (headers[i].offset > last_header.offset)
+            last_header = headers[i];
+        }
+      return last_header.offset + last_header.file_size;
+    }
   }
 
   public class TextSection
@@ -90,6 +147,51 @@ namespace Mips
         }
       else
         return base.to_string ();
+    }
+  }
+
+  public class BinaryString : BinaryReference
+  {
+    public uint file_offset;
+    public string str;
+
+    public BinaryString (uint file_offset, string str)
+      {
+        this.file_offset = file_offset;
+        this.str = str;
+      }
+
+    public override string to_string ()
+    {
+      return "%p: '%s'".printf ((void*)(long)file_offset, str);
+    }
+  }
+
+  public class BinaryAddress : BinaryReference
+  {
+    public uint address;
+
+    public BinaryAddress (uint address)
+      {
+        this.address = address;
+      }
+
+    public override string to_string ()
+    {
+      return "%p".printf ((void*)(long)address);
+    }
+  }
+
+  public class BinaryPltInitial : BinaryAddress
+  {
+    public BinaryPltInitial (uint address)
+      {
+        base (address);
+      }
+
+    public override string to_string ()
+    {
+      return "Initial: %p".printf ((void*)(long)address);
     }
   }
 }

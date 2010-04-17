@@ -5,6 +5,7 @@ namespace Mips
     NOT_ELF,
     UNSUPPORTED_PROGRAM_HEADER,
     INVALID_SECTION,
+    INVALID_ADDRESS;
   }
 
   public class ELFHeader
@@ -91,6 +92,7 @@ namespace Mips
     public enum Type
       {
         NULL,
+        PLTGOT=3,
         STRTAB=5,
         SYMTAB,
         STRSZ=10,
@@ -202,9 +204,14 @@ namespace Mips
         }
     }
 
-    public Symbol symbol_at_gp_offset (int16 offset)
+    public Symbol? symbol_at_gp_offset (int16 offset, out bool is_local)
     {
-      return symbols[(offset - global_gp)/4 + first_got_index];
+      int index = (int)((offset - global_gp)/4 + first_got_index);
+      if (index < 0)
+        return null;
+
+      is_local = offset < global_gp;
+      return symbols[index];
     }
 
     public int get_size ()
@@ -215,13 +222,14 @@ namespace Mips
 
   public class StringTable
   {
+    public uint base_address;
     private char[] strings;
 
-    public StringTable.from_stream (DataInputStream stream, DynamicHeader dh) throws Error
+    public StringTable.from_stream (DataInputStream stream, uint base_address, uint size) throws Error
     {
-      var table_size = dh.get_section_by_type(DynamicSection.Type.STRSZ).value;
-      strings = new char[table_size];
-      stream.read (strings, strings.length, null);
+      this.base_address = base_address;
+      strings = new char[size];
+      assert (stream.read (strings, size, null) == size);
     }
 
     public unowned string string_at_offset (uint offset)
@@ -229,9 +237,37 @@ namespace Mips
       return (string)(&strings[offset]);
     }
 
+    public unowned string? string_at_address (uint address)
+    {
+      var offset = address - base_address;
+      if (offset >= strings.length)
+        return null;
+      return string_at_offset (offset);
+    }
+
     public int get_size ()
     {
       return strings.length;
+    }
+  }
+
+  public class PltTable
+  {
+    static const int16 BASE_GP = -0x7ff0;
+
+    private uint32[] initials;
+
+    public PltTable.from_stream (DataInputStream stream, DynamicHeader dh) throws Error
+    {
+      var table_size = dh.get_section_by_type(DynamicSection.Type.MIPS_LOCAL_GOTNO).value;
+      initials = new uint32[table_size];
+      for (int i=0; i < table_size; i++)
+        initials[i] = stream.read_uint32 (null);
+    }
+
+    public uint32 get_initial_for_gp_offset (int16 offset)
+    {
+      return initials[(offset - BASE_GP)/4];
     }
   }
 }

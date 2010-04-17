@@ -3,6 +3,8 @@ namespace Mips
   public class SymbolResolver : Visitor
   {
     private BinaryCode binary_code;
+    private Register lw_register;
+    private int16 lw_gp_offset;
 
     public SymbolResolver (BinaryCode binary_code)
       {
@@ -15,14 +17,32 @@ namespace Mips
         binary_instruction.instruction.accept (this);
     }
 
-    private BinaryReference? get_gpr_reference (Register register, int16 offset)
+    private BinaryReference? get_gpr_reference (Register register, int16 offset, uint16 register_offset = 0)
     {
       if (register == Register.GP)
         {
-          var symbol = binary_code.symbol_table.symbol_at_gp_offset (offset);
-          if (symbol.value != 0)
+          bool is_local;
+          var symbol = binary_code.symbol_table.symbol_at_gp_offset (offset, out is_local);
+
+          if (symbol == null || is_local)
             {
-              if (symbol.info == Symbol.Info.FUNC)
+              var initial = binary_code.plt_table.get_initial_for_gp_offset (offset);
+              if (register_offset == 0)
+                return new BinaryPltInitial (initial);
+
+              if (!binary_code.address_mapping.has_physical_address (initial))
+                return new BinaryAddress (initial + register_offset);
+
+              var file_offset = binary_code.address_mapping.get_physical_address (initial) + register_offset;
+              var str = binary_code.readonly_data.string_at_address (file_offset);
+              if (str != null)
+                return new BinaryString (file_offset, str);
+              else
+                return new BinaryAddress (file_offset);
+            }
+          else
+            {
+              if (symbol.info == Symbol.Info.FUNC && symbol.value != 0)
                 {
                   var binary_instruction = binary_code.text_section.instruction_at_address (symbol.value);
                   if (binary_instruction != null)
@@ -36,12 +56,10 @@ namespace Mips
                       return binary_instruction;
                     }
                 }
-              else if (symbol.info == Symbol.Info.OBJECT)
+              else if (symbol.info == Symbol.Info.OBJECT && symbol.name != 0)
                 {
-                  // FIXME:
                   var str = binary_code.string_table.string_at_offset (symbol.name);
-                  BinaryObject* object = new BinaryObject (str);
-                  return object;
+                  return new BinaryObject (str);
                 }
             }
         }
@@ -215,6 +233,13 @@ namespace Mips
     }
     public override void visit_addiu (Addiu inst)
     {
+      if (inst.rs == lw_register && inst.rt == lw_register)
+        {
+          // maybe read only data
+          inst.reference = get_gpr_reference (Register.GP, lw_gp_offset, inst.immediate);
+          lw_register = Register.ZERO;
+          lw_gp_offset = 0;
+        }
     }
     public override void visit_addi (Addi inst)
     {
@@ -275,8 +300,13 @@ namespace Mips
     }
     public override void visit_lw (Lw inst)
     {
-      var reference = get_gpr_reference (inst.@base, inst.offset);
-      inst.reference = reference;
+      inst.reference = get_gpr_reference (inst.@base, inst.offset);
+      if (!(inst.reference is BinaryInstruction) && inst.@base == Register.GP && inst.rt != Register.GP)
+        {
+          // maybe ready only data
+          lw_register = inst.rt;
+          lw_gp_offset = inst.offset;
+        }
     }
     public override void visit_lwl (Lwl inst)
     {
