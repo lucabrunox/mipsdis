@@ -1352,6 +1352,7 @@ namespace Mips
     public Register rs;
     public Register rt;
     public int16 offset;
+    public BinaryInstruction reference;
 
     public Beq (Register rs, Register rt, int16 offset)
     {

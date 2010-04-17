@@ -95,8 +95,13 @@ namespace Mips
     {
       foreach (var binary_instruction in binary_code.text_section.binary_instructions)
         {
-          if (binary_instruction.is_func_start && binary_instruction.label != null)
-            builder.append_printf ("# function <%s>:\n", binary_instruction.label);
+          if (binary_instruction.label != null)
+            {
+              if (binary_instruction.is_func_start)
+                builder.append_printf ("# function <%s>:\n", binary_instruction.label);
+              else
+                builder.append_printf ("%s:\n", binary_instruction.label);
+            }
           builder.append_printf ("%.8x:\t%.8x\t", binary_instruction.virtual_address, binary_instruction.file_value);
           binary_instruction.instruction.accept (this);
           builder.append_c ('\n');
@@ -743,9 +748,10 @@ namespace Mips
     public override void visit_beq (Beq inst)
     {
       if (inst.is_unconditional ())
-        builder.append_printf ("B\t%d", inst.offset);
+        builder.append_printf ("B\t%s", inst.reference.to_string());
       else
-        builder.append_printf ("BEQ\t%s, %s, %d", inst.rs.to_string(), inst.rt.to_string(), inst.offset);
+        builder.append_printf ("BEQ\t%s, %s, %s\t# if GPR[%s] = GPR[%s] then branch", inst.rs.to_string(),
+                               inst.rt.to_string(), inst.reference.to_string (), inst.rs.to_string(), inst.rt.to_string());
     }
 
     public override void visit_beql (Beql inst)

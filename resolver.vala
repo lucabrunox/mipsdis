@@ -2,9 +2,11 @@ namespace Mips
 {
   public class SymbolResolver : Visitor
   {
+    private BinaryInstruction current_binary_instruction;
     private BinaryCode binary_code;
     private Register loaded_register;
     private int16 loaded_gp_offset;
+    private int next_label;
 
     public SymbolResolver (BinaryCode binary_code)
       {
@@ -14,7 +16,10 @@ namespace Mips
     public void resolve ()
     {
       foreach (var binary_instruction in binary_code.text_section.binary_instructions)
+      {
+        current_binary_instruction = binary_instruction;
         binary_instruction.instruction.accept (this);
+      }
     }
 
     private BinaryReference get_rodata_reference (int16 gp_offset, uint16 initial_offset)
@@ -67,6 +72,18 @@ namespace Mips
             }
         }
       return null;
+    }
+
+    private BinaryInstruction? get_branch_at_offset (int16 offset)
+    {
+      var address = current_binary_instruction.virtual_address + (offset << 2);
+      var binary_instruction = binary_code.text_section.instruction_at_address (address);
+      if (binary_instruction == null)
+        return null;
+
+      if (binary_instruction.label == null)
+        binary_instruction.label = ".L%d".printf (next_label++);
+      return binary_instruction;
     }
 
     public override void visit_cop0_eret (Cop0.Eret inst)
@@ -355,6 +372,7 @@ namespace Mips
     }
     public override void visit_beq (Beq inst)
     {
+      inst.reference = get_branch_at_offset (inst.offset);
     }
     public override void visit_beql (Beql inst)
     {
