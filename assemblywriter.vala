@@ -4,49 +4,7 @@ namespace Mips
   {
     INVALID_OPCODE,
     INVALID_FPU_FORMAT,
-    INVALID_FPU_COND,
     INVALID_REGISTER,
-  }
-
-  public static string cond_to_string (int cond) throws OpcodeError
-  {
-    switch (cond)
-      {
-      case 0:
-        return "F";
-      case 1:
-        return "UN";
-      case 2:
-        return "EQ";
-      case 3:
-        return "UEQ";
-      case 4:
-        return "OLT";
-      case 5:
-        return "ULT";
-      case 6:
-        return "OLE";
-      case 7:
-        return "ULE";
-      case 8:
-        return "SF";
-      case 9:
-        return "NGLE";
-      case 10:
-        return "SEQ";
-      case 11:
-        return "NGL";
-      case 12:
-        return "LT";
-      case 13:
-        return "NGE";
-      case 14:
-        return "LE";
-      case 15:
-        return "NGT";
-      default:
-        throw new OpcodeError.INVALID_FPU_COND ("Unknown cond %d for COP1", cond);
-      }
   }
 
   public static string cop1_fmt_to_string (int fmt) throws OpcodeError
@@ -365,9 +323,9 @@ namespace Mips
       try
         {
           if (inst.cc == 0)
-            builder.append_printf ("C.%s.%s\t%s, %s\t(cc = 0 implied)", cond_to_string (inst.cond), cop1_fmt_to_string (inst.fmt), inst.fs.to_string(), inst.ft.to_string());
+            builder.append_printf ("C.%s.%s\t%s, %s\t(cc = 0 implied)", inst.cond.to_string (), cop1_fmt_to_string (inst.fmt), inst.fs.to_string(), inst.ft.to_string());
           else
-            builder.append_printf ("C.%s.%s\t%d, %s, %s", cond_to_string (inst.cond), cop1_fmt_to_string (inst.fmt), inst.cc, inst.fs.to_string(), inst.ft.to_string());  
+            builder.append_printf ("C.%s.%s\t%d, %s, %s", inst.cond.to_string (), cop1_fmt_to_string (inst.fmt), inst.cc, inst.fs.to_string(), inst.ft.to_string());  
         }
       catch (OpcodeError e)
       {

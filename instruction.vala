@@ -4006,16 +4006,74 @@ namespace Mips
 
   public class Cop1.Ccond : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
+    public enum ConditionType
+    {
+      F,
+        UN,
+        EQ,
+        UEQ,
+        OLT,
+        ULT,
+        OLE,
+        ULE,
+        SF,
+        NGLE,
+        SEQ,
+        NGL,
+        LT,
+        NGE,
+        LE,
+        NGT;
+
+      public string to_string ()
+      {
+        switch (this)
+          {
+          case F:
+            return "F";
+          case UN:
+            return "UN";
+          case EQ:
+            return "EQ";
+          case UEQ:
+            return "UEQ";
+          case OLT:
+            return "OLT";
+          case ULT:
+            return "ULT";
+          case OLE:
+            return "OLE";
+          case ULE:
+            return "ULE";
+          case SF:
+            return "SF";
+          case NGLE:
+            return "NGLE";
+          case SEQ:
+            return "SEQ";
+          case NGL:
+            return "NGL";
+          case LT:
+            return "LT";
+          case NGE:
+            return "NGE";
+          case LE:
+            return "LE";
+          case NGT:
+            return "NGT";
+          default:
+            assert_not_reached ();
+          }
+      }
+    }
+
     public uint8 fmt;
     public FpuRegister ft;
     public FpuRegister fs;
     public uint8 cc;
-    public uint8 cond;
+    public ConditionType cond;
 
-    public Ccond (uint8 fmt, FpuRegister ft, FpuRegister fs, uint8 cc, uint8 cond)
+    public Ccond (uint8 fmt, FpuRegister ft, FpuRegister fs, uint8 cc, ConditionType cond)
     {
       this.fmt = fmt;
       this.ft = ft;
@@ -4026,7 +4084,7 @@ namespace Mips
 
     public Ccond.from_code (int code)
     {
-      this (get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4 (code) >> 2, (uint8)(code & 0x0F));
+      this (get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4 (code) >> 2, (ConditionType)(code & 0x0F));
     }
 
     public override void accept (Visitor visitor)
