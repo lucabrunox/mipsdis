@@ -2,7 +2,7 @@ namespace Mips
 {
   public errordomain ParserError
   {
-    UNKNOWN_INSTRUCTION,
+    INVALID_INSTRUCTION,
   }
 
   public class Parser
@@ -112,47 +112,47 @@ namespace Mips
           {
           case 0x00:
             if (get_five1 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("SLL 25-21 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("SLL 25-21 not zero");
             return new Sll.from_code (code);
           case 0x01:
             if ((code & 0x20000) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("MOV bit 17 != 0");
+              throw new ParserError.INVALID_INSTRUCTION ("MOV bit 17 != 0");
             return new Movci.from_code (code);
           case 0x02:
             if (get_five1 (code) != 0 && get_five1 (code) != 1)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("SRL 25-21 not zero or one");
+              throw new ParserError.INVALID_INSTRUCTION ("SRL 25-21 not zero or one");
             return new Srl.from_code (code);
           case 0x03:
             if (get_five1 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("SRA 25-21 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("SRA 25-21 not zero");
             return new Sra.from_code (code);
           case 0x04:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("SLLV 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("SLLV 10-6 not zero");
             return new Sllv.from_code (code);
           case 0x06:
             if (get_five4 (code) != 0 && get_five4 (code) != 1)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("SRLV 10-6 not zero or one");
+              throw new ParserError.INVALID_INSTRUCTION ("SRLV 10-6 not zero or one");
             return new Srlv.from_code (code);
           case 0x07:
             if (get_five4 (code) != 0 && get_five4 (code) != 1)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("SRAV 10-6 not zero or one");
+              throw new ParserError.INVALID_INSTRUCTION ("SRAV 10-6 not zero or one");
             return new Srav.from_code (code);
           case 0x08:
             if (get_five2 (code) != 0 || get_five3 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("JR 20-11 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("JR 20-11 not zero");
             return new Jr.from_code (code);
           case 0x09:
             if (get_five2 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("JALR 20-16 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("JALR 20-16 not zero");
             return new Jalr.from_code (code);
           case 0x0A:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("MOVZ 10-6 not zero or one");
+              throw new ParserError.INVALID_INSTRUCTION ("MOVZ 10-6 not zero or one");
             return new Movz.from_code (code);
           case 0x0B:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("MOVN 10-6 not zero or one");
+              throw new ParserError.INVALID_INSTRUCTION ("MOVN 10-6 not zero or one");
             return new Movn.from_code (code);
           case 0x0C:
             return new Syscall.from_code (code);
@@ -162,71 +162,71 @@ namespace Mips
             return new Sync.from_code (code);
           case 0x10:
             if (get_five1 (code) != 0 || get_five2 (code) != 0 || get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("MFHI 25-16 or 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("MFHI 25-16 or 10-6 not zero");
             return new Mfhi.from_code (code);
           case 0x11:
             if (get_five2 (code) != 0 || get_five3 (code) != 0 || get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("MTHI 25-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("MTHI 25-6 not zero");
             return new Mthi.from_code (code);
           case 0x12:
             if (get_five1 (code) != 0 || get_five2 (code) != 0 || get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("MFLO 25-16 or 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("MFLO 25-16 or 10-6 not zero");
             return new Mflo.from_code (code);
           case 0x13:
             if (get_five2 (code) != 0 || get_five3 (code) != 0 || get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("MTLO 25-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("MTLO 25-6 not zero");
             return new Mtlo.from_code (code);
           case 0x18:
             if (get_five3 (code) != 0 || get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("MULT 15-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("MULT 15-6 not zero");
             return new Mult.from_code (code);
           case 0x19:
             if (get_five3 (code) != 0 || get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("MULTU 15-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("MULTU 15-6 not zero");
             return new Multu.from_code (code);
           case 0x1A:
             if (get_five3 (code) != 0 || get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("DIV 15-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("DIV 15-6 not zero");
             return new Div.from_code (code);
           case 0x1B:
             if (get_five3 (code) != 0 || get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("DIVU 15-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("DIVU 15-6 not zero");
             return new Divu.from_code (code);
           case 0x20:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("ADD 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("ADD 10-6 not zero");
             return new Add.from_code (code);
           case 0x21:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("ADDU 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("ADDU 10-6 not zero");
             return new Addu.from_code (code);
           case 0x23:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("SUBU 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("SUBU 10-6 not zero");
             return new Subu.from_code (code);
           case 0x24:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("AND 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("AND 10-6 not zero");
             return new And.from_code (code);
           case 0x25:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("OR 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("OR 10-6 not zero");
             return new Or.from_code (code);
           case 0x26:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("XOR 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("XOR 10-6 not zero");
             return new Xor.from_code (code);
           case 0x27:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("NOR 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("NOR 10-6 not zero");
             return new Nor.from_code (code);
           case 0x2A:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("SLT 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("SLT 10-6 not zero");
             return new Slt.from_code (code);
           case 0x2B:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("SLTU 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("SLTU 10-6 not zero");
             return new Sltu.from_code (code);
           case 0x32:
             return new Tlt.from_code (code);
@@ -241,7 +241,7 @@ namespace Mips
           case 0x39:
             return new Tgeu.from_code (code);
           default:
-            throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown SPECIAL instruction 0x%x (0x%x)", func, code);
+            throw new ParserError.INVALID_INSTRUCTION ("Unknown SPECIAL instruction 0x%x (0x%x)", func, code);
           }
 
       case REGIMM:
@@ -279,7 +279,7 @@ namespace Mips
           case 0x1F:
             return new Regimm.Synci.from_code (code);
           default:
-            throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown REGIMM instruction 0x%x (0x%x)", func, code);
+            throw new ParserError.INVALID_INSTRUCTION ("Unknown REGIMM instruction 0x%x (0x%x)", func, code);
           }
 
       case COP0:
@@ -309,34 +309,34 @@ namespace Mips
           {
           case 0x01:
             if (code != 0x42000001)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("Invalid TLBR");
+              throw new ParserError.INVALID_INSTRUCTION ("Invalid TLBR");
             return new Cop0.Tlbr ();
           case 0x02:
             if (code != 0x42000001)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("Invalid TLBWI");
+              throw new ParserError.INVALID_INSTRUCTION ("Invalid TLBWI");
             return new Cop0.Tlbwi ();
           case 0x06:
             if (code != 0x42000006)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("Invalid TLBWR");
+              throw new ParserError.INVALID_INSTRUCTION ("Invalid TLBWR");
             return new Cop0.Tlbwr ();
           case 0x08:
             if (code != 0x42000008)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("Invalid TLBP");
+              throw new ParserError.INVALID_INSTRUCTION ("Invalid TLBP");
             return new Cop0.Tlbp ();
           case 0x18:
             if (code != 0x42000018)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("Invalid ERET");
+              throw new ParserError.INVALID_INSTRUCTION ("Invalid ERET");
             return new Cop0.Eret ();
           case 0x20:
             if (((code >> 24) & 1) != 1)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("Invalid WAIT");
+              throw new ParserError.INVALID_INSTRUCTION ("Invalid WAIT");
             return new Cop0.Eret ();
           case 0x1F:
             if (code != 0x4200001F)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("Invalid DERET");
+              throw new ParserError.INVALID_INSTRUCTION ("Invalid DERET");
             return new Cop0.Deret ();
           default:
-            throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown COP0 instruction 0x%x (0x%x)", func, code);
+            throw new ParserError.INVALID_INSTRUCTION ("Unknown COP0 instruction 0x%x (0x%x)", func, code);
           }
 
       case COP1:
@@ -387,43 +387,43 @@ namespace Mips
             return new Cop1.Div.from_code (code);
           case 0x04:
             if (get_five2 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("SQRT 20-16 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("SQRT 20-16 not zero");
             return new Cop1.Sqrt.from_code (code);
           case 0x05:
             if (get_five2 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("ABS 20-16 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("ABS 20-16 not zero");
             return new Cop1.Abs.from_code (code);
           case 0x06:
             if (get_five2 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("MOV 20-16 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("MOV 20-16 not zero");
             return new Cop1.Mov.from_code (code);
           case 0x07:
             if (get_five2 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("NEG 20-16 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("NEG 20-16 not zero");
             return new Cop1.Neg.from_code (code);
           case 0x08:
             if (get_five2 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("ROUND.L 20-16 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("ROUND.L 20-16 not zero");
             return new Cop1.Roundl.from_code (code);
           case 0x09:
             if (get_five2 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("TRUNC.L 20-16 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("TRUNC.L 20-16 not zero");
             return new Cop1.Truncl.from_code (code);
           case 0x0C:
             if (get_five2 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("ROUND.W 20-16 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("ROUND.W 20-16 not zero");
             return new Cop1.Roundw.from_code (code);
           case 0x0D:
             if (get_five2 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("TRUNC.W 20-16 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("TRUNC.W 20-16 not zero");
             return new Cop1.Truncw.from_code (code);
           case 0x0E:
             if (get_five2 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("CEIL.W 20-16 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("CEIL.W 20-16 not zero");
             return new Cop1.Ceilw.from_code (code);
           case 0x0F:
             if (get_five2 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("FLOOR.W 20-16 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("FLOOR.W 20-16 not zero");
             return new Cop1.Floorw.from_code (code);
           case 0x11:
             return new Cop1.Movcf.from_code (code);
@@ -433,38 +433,38 @@ namespace Mips
             return new Cop1.Recip.from_code (code);
           case 0x16:
             if (get_five2 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("RQSRT 20-16 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("RQSRT 20-16 not zero");
             return new Cop1.Rsqrt.from_code (code);
           case 0x20:
             if (get_five2 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("CVT.S 20-16 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("CVT.S 20-16 not zero");
             return new Cop1.Cvts.from_code (code);
           case 0x21:
             if (get_five2 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("CVT.D 20-16 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("CVT.D 20-16 not zero");
             return new Cop1.Cvtd.from_code (code);
           case 0x24:
             if (get_five2 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("CVT.W 20-16 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("CVT.W 20-16 not zero");
             return new Cop1.Cvtw.from_code (code);
           case 0x2C:
             if (get_five1 (code) != 0x16)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("PLL.PS 20-16 not 0x16");
+              throw new ParserError.INVALID_INSTRUCTION ("PLL.PS 20-16 not 0x16");
             return new Cop1.Pll.from_code (code);
           case 0x2D:
             if (get_five1 (code) != 0x16)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("PLU.PS 20-16 not 0x16");
+              throw new ParserError.INVALID_INSTRUCTION ("PLU.PS 20-16 not 0x16");
             return new Cop1.Plu.from_code (code);
           case 0x2E:
             if (get_five1 (code) != 0x16)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("PUL.PS 20-16 not 0x16");
+              throw new ParserError.INVALID_INSTRUCTION ("PUL.PS 20-16 not 0x16");
             return new Cop1.Pul.from_code (code);
           case 0x2F:
             if (get_five1 (code) != 0x16)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("PUU.PS 20-16 not 0x16");
+              throw new ParserError.INVALID_INSTRUCTION ("PUU.PS 20-16 not 0x16");
             return new Cop1.Puu.from_code (code);
           default:
-            throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown COP1 instruction 0x%x (0x%x)", func, code);
+            throw new ParserError.INVALID_INSTRUCTION ("Unknown COP1 instruction 0x%x (0x%x)", func, code);
           }
 
       case SPECIAL2:
@@ -473,36 +473,36 @@ namespace Mips
           {
           case 0x00:
             if (get_five3 (code) != 0 || get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("MADD 15-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("MADD 15-6 not zero");
             return new Madd.from_code (code);
           case 0x01:
             if (get_five3 (code) != 0 || get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("MADDU 15-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("MADDU 15-6 not zero");
             return new Maddu.from_code (code);
           case 0x02:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("MUL 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("MUL 10-6 not zero");
             return new Mul.from_code (code);
           case 0x04:
             if (get_five3 (code) != 0 || get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("MSUB 15-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("MSUB 15-6 not zero");
             return new Msub.from_code (code);            
           case 0x05:
             if (get_five3 (code) != 0 || get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("MSUBU 15-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("MSUBU 15-6 not zero");
             return new Msubu.from_code (code);            
           case 0x20:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("CLZ 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("CLZ 10-6 not zero");
             return new Clz.from_code (code);
           case 0x21:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("CLO 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("CLO 10-6 not zero");
             return new Clo.from_code (code);
           case 0x3F:
             return new Sdbbp.from_code (code);
           default:
-            throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown SPECIAL2 instruction 0x%x (0x%x)", func, code);
+            throw new ParserError.INVALID_INSTRUCTION ("Unknown SPECIAL2 instruction 0x%x (0x%x)", func, code);
           }
 
       case COP2:
@@ -513,7 +513,7 @@ namespace Mips
             return new Cop2.Mf.from_code (code);
           case 0x02:
             if ((code & 0x3FF) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("CFC2 10-0 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("CFC2 10-0 not zero");
             return new Cop2.Cf.from_code (code);
           case 0x03:
             return new Cop2.Mfh.from_code (code);
@@ -521,10 +521,10 @@ namespace Mips
             return new Cop2.Mt.from_code (code);
           case 0x06:
             if ((code & 0x3FF) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("CTC2 10-0 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("CTC2 10-0 not zero");
             return new Cop2.Ct.from_code (code);
           default:
-            throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown COP2 instruction 0x%x (0x%x)", func, code);
+            throw new ParserError.INVALID_INSTRUCTION ("Unknown COP2 instruction 0x%x (0x%x)", func, code);
           }
 
       case COP1X:
@@ -541,22 +541,22 @@ namespace Mips
             return new Cop1x.Nmsub.from_code (code);
           case 0x08:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("SWXC1 5-0 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("SWXC1 5-0 not zero");
             return new Cop1x.Swxc1.from_code (code);
           case 0x09:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("SDXC1 5-0 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("SDXC1 5-0 not zero");
             return new Cop1x.Sdxc1.from_code (code);
           case 0x0D:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("SUXC1 5-0 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("SUXC1 5-0 not zero");
             return new Cop1x.Suxc1.from_code (code);
           case 0x0F:
             if (get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("PREFX 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("PREFX 10-6 not zero");
             return new Cop1x.Prefx.from_code (code);
           default:
-            throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown COP1X instruction 0x%x (0x%x)", func, code);
+            throw new ParserError.INVALID_INSTRUCTION ("Unknown COP1X instruction 0x%x (0x%x)", func, code);
           }
 
       case SPECIAL3:
@@ -565,7 +565,7 @@ namespace Mips
           {
           case 0x20:
             if (get_five1 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("BSHFL 25-21 not zerO");
+              throw new ParserError.INVALID_INSTRUCTION ("BSHFL 25-21 not zerO");
             if (get_five4 (code) == 0x04)
               return new Wsbh.from_code (code);
             else if (get_five4 (code) == 0x10)
@@ -573,13 +573,13 @@ namespace Mips
             else if (get_five4 (code) == 0x18)
               return new Seh.from_code (code);
             else
-              throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown BSHFL instruction");
+              throw new ParserError.INVALID_INSTRUCTION ("Unknown BSHFL instruction");
           case 0x3B:
             if (get_five1 (code) != 0 || get_five4 (code) != 0)
-              throw new ParserError.UNKNOWN_INSTRUCTION ("RDHWR either 25-21 or 10-6 not zero");
+              throw new ParserError.INVALID_INSTRUCTION ("RDHWR either 25-21 or 10-6 not zero");
             return new Rdhwr.from_code (code);
           default:
-            throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown SPECIAL3 instruction 0x%x (0x%x)", func, code);
+            throw new ParserError.INVALID_INSTRUCTION ("Unknown SPECIAL3 instruction 0x%x (0x%x)", func, code);
           }
 
       case 0x02:
@@ -596,12 +596,12 @@ namespace Mips
 
       case 0x06:
         if (get_five2 (code) != 0)
-          throw new ParserError.UNKNOWN_INSTRUCTION ("BLEZ 20-16 not zero");
+          throw new ParserError.INVALID_INSTRUCTION ("BLEZ 20-16 not zero");
         return new Blez.from_code (code);
 
       case 0x07:
         if (get_five2 (code) != 0)
-          throw new ParserError.UNKNOWN_INSTRUCTION ("BGTZ 20-16 not zero");
+          throw new ParserError.INVALID_INSTRUCTION ("BGTZ 20-16 not zero");
         return new Bgtz.from_code (code);
 
       case 0x08:
@@ -627,7 +627,7 @@ namespace Mips
 
       case 0x0F:
         if (get_five1 (code) != 0)
-          throw new ParserError.UNKNOWN_INSTRUCTION ("LUI 25-21 not zero");
+          throw new ParserError.INVALID_INSTRUCTION ("LUI 25-21 not zero");
         return new Lui.from_code (code);
 
       case 0x14:
@@ -638,12 +638,12 @@ namespace Mips
 
       case 0x16:
         if (get_five2 (code) != 0)
-          throw new ParserError.UNKNOWN_INSTRUCTION ("BLEZL 20-16 not zero");
+          throw new ParserError.INVALID_INSTRUCTION ("BLEZL 20-16 not zero");
         return new Blezl.from_code (code);
 
       case 0x17:
         if (get_five2 (code) != 0)
-          throw new ParserError.UNKNOWN_INSTRUCTION ("BGTZL 20-16 not zero");
+          throw new ParserError.INVALID_INSTRUCTION ("BGTZL 20-16 not zero");
         return new Bgtzl.from_code (code);
 
       case 0x20:
@@ -719,7 +719,7 @@ namespace Mips
         return new Sdc2.from_code (code);
 
       default:
-        throw new ParserError.UNKNOWN_INSTRUCTION ("Unknown instruction 0x%x (0x%x)", opcode, code);
+        throw new ParserError.INVALID_INSTRUCTION ("Unknown instruction 0x%x (0x%x)", opcode, code);
       }
     }
   }

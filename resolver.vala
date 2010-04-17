@@ -311,6 +311,7 @@ namespace Mips
     }
     public override void visit_regimm_bgezal (Regimm.Bgezal inst)
     {
+      inst.reference = get_branch_at_offset (inst.offset);
     }
     public override void visit_regimm_bgezall (Regimm.Bgezall inst)
     {
@@ -345,21 +346,27 @@ namespace Mips
     }
     public override void visit_regimm_bltzal (Regimm.Bltzal inst)
     {
+      inst.reference = get_branch_at_offset (inst.offset);
     }
     public override void visit_regimm_bltzall (Regimm.Bltzall inst)
     {
+      inst.reference = get_branch_at_offset (inst.offset);
     }
     public override void visit_regimm_bgez (Regimm.Bgez inst)
     {
+      inst.reference = get_branch_at_offset (inst.offset);
     }
     public override void visit_regimm_bgezl (Regimm.Bgezl inst)
     {
+      inst.reference = get_branch_at_offset (inst.offset);
     }
     public override void visit_regimm_bltz (Regimm.Bltz inst)
     {
+      inst.reference = get_branch_at_offset (inst.offset);
     }
     public override void visit_regimm_bltzl (Regimm.Bltzl inst)
     {
+      inst.reference = get_branch_at_offset (inst.offset);
     }
     public override void visit_sll (Sll inst)
     {
@@ -376,12 +383,15 @@ namespace Mips
     }
     public override void visit_beql (Beql inst)
     {
+      inst.reference = get_branch_at_offset (inst.offset);
     }
     public override void visit_bne (Bne inst)
     {
+      inst.reference = get_branch_at_offset (inst.offset);
     }
     public override void visit_bnel (Bnel inst)
     {
+      inst.reference = get_branch_at_offset (inst.offset);
     }
     public override void visit_lbu (Lbu inst)
     {
@@ -454,15 +464,19 @@ namespace Mips
     }
     public override void visit_blez (Blez inst)
     {
+      inst.reference = get_branch_at_offset (inst.offset);
     }
     public override void visit_blezl (Blezl inst)
     {
+      inst.reference = get_branch_at_offset (inst.offset);
     }
     public override void visit_bgtz (Bgtz inst)
     {
+      inst.reference = get_branch_at_offset (inst.offset);
     }
     public override void visit_bgtzl (Bgtzl inst)
     {
+      inst.reference = get_branch_at_offset (inst.offset);
     }
     public override void visit_xori (Xori inst)
     {
