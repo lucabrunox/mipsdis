@@ -113,7 +113,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("ABS.%s\t0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+          builder.append_printf ("ABS.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
         }
       catch (OpcodeError e)
       {
@@ -125,7 +125,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("MOVZ.%s\t0x%x, 0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs, inst.rt);
+          builder.append_printf ("MOVZ.%s\t%s, %s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string(), inst.rt.to_string());
         }
       catch (OpcodeError e)
       {
@@ -137,7 +137,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("SQRT.%s\t0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+          builder.append_printf ("SQRT.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
         }
       catch (OpcodeError e)
       {
@@ -149,7 +149,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("TRUNC.W.%s\t0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+          builder.append_printf ("TRUNC.W.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
         }
       catch (OpcodeError e)
       {
@@ -161,7 +161,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("TRUNC.L.%s\t0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+          builder.append_printf ("TRUNC.L.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
         }
       catch (OpcodeError e)
       {
@@ -173,7 +173,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("CEIL.W.%s\t0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+          builder.append_printf ("CEIL.W.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
         }
       catch (OpcodeError e)
       {
@@ -185,7 +185,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("FLOOR.W.%s\t0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+          builder.append_printf ("FLOOR.W.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
         }
       catch (OpcodeError e)
       {
@@ -197,7 +197,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("ROUND.L.%s\t0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+          builder.append_printf ("ROUND.L.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
         }
       catch (OpcodeError e)
       {
@@ -209,7 +209,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("ROUND.W.%s\t0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+          builder.append_printf ("ROUND.W.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
         }
       catch (OpcodeError e)
       {
@@ -221,7 +221,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("RQSRT.%s\t0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+          builder.append_printf ("RQSRT.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
         }
       catch (OpcodeError e)
       {
@@ -233,7 +233,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("CVT.D.%s\t0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+          builder.append_printf ("CVT.D.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
         }
       catch (OpcodeError e)
       {
@@ -245,7 +245,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("CVT.W.%s\t0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+          builder.append_printf ("CVT.W.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
         }
       catch (OpcodeError e)
       {
@@ -258,9 +258,9 @@ namespace Mips
       try
         {
           if (inst.fmt == 0x16)
-            builder.append_printf ("CVT.S.PU\t0x%x, 0x%x", inst.fd, inst.fs);
+            builder.append_printf ("CVT.S.PU\t%s, %s", inst.fd.to_string(), inst.fs.to_string());
           else
-            builder.append_printf ("CVT.S.%s\t0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+            builder.append_printf ("CVT.S.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
         }
       catch (OpcodeError e)
       {
@@ -272,7 +272,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("MOV.%s\t0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+          builder.append_printf ("MOV.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
         }
       catch (OpcodeError e)
       {
@@ -284,7 +284,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("NEG.%s\t0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+          builder.append_printf ("NEG.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
         }
       catch (OpcodeError e)
       {
@@ -296,7 +296,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("MUL.%s\t0x%x, 0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs, inst.ft);
+          builder.append_printf ("MUL.%s\t%s, %s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string(), inst.ft.to_string());
         }
       catch (OpcodeError e)
       {
@@ -308,7 +308,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("DIV.%s\t0x%x, 0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs, inst.ft);
+          builder.append_printf ("DIV.%s\t%s, %s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string(), inst.ft.to_string());
         }
       catch (OpcodeError e)
       {
@@ -320,7 +320,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("ADD.%s\t0x%x, 0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs, inst.ft);
+          builder.append_printf ("ADD.%s\t%s, %s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string(), inst.ft.to_string());
         }
       catch (OpcodeError e)
       {
@@ -332,7 +332,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("SUB.%s\t0x%x, 0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs, inst.ft);
+          builder.append_printf ("SUB.%s\t%s, %s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string(), inst.ft.to_string());
         }
       catch (OpcodeError e)
       {
@@ -342,22 +342,22 @@ namespace Mips
 
     public override void visit_cop1_pll (Cop1.Pll inst)
     {
-      builder.append_printf ("PLL.PS\t0x%x, 0x%x, 0x%x", inst.fd, inst.fs, inst.ft);
+      builder.append_printf ("PLL.PS\t%s, %s, %s", inst.fd.to_string(), inst.fs.to_string(), inst.ft.to_string());
     }
 
     public override void visit_cop1_plu (Cop1.Plu inst)
     {
-      builder.append_printf ("PLU.PS\t0x%x, 0x%x, 0x%x", inst.fd, inst.fs, inst.ft);
+      builder.append_printf ("PLU.PS\t%s, %s, %s", inst.fd.to_string(), inst.fs.to_string(), inst.ft.to_string());
     }
 
     public override void visit_cop1_pul (Cop1.Pul inst)
     {
-      builder.append_printf ("PUL.PS\t0x%x, 0x%x, 0x%x", inst.fd, inst.fs, inst.ft);
+      builder.append_printf ("PUL.PS\t%s, %s, %s", inst.fd.to_string(), inst.fs.to_string(), inst.ft.to_string());
     }
 
     public override void visit_cop1_puu (Cop1.Puu inst)
     {
-      builder.append_printf ("PUU.PS\t0x%x, 0x%x, 0x%x", inst.fd, inst.fs, inst.ft);
+      builder.append_printf ("PUU.PS\t%s, %s, %s", inst.fd.to_string(), inst.fs.to_string(), inst.ft.to_string());
     }
 
     public override void visit_cop1_ccond (Cop1.Ccond inst)
@@ -365,9 +365,9 @@ namespace Mips
       try
         {
           if (inst.cc == 0)
-            builder.append_printf ("C.%s.%s\t0x%x, 0x%x\t(cc = 0 implied)", cond_to_string (inst.cond), cop1_fmt_to_string (inst.fmt), inst.fs, inst.ft);
+            builder.append_printf ("C.%s.%s\t%s, %s\t(cc = 0 implied)", cond_to_string (inst.cond), cop1_fmt_to_string (inst.fmt), inst.fs.to_string(), inst.ft.to_string());
           else
-            builder.append_printf ("C.%s.%s\t%d, 0x%x, 0x%x", cond_to_string (inst.cond), cop1_fmt_to_string (inst.fmt), inst.cc, inst.fs, inst.ft);  
+            builder.append_printf ("C.%s.%s\t%d, %s, %s", cond_to_string (inst.cond), cop1_fmt_to_string (inst.fmt), inst.cc, inst.fs.to_string(), inst.ft.to_string());  
         }
       catch (OpcodeError e)
       {
@@ -405,37 +405,37 @@ namespace Mips
 
     public override void visit_cop1_mf (Cop1.Mf inst)
     {
-      builder.append_printf ("MFC1\t%s, 0x%x", inst.rt.to_string(), inst.fs);
+      builder.append_printf ("MFC1\t%s, %s", inst.rt.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_mfh (Cop1.Mfh inst)
     {
-      builder.append_printf ("MFHC1\t%s, 0x%x", inst.rt.to_string(), inst.fs);
+      builder.append_printf ("MFHC1\t%s, %s", inst.rt.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_mth (Cop1.Mth inst)
     {
-      builder.append_printf ("MTHC1\t%s, 0x%x", inst.rt.to_string(), inst.fs);
+      builder.append_printf ("MTHC1\t%s, %s", inst.rt.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_cf (Cop1.Cf inst)
     {
-      builder.append_printf ("CFC1\t%s, 0x%x", inst.rt.to_string(), inst.fs);
+      builder.append_printf ("CFC1\t%s, %s", inst.rt.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_ct (Cop1.Ct inst)
     {
-      builder.append_printf ("CTC1\t%s, 0x%x", inst.rt.to_string(), inst.fs);
+      builder.append_printf ("CTC1\t%s, %s", inst.rt.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop2_cf (Cop2.Cf inst)
     {
-      builder.append_printf ("CFC2\t%s, 0x%x", inst.rt.to_string(), inst.rd);
+      builder.append_printf ("CFC2\t%s, %s", inst.rt.to_string(), inst.rd.to_string());
     }
 
     public override void visit_cop2_ct (Cop2.Ct inst)
     {
-      builder.append_printf ("CTC2\t%s, 0x%x", inst.rt.to_string(), inst.rd);
+      builder.append_printf ("CTC2\t%s, %s", inst.rt.to_string(), inst.rd.to_string());
     }
 
     public override void visit_cop2_mf (Cop2.Mf inst)
@@ -460,7 +460,7 @@ namespace Mips
 
     public override void visit_cop1_mt (Cop1.Mt inst)
     {
-      builder.append_printf ("MTC1\t%s, 0x%x", inst.rt.to_string(), inst.fs);
+      builder.append_printf ("MTC1\t%s, %s", inst.rt.to_string(), inst.fs.to_string());
     }
 
     public override void visit_movci (Movci inst)
@@ -476,9 +476,9 @@ namespace Mips
       try
       {
         if (inst.test_true)
-          builder.append_printf ("MOVT.%s\t0x%x, 0x%x, %d", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs, inst.cc);
+          builder.append_printf ("MOVT.%s\t%s, %s, %d", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string(), inst.cc);
         else
-          builder.append_printf ("MOVF.%s\t0x%x, 0x%x, %d", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs, inst.cc);
+          builder.append_printf ("MOVF.%s\t%s, %s, %d", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string(), inst.cc);
       }
       catch (OpcodeError e)
       {
@@ -490,7 +490,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("MADD.%s\t0x%x, 0x%x, 0x%x, 0x%x", cop1x_fmt_to_string (inst.fmt), inst.fd, inst.fr, inst.fs, inst.ft);
+          builder.append_printf ("MADD.%s\t%s, %s, %s, %s", cop1x_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fr.to_string(), inst.fs.to_string(), inst.ft.to_string());
         }
       catch (OpcodeError e)
       {
@@ -502,7 +502,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("NMADD.%s\t0x%x, 0x%x, 0x%x, 0x%x", cop1x_fmt_to_string (inst.fmt), inst.fd, inst.fr, inst.fs, inst.ft);
+          builder.append_printf ("NMADD.%s\t%s, %s, %s, %s", cop1x_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fr.to_string(), inst.fs.to_string(), inst.ft.to_string());
         }
       catch (OpcodeError e)
       {
@@ -514,7 +514,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("NMSUB.%s\t0x%x, 0x%x, 0x%x, 0x%x", cop1x_fmt_to_string (inst.fmt), inst.fd, inst.fr, inst.fs, inst.ft);
+          builder.append_printf ("NMSUB.%s\t%s, %s, %s, %s", cop1x_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fr.to_string(), inst.fs.to_string(), inst.ft.to_string());
         }
       catch (OpcodeError e)
       {
@@ -526,7 +526,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("MSUB.%s\t0x%x, 0x%x, 0x%x, 0x%x", cop1x_fmt_to_string (inst.fmt), inst.fd, inst.fr, inst.fs, inst.ft);
+          builder.append_printf ("MSUB.%s\t%s, %s, %s, %s", cop1x_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fr.to_string(), inst.fs.to_string(), inst.ft.to_string());
         }
       catch (OpcodeError e)
       {
@@ -685,7 +685,7 @@ namespace Mips
     {
       try
         {
-          builder.append_printf ("RECIP.%s\t0x%x, 0x%x", cop1_fmt_to_string (inst.fmt), inst.fd, inst.fs);
+          builder.append_printf ("RECIP.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
         }
       catch (OpcodeError e)
       {
@@ -1042,7 +1042,7 @@ namespace Mips
 
     public override void visit_sdc1 (Sdc1 inst)
     {
-      builder.append_printf ("SDC1\t0x%x, %d(%s)", inst.ft, inst.offset, inst.@base.to_string());
+      builder.append_printf ("SDC1\t%s, %d(%s)", inst.ft.to_string(), inst.offset, inst.@base.to_string());
     }
 
     public override void visit_sdc2 (Sdc2 inst)
@@ -1052,47 +1052,47 @@ namespace Mips
 
     public override void visit_cop1x_sdxc1 (Cop1x.Sdxc1 inst)
     {
-      builder.append_printf ("SDXC1\t0x%x, %d(%s)", inst.fs, inst.index, inst.@base.to_string());
+      builder.append_printf ("SDXC1\t%s, %d(%s)", inst.fs.to_string(), inst.index, inst.@base.to_string());
     }
 
     public override void visit_cop1x_suxc1 (Cop1x.Suxc1 inst)
     {
-      builder.append_printf ("SUXC1\t0x%x, %d(%s)", inst.fs, inst.index, inst.@base.to_string());
+      builder.append_printf ("SUXC1\t%s, %d(%s)", inst.fs.to_string(), inst.index, inst.@base.to_string());
     }
 
     public override void visit_cop1x_swxc1 (Cop1x.Swxc1 inst)
     {
-      builder.append_printf ("SWXC1\t0x%x, %d(%s)", inst.fs, inst.index, inst.@base.to_string());
+      builder.append_printf ("SWXC1\t%s, %d(%s)", inst.fs.to_string(), inst.index, inst.@base.to_string());
     }
 
     public override void visit_ldc1 (Ldc1 inst)
     {
-      builder.append_printf ("LDC1\t0x%x, %d(%s)", inst.ft, inst.offset, inst.@base.to_string());
+      builder.append_printf ("LDC1\t%s, %d(%s)", inst.ft.to_string(), inst.offset, inst.@base.to_string());
     }
 
     public override void visit_ldc2 (Ldc2 inst)
     {
-      builder.append_printf ("LDC2\t0x%x, %d(%s)", inst.ft, inst.offset, inst.@base.to_string());
+      builder.append_printf ("LDC2\t%s, %d(%s)", inst.ft.to_string(), inst.offset, inst.@base.to_string());
     }
 
     public override void visit_lwc1 (Lwc1 inst)
     {
-      builder.append_printf ("LWC1\t0x%x, %d(%s)", inst.ft, inst.offset, inst.@base.to_string());
+      builder.append_printf ("LWC1\t%s, %d(%s)", inst.ft.to_string(), inst.offset, inst.@base.to_string());
     }
 
     public override void visit_lwc2 (Lwc2 inst)
     {
-      builder.append_printf ("LWC2\t0x%x, %d(%s)", inst.ft, inst.offset, inst.@base.to_string());
+      builder.append_printf ("LWC2\t%s, %d(%s)", inst.ft.to_string(), inst.offset, inst.@base.to_string());
     }
 
     public override void visit_swc1 (Swc1 inst)
     {
-      builder.append_printf ("SWC1\t0x%x, %d(%s)", inst.ft, inst.offset, inst.@base.to_string());
+      builder.append_printf ("SWC1\t%s, %d(%s)", inst.ft.to_string(), inst.offset, inst.@base.to_string());
     }
 
     public override void visit_swc2 (Swc2 inst)
     {
-      builder.append_printf ("SWC2\t0x%x, %d(%s)", inst.ft, inst.offset, inst.@base.to_string());
+      builder.append_printf ("SWC2\t%s, %d(%s)", inst.ft.to_string(), inst.offset, inst.@base.to_string());
     }
 
     public override void visit_jump (Jump inst)
