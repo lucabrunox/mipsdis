@@ -4159,7 +4159,24 @@ namespace Mips
       FALSE,
       FALSE_LIKELY,
       TRUE,
-      TRUE_LIKELY
+      TRUE_LIKELY;
+
+      public string to_string ()
+      {
+        switch (this)
+          {
+          case FALSE:
+            return "bc1f";
+          case FALSE_LIKELY:
+            return "bc1fl";
+          case TRUE:
+            return "bc1t";
+          case TRUE_LIKELY:
+            return "bc1tl";
+          default:
+            assert_not_reached ();
+          }
+      }
     }
 
     public uint8 cc;
@@ -4194,7 +4211,24 @@ namespace Mips
       FALSE,
       FALSE_LIKELY,
       TRUE,
-      TRUE_LIKELY
+      TRUE_LIKELY;
+
+      public string to_string ()
+      {
+        switch (this)
+          {
+          case FALSE:
+            return "bc1f";
+          case FALSE_LIKELY:
+            return "bc1fl";
+          case TRUE:
+            return "bc1t";
+          case TRUE_LIKELY:
+            return "bc1tl";
+          default:
+            assert_not_reached ();
+          }
+      }
     }
 
     public uint8 cc;

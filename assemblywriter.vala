@@ -157,30 +157,12 @@ namespace Mips
 
     public override void visit_cop1_bc (Cop1.Bc inst)
     {
-      if (inst.branch == Cop1.Bc.Branch.FALSE)
-        builder.append_printf ("bc1f\t0x%x, 0x%x", inst.cc, inst.offset);
-      else if (inst.branch == Cop1.Bc.Branch.FALSE_LIKELY)
-        builder.append_printf ("bc1fl\t0x%x, 0x%x", inst.cc, inst.offset);
-      else if (inst.branch == Cop1.Bc.Branch.TRUE)
-        builder.append_printf ("bc1t\t0x%x, 0x%x", inst.cc, inst.offset);
-      else if (inst.branch == Cop1.Bc.Branch.TRUE_LIKELY)
-        builder.append_printf ("bc1tl\t0x%x, 0x%x", inst.cc, inst.offset);
-      else
-        assert_not_reached ();
+      builder.append_printf ("%s\t0x%x, 0x%x", inst.branch.to_string(), inst.cc, inst.offset);
     }
 
     public override void visit_cop2_bc (Cop2.Bc inst)
     {
-      if (inst.branch == Cop2.Bc.Branch.FALSE)
-        builder.append_printf ("bc2F 0x%x, 0x%x", inst.cc, inst.offset);
-      else if (inst.branch == Cop2.Bc.Branch.FALSE_LIKELY)
-        builder.append_printf ("bc2FL 0x%x, 0x%x", inst.cc, inst.offset);
-      else if (inst.branch == Cop2.Bc.Branch.TRUE)
-        builder.append_printf ("bc2T 0x%x, 0x%x", inst.cc, inst.offset);
-      else if (inst.branch == Cop2.Bc.Branch.TRUE_LIKELY)
-        builder.append_printf ("bc2TL 0x%x, 0x%x", inst.cc, inst.offset);
-      else
-        assert_not_reached ();
+      builder.append_printf ("%s\t0x%x, 0x%x", inst.branch.to_string(), inst.cc, inst.offset);
     }
 
     public override void visit_cop1_mf (Cop1.Mf inst)
