@@ -7,44 +7,6 @@ namespace Mips
     INVALID_REGISTER,
   }
 
-  public static string cop1_fmt_to_string (int fmt) throws OpcodeError
-  {
-    switch (fmt)
-      {
-      case 0x10:
-        return "S";
-      case 0x11:
-        return "D";
-      case 0x14:
-        return "W";
-      case 0x15:
-        return "L";
-      case 0x16:
-        return "PS";
-      default:
-        throw new OpcodeError.INVALID_FPU_FORMAT ("Unknown format %d for COP1", fmt);
-      }
-  }
-
-  public static string cop1x_fmt_to_string (int fmt) throws OpcodeError
-  {
-    switch (fmt)
-      {
-      case 0:
-        return "S";
-      case 1:
-        return "D";
-      case 4:
-        return "W";
-      case 5:
-        return "L";
-      case 6:
-        return "PS";
-      default:
-        throw new OpcodeError.INVALID_FPU_FORMAT ("Unknown format %d for COP1X", fmt);
-      }
-  }
-
   public class AssemblyWriter : Visitor
   {
     private StringBuilder builder = new StringBuilder ();
@@ -69,233 +31,100 @@ namespace Mips
 
     public override void visit_cop1_abs (Cop1.Abs inst)
     {
-      try
-        {
-          builder.append_printf ("ABS.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("ABS.%s\t%s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_movz (Cop1.Movz inst)
     {
-      try
-        {
-          builder.append_printf ("MOVZ.%s\t%s, %s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string(), inst.rt.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("MOVZ.%s\t%s, %s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string(), inst.rt.to_string());
     }
 
     public override void visit_cop1_sqrt (Cop1.Sqrt inst)
     {
-      try
-        {
-          builder.append_printf ("SQRT.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("SQRT.%s\t%s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_truncw (Cop1.Truncw inst)
     {
-      try
-        {
-          builder.append_printf ("TRUNC.W.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("TRUNC.W.%s\t%s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_truncl (Cop1.Truncl inst)
     {
-      try
-        {
-          builder.append_printf ("TRUNC.L.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("TRUNC.L.%s\t%s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_ceilw (Cop1.Ceilw inst)
     {
-      try
-        {
-          builder.append_printf ("CEIL.W.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("CEIL.W.%s\t%s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_floorw (Cop1.Floorw inst)
     {
-      try
-        {
-          builder.append_printf ("FLOOR.W.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("FLOOR.W.%s\t%s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_roundl (Cop1.Roundl inst)
     {
-      try
-        {
-          builder.append_printf ("ROUND.L.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("ROUND.L.%s\t%s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_roundw (Cop1.Roundw inst)
     {
-      try
-        {
-          builder.append_printf ("ROUND.W.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("ROUND.W.%s\t%s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_rsqrt (Cop1.Rsqrt inst)
     {
-      try
-        {
-          builder.append_printf ("RQSRT.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("RQSRT.%s\t%s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_cvtd (Cop1.Cvtd inst)
     {
-      try
-        {
-          builder.append_printf ("CVT.D.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("CVT.D.%s\t%s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_cvtw (Cop1.Cvtw inst)
     {
-      try
-        {
-          builder.append_printf ("CVT.W.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("CVT.W.%s\t%s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_cvts (Cop1.Cvts inst)
     {
-      try
-        {
-          if (inst.fmt == 0x16)
+      if (inst.fmt == 0x16)
             builder.append_printf ("CVT.S.PU\t%s, %s", inst.fd.to_string(), inst.fs.to_string());
           else
-            builder.append_printf ("CVT.S.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+            builder.append_printf ("CVT.S.%s\t%s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_mov (Cop1.Mov inst)
     {
-      try
-        {
-          builder.append_printf ("MOV.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("MOV.%s\t%s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_neg (Cop1.Neg inst)
     {
-      try
-        {
-          builder.append_printf ("NEG.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("NEG.%s\t%s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_mul (Cop1.Mul inst)
     {
-      try
-        {
-          builder.append_printf ("MUL.%s\t%s, %s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string(), inst.ft.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("MUL.%s\t%s, %s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string(), inst.ft.to_string());
     }
 
     public override void visit_cop1_div (Cop1.Div inst)
     {
-      try
-        {
-          builder.append_printf ("DIV.%s\t%s, %s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string(), inst.ft.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("DIV.%s\t%s, %s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string(), inst.ft.to_string());
     }
 
     public override void visit_cop1_add (Cop1.Add inst)
     {
-      try
-        {
-          builder.append_printf ("ADD.%s\t%s, %s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string(), inst.ft.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("ADD.%s\t%s, %s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string(), inst.ft.to_string());
     }
 
     public override void visit_cop1_sub (Cop1.Sub inst)
     {
-      try
-        {
-          builder.append_printf ("SUB.%s\t%s, %s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string(), inst.ft.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("SUB.%s\t%s, %s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string(), inst.ft.to_string());
     }
 
     public override void visit_cop1_pll (Cop1.Pll inst)
@@ -320,17 +149,10 @@ namespace Mips
 
     public override void visit_cop1_ccond (Cop1.Ccond inst)
     {
-      try
-        {
-          if (inst.cc == 0)
-            builder.append_printf ("C.%s.%s\t%s, %s\t(cc = 0 implied)", inst.cond.to_string (), cop1_fmt_to_string (inst.fmt), inst.fs.to_string(), inst.ft.to_string());
+      if (inst.cc == 0)
+            builder.append_printf ("C.%s.%s\t%s, %s\t(cc = 0 implied)", inst.cond.to_string (), inst.fmt.to_string(), inst.fs.to_string(), inst.ft.to_string());
           else
-            builder.append_printf ("C.%s.%s\t%d, %s, %s", inst.cond.to_string (), cop1_fmt_to_string (inst.fmt), inst.cc, inst.fs.to_string(), inst.ft.to_string());  
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+            builder.append_printf ("C.%s.%s\t%d, %s, %s", inst.cond.to_string (), inst.fmt.to_string(), inst.cc, inst.fs.to_string(), inst.ft.to_string());  
     }
 
     public override void visit_cop1_bc (Cop1.Bc inst)
@@ -431,65 +253,30 @@ namespace Mips
 
     public override void visit_cop1_movcf (Cop1.Movcf inst)
     {
-      try
-      {
-        if (inst.test_true)
-          builder.append_printf ("MOVT.%s\t%s, %s, %d", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string(), inst.cc);
-        else
-          builder.append_printf ("MOVF.%s\t%s, %s, %d", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string(), inst.cc);
-      }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      if (inst.test_true)
+        builder.append_printf ("MOVT.%s\t%s, %s, %d", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string(), inst.cc);
+      else
+        builder.append_printf ("MOVF.%s\t%s, %s, %d", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string(), inst.cc);
     }
 
     public override void visit_cop1x_madd (Cop1x.Madd inst)
     {
-      try
-        {
-          builder.append_printf ("MADD.%s\t%s, %s, %s, %s", cop1x_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fr.to_string(), inst.fs.to_string(), inst.ft.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("MADD.%s\t%s, %s, %s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fr.to_string(), inst.fs.to_string(), inst.ft.to_string());
     }
 
     public override void visit_cop1x_nmadd (Cop1x.Nmadd inst)
     {
-      try
-        {
-          builder.append_printf ("NMADD.%s\t%s, %s, %s, %s", cop1x_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fr.to_string(), inst.fs.to_string(), inst.ft.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("NMADD.%s\t%s, %s, %s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fr.to_string(), inst.fs.to_string(), inst.ft.to_string());
     }
 
     public override void visit_cop1x_nmsub (Cop1x.Nmsub inst)
     {
-      try
-        {
-          builder.append_printf ("NMSUB.%s\t%s, %s, %s, %s", cop1x_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fr.to_string(), inst.fs.to_string(), inst.ft.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("NMSUB.%s\t%s, %s, %s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fr.to_string(), inst.fs.to_string(), inst.ft.to_string());
     }
 
     public override void visit_cop1x_msub (Cop1x.Msub inst)
     {
-      try
-        {
-          builder.append_printf ("MSUB.%s\t%s, %s, %s, %s", cop1x_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fr.to_string(), inst.fs.to_string(), inst.ft.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("MSUB.%s\t%s, %s, %s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fr.to_string(), inst.fs.to_string(), inst.ft.to_string());
     }
 
     public override void visit_add (Add inst)
@@ -582,9 +369,9 @@ namespace Mips
     public override void visit_regimm_bgezal (Regimm.Bgezal inst)
     {
       if (inst.rs == 0)
-        builder.append_printf ("BAL\t%s\t#if GPR[r0] ≥ 0 then procedure_call", inst.reference.to_string());
+        builder.append_printf ("BAL\t%s\t# if GPR[r0] ≥ 0 then procedure_call", inst.reference.to_string());
       else
-        builder.append_printf ("BGEZAL\t%s, %s#if GPR[%s] ≥ 0 then procedure_call", inst.rs.to_string(),
+        builder.append_printf ("BGEZAL\t%s, %s# if GPR[%s] ≥ 0 then procedure_call", inst.rs.to_string(),
                                inst.reference.to_string(), inst.rs.to_string());
     }
 
@@ -641,14 +428,7 @@ namespace Mips
 
     public override void visit_cop1_recip (Cop1.Recip inst)
     {
-      try
-        {
-          builder.append_printf ("RECIP.%s\t%s, %s", cop1_fmt_to_string (inst.fmt), inst.fd.to_string(), inst.fs.to_string());
-        }
-      catch (OpcodeError e)
-      {
-        builder.append (e.message);
-      }
+      builder.append_printf ("RECIP.%s\t%s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
     }
 
     public override void visit_lw (Lw inst)
@@ -718,7 +498,7 @@ namespace Mips
 
     public override void visit_beql (Beql inst)
     {
-      builder.append_printf ("BEQ\t%s, %s, %s\t#if GPR[%s] = GPR[%s] then branch_likely", inst.rs.to_string(),
+      builder.append_printf ("BEQ\t%s, %s, %s\t# if GPR[%s] = GPR[%s] then branch_likely", inst.rs.to_string(),
                              inst.rt.to_string(), inst.reference.to_string(), inst.rs.to_string(), inst.rt.to_string());
     }
 
@@ -834,7 +614,7 @@ namespace Mips
 
     public override void visit_regimm_bgez (Regimm.Bgez inst)
     {
-      builder.append_printf ("BGEZ\t%s, %s\t#if GPR[%s] ≥ 0 then branch", inst.rs.to_string(), inst.reference.to_string(),
+      builder.append_printf ("BGEZ\t%s, %s\t# if GPR[%s] ≥ 0 then branch", inst.rs.to_string(), inst.reference.to_string(),
                              inst.rs.to_string());
     }
 
@@ -855,7 +635,7 @@ namespace Mips
 
     public override void visit_regimm_bltz (Regimm.Bltz inst)
     {
-      builder.append_printf ("BLTZ\t%s, %s\t#if GPR[%s] < 0 then branch", inst.rs.to_string(), inst.reference.to_string(),
+      builder.append_printf ("BLTZ\t%s, %s\t# if GPR[%s] < 0 then branch", inst.rs.to_string(), inst.reference.to_string(),
                              inst.rs.to_string());
     }
 
@@ -867,7 +647,7 @@ namespace Mips
 
     public override void visit_regimm_bgezl (Regimm.Bgezl inst)
     {
-      builder.append_printf ("BGEZL\t%s, %s\t#if GPR[%s] ≥ 0 then branch_likely", inst.rs.to_string(),
+      builder.append_printf ("BGEZL\t%s, %s\t# if GPR[%s] ≥ 0 then branch_likely", inst.rs.to_string(),
                              inst.reference.to_string(), inst.rs.to_string());
     }
 
@@ -898,7 +678,7 @@ namespace Mips
 
     public override void visit_blez (Blez inst)
     {
-      builder.append_printf ("BLEZ\t%s, %s\t#if GPR[%s] ≤ 0 then branch", inst.rs.to_string(), inst.reference.to_string(),
+      builder.append_printf ("BLEZ\t%s, %s\t# if GPR[%s] ≤ 0 then branch", inst.rs.to_string(), inst.reference.to_string(),
                              inst.rs.to_string());
     }
 
@@ -994,7 +774,7 @@ namespace Mips
 
     public override void visit_blezl (Blezl inst)
     {
-      builder.append_printf ("BLEZL\t%s, %s\t#if GPR[%s] ≤ 0 then branch_likely", inst.rs.to_string(),
+      builder.append_printf ("BLEZL\t%s, %s\t# if GPR[%s] ≤ 0 then branch_likely", inst.rs.to_string(),
                              inst.reference.to_string(), inst.rs.to_string());
     }
 

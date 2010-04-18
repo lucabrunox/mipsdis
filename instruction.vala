@@ -100,6 +100,62 @@ namespace Mips
     }
   }
 
+  public enum Cop1.Format
+    {
+      S = 0x10,
+        D,
+        W = 0x14,
+        L,
+        PS;
+
+      public string to_string ()
+      {
+        switch (this)
+          {
+          case S:
+            return "S";
+          case D:
+            return "D";
+          case W:
+            return "W";
+          case L:
+            return "L";
+          case PS:
+            return "PS";
+          default:
+            assert_not_reached ();
+          }
+      }
+    }
+
+  public enum Cop1x.Format
+    {
+      S,
+        D,
+        W = 4,
+        L,
+        PS;
+
+      public string to_string ()
+      {
+        switch (this)
+          {
+          case S:
+            return "S";
+          case D:
+            return "D";
+          case W:
+            return "W";
+          case L:
+            return "L";
+          case PS:
+            return "PS";
+          default:
+            assert_not_reached ();
+          }
+      }
+    }
+
   static const uint8 SPECIAL = 0x00;
   static const uint8 REGIMM = 0x01;
   static const uint8 COP0 = 0x10;
@@ -404,11 +460,11 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Abs (uint8 fmt, FpuRegister fs, FpuRegister fd)
+    public Abs (Format fmt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.fs = fs;
@@ -417,7 +473,7 @@ namespace Mips
 
     public Abs.from_code (int code)
     {
-      this (get_five1_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -660,11 +716,11 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Sqrt (uint8 fmt, FpuRegister fs, FpuRegister fd)
+    public Sqrt (Format fmt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.fs = fs;
@@ -673,7 +729,7 @@ namespace Mips
 
     public Sqrt.from_code (int code)
     {
-      this (get_five1_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -687,12 +743,12 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public Register rt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Movz (uint8 fmt, Register rt, FpuRegister fs, FpuRegister fd)
+    public Movz (Format fmt, Register rt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.rt = rt;
@@ -702,7 +758,7 @@ namespace Mips
 
     public Movz.from_code (int code)
     {
-      this (get_five1 (code), get_five2_gpr (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five2_gpr (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -3461,11 +3517,11 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Mov (uint8 fmt, FpuRegister fs, FpuRegister fd)
+    public Mov (Format fmt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.fs = fs;
@@ -3474,7 +3530,7 @@ namespace Mips
 
     public Mov.from_code (int code)
     {
-      this (get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -3488,11 +3544,11 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Neg (uint8 fmt, FpuRegister fs, FpuRegister fd)
+    public Neg (Format fmt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.fs = fs;
@@ -3501,7 +3557,7 @@ namespace Mips
 
     public Neg.from_code (int code)
     {
-      this (get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -3515,11 +3571,11 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Truncw (uint8 fmt, FpuRegister fs, FpuRegister fd)
+    public Truncw (Format fmt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.fs = fs;
@@ -3528,7 +3584,7 @@ namespace Mips
 
     public Truncw.from_code (int code)
     {
-      this (get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -3542,11 +3598,11 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Truncl (uint8 fmt, FpuRegister fs, FpuRegister fd)
+    public Truncl (Format fmt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.fs = fs;
@@ -3555,7 +3611,7 @@ namespace Mips
 
     public Truncl.from_code (int code)
     {
-      this (get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -3569,11 +3625,11 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Ceilw (uint8 fmt, FpuRegister fs, FpuRegister fd)
+    public Ceilw (Format fmt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.fs = fs;
@@ -3582,7 +3638,7 @@ namespace Mips
 
     public Ceilw.from_code (int code)
     {
-      this (get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -3596,11 +3652,11 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Floorw (uint8 fmt, FpuRegister fs, FpuRegister fd)
+    public Floorw (Format fmt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.fs = fs;
@@ -3609,7 +3665,7 @@ namespace Mips
 
     public Floorw.from_code (int code)
     {
-      this (get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -3623,11 +3679,11 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Roundl (uint8 fmt, FpuRegister fs, FpuRegister fd)
+    public Roundl (Format fmt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.fs = fs;
@@ -3636,7 +3692,7 @@ namespace Mips
 
     public Roundl.from_code (int code)
     {
-      this (get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -3650,11 +3706,11 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Roundw (uint8 fmt, FpuRegister fs, FpuRegister fd)
+    public Roundw (Format fmt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.fs = fs;
@@ -3663,7 +3719,7 @@ namespace Mips
 
     public Roundw.from_code (int code)
     {
-      this (get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -3677,11 +3733,11 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Rsqrt (uint8 fmt, FpuRegister fs, FpuRegister fd)
+    public Rsqrt (Format fmt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.fs = fs;
@@ -3690,7 +3746,7 @@ namespace Mips
 
     public Rsqrt.from_code (int code)
     {
-      this (get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)(Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -3704,12 +3760,12 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister ft;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Sub (uint8 fmt, FpuRegister ft, FpuRegister fs, FpuRegister fd)
+    public Sub (Format fmt, FpuRegister ft, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.ft = ft;
@@ -3719,7 +3775,7 @@ namespace Mips
 
     public Sub.from_code (int code)
     {
-      this (get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -3733,12 +3789,12 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister ft;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Mul (uint8 fmt, FpuRegister ft, FpuRegister fs, FpuRegister fd)
+    public Mul (Format fmt, FpuRegister ft, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.ft = ft;
@@ -3748,7 +3804,7 @@ namespace Mips
 
     public Mul.from_code (int code)
     {
-      this (get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -3762,12 +3818,12 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister ft;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Div (uint8 fmt, FpuRegister ft, FpuRegister fs, FpuRegister fd)
+    public Div (Format fmt, FpuRegister ft, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.ft = ft;
@@ -3777,7 +3833,7 @@ namespace Mips
 
     public Div.from_code (int code)
     {
-      this (get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -3791,12 +3847,12 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister ft;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Add (uint8 fmt, FpuRegister ft, FpuRegister fs, FpuRegister fd)
+    public Add (Format fmt, FpuRegister ft, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.ft = ft;
@@ -3806,7 +3862,7 @@ namespace Mips
 
     public Add.from_code (int code)
     {
-      this (get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -3928,11 +3984,11 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Cvtd (uint8 fmt, FpuRegister fs, FpuRegister fd)
+    public Cvtd (Format fmt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.fs = fs;
@@ -3941,7 +3997,7 @@ namespace Mips
 
     public Cvtd.from_code (int code)
     {
-      this (get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -3955,11 +4011,11 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Cvtw (uint8 fmt, FpuRegister fs, FpuRegister fd)
+    public Cvtw (Format fmt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.fs = fs;
@@ -3968,7 +4024,7 @@ namespace Mips
 
     public Cvtw.from_code (int code)
     {
-      this (get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -3982,11 +4038,11 @@ namespace Mips
     /* COP1
        010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Cvts (uint8 fmt, FpuRegister fs, FpuRegister fd)
+    public Cvts (Format fmt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.fs = fs;
@@ -3995,7 +4051,7 @@ namespace Mips
 
     public Cvts.from_code (int code)
     {
-      this (get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -4067,13 +4123,13 @@ namespace Mips
       }
     }
 
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister ft;
     public FpuRegister fs;
     public uint8 cc;
     public ConditionType cond;
 
-    public Ccond (uint8 fmt, FpuRegister ft, FpuRegister fs, uint8 cc, ConditionType cond)
+    public Ccond (Format fmt, FpuRegister ft, FpuRegister fs, uint8 cc, ConditionType cond)
     {
       this.fmt = fmt;
       this.ft = ft;
@@ -4084,7 +4140,7 @@ namespace Mips
 
     public Ccond.from_code (int code)
     {
-      this (get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4 (code) >> 2, (ConditionType)(code & 0x0F));
+      this ((Format)get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4 (code) >> 2, (ConditionType)(code & 0x0F));
     }
 
     public override void accept (Visitor visitor)
@@ -4298,11 +4354,11 @@ namespace Mips
     /* COP1
        010001 01000 cc(3) nd(1) tf(1) offset(16)
     */
-    public uint8 fmt;
+    public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Recip (uint8 fmt, FpuRegister fs, FpuRegister fd)
+    public Recip (Format fmt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.fs = fs;
@@ -4311,7 +4367,7 @@ namespace Mips
 
     public Recip.from_code (int code)
     {
-      this (get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -4356,13 +4412,13 @@ namespace Mips
        010001 01000 cc(3) nd(1) tf(1) offset(16)
     */
 
-    public uint8 fmt;
+    public Format fmt;
     public uint8 cc;
     public bool test_true;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Movcf (uint8 fmt, uint8 cc, bool test_true, FpuRegister fs, FpuRegister fd)
+    public Movcf (Format fmt, uint8 cc, bool test_true, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.cc = cc;
@@ -4373,7 +4429,7 @@ namespace Mips
 
     public Movcf.from_code (int code)
     {
-      this (get_five1 (code), get_five2 (code) >> 2, (code & 0x10000) == 1, get_five3_fpr (code), get_five4_fpr (code));
+      this ((Format)get_five1 (code), get_five2 (code) >> 2, (code & 0x10000) == 1, get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
@@ -4680,9 +4736,9 @@ namespace Mips
     public FpuRegister ft;
     public FpuRegister fs;
     public FpuRegister fd;
-    public uint8 fmt;
+    public Format fmt;
 
-    public Madd (FpuRegister fr, FpuRegister ft, FpuRegister fs, FpuRegister fd, uint8 fmt)
+    public Madd (FpuRegister fr, FpuRegister ft, FpuRegister fs, FpuRegister fd, Format fmt)
     {
       this.fr = fr;
       this.ft = ft;
@@ -4693,7 +4749,7 @@ namespace Mips
 
     public Madd.from_code (int code)
     {
-      this (get_five1_fpr (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code), get_three (code));
+      this (get_five1_fpr (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code), (Format)get_three (code));
     }
 
     public override void accept (Visitor visitor)
@@ -4712,9 +4768,9 @@ namespace Mips
     public FpuRegister ft;
     public FpuRegister fs;
     public FpuRegister fd;
-    public uint8 fmt;
+    public Format fmt;
 
-    public Nmadd (FpuRegister fr, FpuRegister ft, FpuRegister fs, FpuRegister fd, uint8 fmt)
+    public Nmadd (FpuRegister fr, FpuRegister ft, FpuRegister fs, FpuRegister fd, Format fmt)
     {
       this.fr = fr;
       this.ft = ft;
@@ -4725,7 +4781,7 @@ namespace Mips
 
     public Nmadd.from_code (int code)
     {
-      this (get_five1_fpr (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code), get_three (code));
+      this (get_five1_fpr (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code), (Format)get_three (code));
     }
 
     public override void accept (Visitor visitor)
@@ -4744,9 +4800,9 @@ namespace Mips
     public FpuRegister ft;
     public FpuRegister fs;
     public FpuRegister fd;
-    public uint8 fmt;
+    public Format fmt;
 
-    public Nmsub (FpuRegister fr, FpuRegister ft, FpuRegister fs, FpuRegister fd, uint8 fmt)
+    public Nmsub (FpuRegister fr, FpuRegister ft, FpuRegister fs, FpuRegister fd, Format fmt)
     {
       this.fr = fr;
       this.ft = ft;
@@ -4757,7 +4813,7 @@ namespace Mips
 
     public Nmsub.from_code (int code)
     {
-      this (get_five1_fpr (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code), get_three (code));
+      this (get_five1_fpr (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code), (Format)get_three (code));
     }
 
     public override void accept (Visitor visitor)
@@ -4776,9 +4832,9 @@ namespace Mips
     public FpuRegister ft;
     public FpuRegister fs;
     public FpuRegister fd;
-    public uint8 fmt;
+    public Format fmt;
 
-    public Msub (FpuRegister fr, FpuRegister ft, FpuRegister fs, FpuRegister fd, uint8 fmt)
+    public Msub (FpuRegister fr, FpuRegister ft, FpuRegister fs, FpuRegister fd, Format fmt)
     {
       this.fr = fr;
       this.ft = ft;
@@ -4789,7 +4845,7 @@ namespace Mips
 
     public Msub.from_code (int code)
     {
-      this (get_five1_fpr (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code), get_three (code));
+      this (get_five1_fpr (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code), (Format)get_three (code));
     }
 
     public override void accept (Visitor visitor)
