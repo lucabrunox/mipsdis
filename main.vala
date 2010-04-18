@@ -37,26 +37,31 @@ public class Mips.Disassembler
 
   public static int main (string[] args)
   {
-    try {
+    try
+    {
       var opt_context = new OptionContext ("- Mips Disassembler");
       opt_context.set_help_enabled (true);
       opt_context.add_main_entries (options, null);
       opt_context.parse (ref args);
-    } catch (OptionError e) {
+    }
+    catch (OptionError e)
+    {
       stdout.printf ("%s\n", e.message);
       stdout.printf ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
       return 1;
     }
 	
-    if (version) {
-      stdout.printf ("mipsdis 1.0\n");
-      return 0;
-    }
+    if (version)
+      {
+        stdout.printf ("mipsdis 1.0\n");
+        return 0;
+      }
 	
-    if (binary == null) {
-      stderr.printf ("No binary file specified.\n");
-      return 1;
-    }
+    if (binary == null)
+      {
+        stderr.printf ("No binary file specified.\n");
+        return 1;
+      }
     
     var dis = new Disassembler ();
     return dis.run ();

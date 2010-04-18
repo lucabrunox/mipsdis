@@ -113,15 +113,15 @@ namespace Mips
         switch (this)
           {
           case S:
-            return "S";
+            return "s";
           case D:
-            return "D";
+            return "d";
           case W:
-            return "W";
+            return "w";
           case L:
-            return "L";
+            return "l";
           case PS:
-            return "PS";
+            return "ps";
           default:
             assert_not_reached ();
           }
@@ -141,15 +141,15 @@ namespace Mips
         switch (this)
           {
           case S:
-            return "S";
+            return "s";
           case D:
-            return "D";
+            return "d";
           case W:
-            return "W";
+            return "w";
           case L:
-            return "L";
+            return "l";
           case PS:
-            return "PS";
+            return "ps";
           default:
             assert_not_reached ();
           }
@@ -4086,37 +4086,37 @@ namespace Mips
         switch (this)
           {
           case F:
-            return "F";
+            return "f";
           case UN:
-            return "UN";
+            return "un";
           case EQ:
-            return "EQ";
+            return "eq";
           case UEQ:
-            return "UEQ";
+            return "ueq";
           case OLT:
-            return "OLT";
+            return "olt";
           case ULT:
-            return "ULT";
+            return "ult";
           case OLE:
-            return "OLE";
+            return "ole";
           case ULE:
-            return "ULE";
+            return "ule";
           case SF:
-            return "SF";
+            return "sf";
           case NGLE:
-            return "NGLE";
+            return "ngle";
           case SEQ:
-            return "SEQ";
+            return "seq";
           case NGL:
-            return "NGL";
+            return "ngl";
           case LT:
-            return "LT";
+            return "lt";
           case NGE:
-            return "NGE";
+            return "nge";
           case LE:
-            return "LE";
+            return "le";
           case NGT:
-            return "NGT";
+            return "ngt";
           default:
             assert_not_reached ();
           }
