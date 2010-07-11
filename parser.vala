@@ -98,11 +98,6 @@ namespace Mips
 
     private Instruction instruction_from_code (int code) throws ParserError
     {
-      if (code == 0)
-        return new Nop ();
-      else if (code == 0x40)
-        return new Ssnop ();
-
       int opcode = (code >> 26) &0x3F; // left-most 6 bits
       switch (opcode)
       {
@@ -200,6 +195,10 @@ namespace Mips
             if (get_five4 (code) != 0)
               throw new ParserError.INVALID_INSTRUCTION ("ADDU 10-6 not zero");
             return new Addu.from_code (code);
+          case 0x22:
+            if (get_five4 (code) != 0)
+              throw new ParserError.INVALID_INSTRUCTION ("SUB 10-6 not zero");
+            return new Sub.from_code (code);
           case 0x23:
             if (get_five4 (code) != 0)
               throw new ParserError.INVALID_INSTRUCTION ("SUBU 10-6 not zero");
@@ -298,6 +297,10 @@ namespace Mips
             if ((code & 0x7FF) == 0)
               return new Cop0.Rdpgpr.from_code (code);
             break;
+          case 0x0B:
+            if ((code & 0xFFFF) == 0x6000 || (code & 0xFFFF) == 0x6020)
+              return new Cop0.Mfmc0.from_code (code);
+            break;           
           case 0x0E:
             if ((code & 0x7FF) == 0)
               return new Cop0.Wrpgpr.from_code (code);
@@ -330,7 +333,7 @@ namespace Mips
           case 0x20:
             if (((code >> 24) & 1) != 1)
               throw new ParserError.INVALID_INSTRUCTION ("Invalid WAIT");
-            return new Cop0.Eret ();
+            return new Cop0.Wait.from_code (code);
           case 0x1F:
             if (code != 0x4200001F)
               throw new ParserError.INVALID_INSTRUCTION ("Invalid DERET");
@@ -409,6 +412,14 @@ namespace Mips
             if (get_five2 (code) != 0)
               throw new ParserError.INVALID_INSTRUCTION ("TRUNC.L 20-16 not zero");
             return new Cop1.Truncl.from_code (code);
+          case 0x0A:
+            if (get_five2 (code) != 0)
+              throw new ParserError.INVALID_INSTRUCTION ("CEIL.L 20-16 not zero");
+            return new Cop1.Ceill.from_code (code);
+          case 0x0B:
+            if (get_five2 (code) != 0)
+              throw new ParserError.INVALID_INSTRUCTION ("FLOOR.L 20-16 not zero");
+            return new Cop1.Floorl.from_code (code);
           case 0x0C:
             if (get_five2 (code) != 0)
               throw new ParserError.INVALID_INSTRUCTION ("ROUND.W 20-16 not zero");
@@ -429,6 +440,8 @@ namespace Mips
             return new Cop1.Movcf.from_code (code);
           case 0x12:
             return new Cop1.Movz.from_code (code);
+          case 0x13:
+            return new Cop1.Movn.from_code (code);
           case 0x15:
             return new Cop1.Recip.from_code (code);
           case 0x16:
@@ -447,6 +460,14 @@ namespace Mips
             if (get_five2 (code) != 0)
               throw new ParserError.INVALID_INSTRUCTION ("CVT.W 20-16 not zero");
             return new Cop1.Cvtw.from_code (code);
+          case 0x25:
+            if (get_five2 (code) != 0)
+              throw new ParserError.INVALID_INSTRUCTION ("CVT.L 20-16 not zero");
+            return new Cop1.Cvtl.from_code (code);
+          case 0x26:
+            if (get_five1 (code) != 0x10)
+              throw new ParserError.INVALID_INSTRUCTION ("CVT.PS 25-21 not 0x10");
+            return new Cop1.Cvtps.from_code (code);
           case 0x2C:
             if (get_five1 (code) != 0x16)
               throw new ParserError.INVALID_INSTRUCTION ("PLL.PS 20-16 not 0x16");
@@ -506,6 +527,8 @@ namespace Mips
           }
 
       case COP2:
+        if ((code & 0x2000000) == 1)
+          return new Cop2.Co.from_code (code);
         int func = get_five1 (code);
         switch (func)
           {
@@ -539,6 +562,23 @@ namespace Mips
             return new Cop1x.Nmadd.from_code (code);
           case 0x07:
             return new Cop1x.Nmsub.from_code (code);
+          }
+
+        func = code & 0x3F;
+        switch (func)
+          {
+          case 0x00:
+            if (get_five3 (code) != 0)
+              throw new ParserError.INVALID_INSTRUCTION ("LWXC1 15-11 not zero");
+            return new Cop1x.Lwxc1.from_code (code);
+          case 0x01:
+            if (get_five3 (code) != 0)
+              throw new ParserError.INVALID_INSTRUCTION ("LDXC1 15-11 not zero");
+            return new Cop1x.Ldxc1.from_code (code);
+          case 0x05:
+            if (get_five3 (code) != 0)
+              throw new ParserError.INVALID_INSTRUCTION ("LUXC1 15-11 not zero");
+            return new Cop1x.Luxc1.from_code (code);
           case 0x08:
             if (get_five4 (code) != 0)
               throw new ParserError.INVALID_INSTRUCTION ("SWXC1 5-0 not zero");
@@ -555,6 +595,8 @@ namespace Mips
             if (get_five4 (code) != 0)
               throw new ParserError.INVALID_INSTRUCTION ("PREFX 10-6 not zero");
             return new Cop1x.Prefx.from_code (code);
+          case 0x1E:
+            return new Cop1x.Alnv.from_code (code);           
           default:
             throw new ParserError.INVALID_INSTRUCTION ("Unknown COP1X instruction 0x%x (0x%x)", func, code);
           }
@@ -563,6 +605,10 @@ namespace Mips
         int func = code & 0x3F;
         switch (func)
           {
+          case 0x00:
+            return new Ext.from_code (code);
+          case 0x04:
+            return new Ins.from_code (code);
           case 0x20:
             if (get_five1 (code) != 0)
               throw new ParserError.INVALID_INSTRUCTION ("BSHFL 25-21 not zerO");

@@ -1,0 +1,2 @@
+- Move error handling from parser to .from_code() of instructions
+- Move mnemonic to instructions

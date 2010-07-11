@@ -128,6 +128,9 @@ namespace Mips
     public override void visit_cop1_mov (Cop1.Mov inst)
     {
     }
+    public override void visit_cop1_movn (Cop1.Movn inst)
+    {
+    }
     public override void visit_cop1_neg (Cop1.Neg inst)
     {
     }
@@ -146,7 +149,13 @@ namespace Mips
     public override void visit_cop1_ceilw (Cop1.Ceilw inst)
     {
     }
+    public override void visit_cop1_ceill (Cop1.Ceill inst)
+    {
+    }
     public override void visit_cop1_floorw (Cop1.Floorw inst)
+    {
+    }
+    public override void visit_cop1_floorl (Cop1.Floorl inst)
     {
     }
     public override void visit_cop1_roundl (Cop1.Roundl inst)
@@ -159,6 +168,12 @@ namespace Mips
     {
     }
     public override void visit_cop1_cvtd (Cop1.Cvtd inst)
+    {
+    }
+    public override void visit_cop1_cvtl (Cop1.Cvtl inst)
+    {
+    }
+    public override void visit_cop1_cvtps (Cop1.Cvtps inst)
     {
     }
     public override void visit_cop1_cvtw (Cop1.Cvtw inst)
@@ -192,6 +207,9 @@ namespace Mips
     {
     }
     public override void visit_cop2_bc (Cop2.Bc inst)
+    {
+    }
+    public override void visit_cop2_co (Cop2.Co inst)
     {
     }
     public override void visit_cop2_mt (Cop2.Mt inst)
@@ -270,10 +288,16 @@ namespace Mips
     public override void visit_addu (Addu inst)
     {
     }
+    public override void visit_sub (Sub inst)
+    {
+    }
     public override void visit_subu (Subu inst)
     {
     }
     public override void visit_cop0_rdpgpr (Cop0.Rdpgpr inst)
+    {
+    }
+    public override void visit_cop0_mfmc0 (Cop0.Mfmc0 inst)
     {
     }
     public override void visit_sw (Sw inst)
@@ -289,6 +313,12 @@ namespace Mips
     {
     }
     public override void visit_regimm_synci (Regimm.Synci inst)
+    {
+    }
+    public override void visit_ext (Ext inst)
+    {
+    }
+    public override void visit_ins (Ins inst)
     {
     }
     public override void visit_swl (Swl inst)
@@ -314,12 +344,6 @@ namespace Mips
       inst.reference = get_branch_at_offset (inst.offset);
     }
     public override void visit_regimm_bgezall (Regimm.Bgezall inst)
-    {
-    }
-    public override void visit_nop (Nop inst)
-    {
-    }
-    public override void visit_ssnop (Ssnop inst)
     {
     }
     public override void visit_lw (Lw inst)
@@ -511,6 +535,9 @@ namespace Mips
     public override void visit_movz (Movz inst)
     {
     }
+    public override void visit_movn (Movn inst)
+    {
+    }
     public override void visit_madd (Madd inst)
     {
     }
@@ -523,19 +550,28 @@ namespace Mips
     public override void visit_maddu (Maddu inst)
     {
     }
-    public override void visit_movn (Movn inst)
-    {
-    }
     public override void visit_sdc1 (Sdc1 inst)
     {
     }
     public override void visit_sdc2 (Sdc2 inst)
     {
     }
+    public override void visit_cop1x_alnv (Cop1x.Alnv inst)
+    {
+    }
     public override void visit_cop1x_sdxc1 (Cop1x.Sdxc1 inst)
     {
     }
     public override void visit_cop1x_suxc1 (Cop1x.Suxc1 inst)
+    {
+    }
+    public override void visit_cop1x_ldxc1 (Cop1x.Ldxc1 inst)
+    {
+    }
+    public override void visit_cop1x_luxc1 (Cop1x.Luxc1 inst)
+    {
+    }
+    public override void visit_cop1x_lwxc1 (Cop1x.Lwxc1 inst)
     {
     }
     public override void visit_cop1x_swxc1 (Cop1x.Swxc1 inst)

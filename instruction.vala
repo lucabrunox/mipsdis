@@ -264,6 +264,7 @@ namespace Mips
     public abstract void visit_cop1_abs (Cop1.Abs inst);
     public abstract void visit_cop1_cf (Cop1.Cf inst);
     public abstract void visit_cop1_ct (Cop1.Ct inst);
+    public abstract void visit_cop2_co (Cop2.Co inst);
     public abstract void visit_cop2_cf (Cop2.Cf inst);
     public abstract void visit_cop2_ct (Cop2.Ct inst);
     public abstract void visit_cop2_mf (Cop2.Mf inst);
@@ -271,19 +272,24 @@ namespace Mips
     public abstract void visit_cop2_mth (Cop2.Mth inst);
     public abstract void visit_cop1_sqrt (Cop1.Sqrt inst);
     public abstract void visit_cop1_mov (Cop1.Mov inst);
+    public abstract void visit_cop1_movn (Cop1.Movn inst);
     public abstract void visit_cop1_neg (Cop1.Neg inst);
     public abstract void visit_cop1_sub (Cop1.Sub inst);
     public abstract void visit_cop1_mul (Cop1.Mul inst);
     public abstract void visit_cop1_div (Cop1.Div inst);
     public abstract void visit_cop1_truncw (Cop1.Truncw inst);
+    public abstract void visit_cop1_ceill (Cop1.Ceill inst);
     public abstract void visit_cop1_ceilw (Cop1.Ceilw inst);
+    public abstract void visit_cop1_floorl (Cop1.Floorl inst);
     public abstract void visit_cop1_floorw (Cop1.Floorw inst);
     public abstract void visit_cop1_roundl (Cop1.Roundl inst);
     public abstract void visit_cop1_roundw (Cop1.Roundw inst);
     public abstract void visit_cop1_rsqrt (Cop1.Rsqrt inst);
     public abstract void visit_cop1_cvtd (Cop1.Cvtd inst);
+    public abstract void visit_cop1_cvtl (Cop1.Cvtl inst);
     public abstract void visit_cop1_cvtw (Cop1.Cvtw inst);
     public abstract void visit_cop1_cvts (Cop1.Cvts inst);
+    public abstract void visit_cop1_cvtps (Cop1.Cvtps inst);
     public abstract void visit_cop1_add (Cop1.Add inst);
     public abstract void visit_cop1_pll (Cop1.Pll inst);
     public abstract void visit_cop1_plu (Cop1.Plu inst);
@@ -301,6 +307,7 @@ namespace Mips
     public abstract void visit_cop1_recip (Cop1.Recip inst);
     public abstract void visit_movci (Movci inst);
     public abstract void visit_cop1_movcf (Cop1.Movcf inst);
+    public abstract void visit_cop1x_alnv (Cop1x.Alnv inst);
     public abstract void visit_cop1x_madd (Cop1x.Madd inst);
     public abstract void visit_cop1x_nmadd (Cop1x.Nmadd inst);
     public abstract void visit_cop1x_nmsub (Cop1x.Nmsub inst);
@@ -315,6 +322,7 @@ namespace Mips
     public abstract void visit_addiu (Addiu inst);
     public abstract void visit_addi (Addi inst);
     public abstract void visit_addu (Addu inst);
+    public abstract void visit_sub (Sub inst);
     public abstract void visit_subu (Subu inst);
     public abstract void visit_cop0_rdpgpr (Cop0.Rdpgpr inst);
     public abstract void visit_sw (Sw inst);
@@ -330,8 +338,6 @@ namespace Mips
     public abstract void visit_lh (Lh inst);
     public abstract void visit_regimm_bgezal (Regimm.Bgezal inst);
     public abstract void visit_regimm_bgezall (Regimm.Bgezall inst);
-    public abstract void visit_nop (Nop inst);
-    public abstract void visit_ssnop (Ssnop inst);
     public abstract void visit_lw (Lw inst);
     public abstract void visit_lwl (Lwl inst);
     public abstract void visit_lwr (Lwr inst);
@@ -395,6 +401,9 @@ namespace Mips
     public abstract void visit_movn (Movn inst);
     public abstract void visit_sdc1 (Sdc1 inst);
     public abstract void visit_sdc2 (Sdc2 inst);
+    public abstract void visit_cop1x_ldxc1 (Cop1x.Ldxc1 inst);
+    public abstract void visit_cop1x_luxc1 (Cop1x.Luxc1 inst);
+    public abstract void visit_cop1x_lwxc1 (Cop1x.Lwxc1 inst);
     public abstract void visit_cop1x_sdxc1 (Cop1x.Sdxc1 inst);
     public abstract void visit_cop1x_suxc1 (Cop1x.Suxc1 inst);
     public abstract void visit_cop1x_swxc1 (Cop1x.Swxc1 inst);
@@ -422,13 +431,17 @@ namespace Mips
     public abstract void visit_regimm_tnei (Regimm.Tnei inst);
     public abstract void visit_cop1_truncl (Cop1.Truncl inst);
     public abstract void visit_cop0_wait (Cop0.Wait inst);
+    public abstract void visit_cop0_mfmc0 (Cop0.Mfmc0 inst);
     public abstract void visit_cop0_wrpgpr (Cop0.Wrpgpr inst);
     public abstract void visit_wsbh (Wsbh inst);
+    public abstract void visit_ext (Ext inst);
+    public abstract void visit_ins (Ins inst);
   }
 
   public abstract class Instruction
   {
     public abstract void accept (Visitor visitor);
+    public virtual string? get_description () { return null; }
   }
 
   public class Cop0.Deret : Instruction
@@ -441,6 +454,11 @@ namespace Mips
     {
       visitor.visit_cop0_deret (this);
     }
+
+    public override string? get_description ()
+    {
+      return "return from a debug exception";
+    }
   }
 
   public class Cop0.Eret : Instruction
@@ -452,6 +470,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_eret (this);
+    }
+
+    public override string? get_description ()
+    {
+      return "return from interrupt, exception, or error trap";
     }
   }
 
@@ -480,6 +503,11 @@ namespace Mips
     {
       visitor.visit_cop1_abs (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← abs(FPR[$fs])";
+    }
   }
 
   public class Cop0.Mf : Instruction
@@ -506,6 +534,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_mf (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← CPR[0,$rd,$sel]";
     }
   }
 
@@ -534,6 +567,11 @@ namespace Mips
     {
       visitor.visit_cop0_mt (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"CPR[0, $rd, $sel] ← GPR[$rt]";
+    }
   }
 
   public class Cop1.Cf : Instruction
@@ -559,13 +597,15 @@ namespace Mips
     {
       visitor.visit_cop1_cf (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← FP_Control[FPR[$fs]]";
+    }
   }
 
   public class Cop1.Ct : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Register rt;
     public FpuRegister fs;
 
@@ -584,13 +624,40 @@ namespace Mips
     {
       visitor.visit_cop1_ct (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FP_Control[$fs] ← GPR[$rt]";
+    }
+  }
+
+  public class Cop2.Co : Instruction
+  {
+    public int cofun;
+
+    public Co (int cofun)
+    {
+      this.cofun = cofun;
+    }
+
+    public Co.from_code (int code)
+    {
+      this (code & 0x1FFFFFF);
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop2_co (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"CoprocessorOperation(2, cofun)";
+    }
   }
 
   public class Cop2.Cf : Instruction
   {
-    /* COP2
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Register rt;
     public Register rd;
 
@@ -609,13 +676,15 @@ namespace Mips
     {
       visitor.visit_cop2_cf (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← CP2CCR[Impl]";
+    }
   }
 
   public class Cop2.Ct : Instruction
   {
-    /* COP2
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Register rt;
     public Register rd;
 
@@ -633,6 +702,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop2_ct (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"CP2CCR[Impl] ← GPR[$rt]";
     }
   }
 
@@ -659,6 +733,11 @@ namespace Mips
     {
       visitor.visit_cop2_mf (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← CP2CPR[$impl]";
+    }
   }
 
   public class Cop2.Mfh : Instruction
@@ -684,6 +763,11 @@ namespace Mips
     {
       visitor.visit_cop2_mfh (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← CP2CPR[$impl]63..32";
+    }
   }
 
   public class Cop2.Mth : Instruction
@@ -708,6 +792,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop2_mth (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"CP2CPR[$impl]63..32 ← GPR[$rt]";
     }
   }
 
@@ -735,6 +824,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_sqrt (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← SQRT(FPR[$fs])";
     }
   }
 
@@ -765,6 +859,11 @@ namespace Mips
     {
       visitor.visit_cop1_movz (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rt] = 0 then FPR[$fd] ← FPR[$fs]";
+    }
   }
 
   public class Add : Instruction
@@ -792,6 +891,11 @@ namespace Mips
     {
       visitor.visit_add (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rs] + GPR[$rt]";
+    }
   }
 
   public class Lui : Instruction
@@ -816,6 +920,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_lui (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← $immediate || 0^16";
     }
   }
 
@@ -846,6 +955,11 @@ namespace Mips
     {
       visitor.visit_addiu (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← GPR[$rs] + $immediate";
+    }
   }
 
   public class Addi : Instruction
@@ -873,6 +987,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_addi (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← GPR[$rs] + $immediate";
     }
   }
 
@@ -930,6 +1049,11 @@ namespace Mips
     {
       visitor.visit_sw (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
+    }
   }
 
   public class Cache : Instruction
@@ -957,6 +1081,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cache (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"perform the cache operation $op";
     }
   }
 
@@ -986,6 +1115,11 @@ namespace Mips
     {
       visitor.visit_pref (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"prefetch_memory(GPR[$base] + $offset)";
+    }
   }
 
   public class Sync : Instruction
@@ -1009,6 +1143,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_sync (this);
+    }
+
+    public override string? get_description ()
+    {
+      return "order loads and stores";
     }
   }
 
@@ -1036,6 +1175,11 @@ namespace Mips
     {
       visitor.visit_regimm_synci (this);
     }
+
+    public override string? get_description ()
+    {
+      return "synchronize all caches to make instruction writes effective";
+    }
   }
 
   public class Regimm.Teqi : Instruction
@@ -1061,6 +1205,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_regimm_teqi (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] = $immediate then Trap";
     }
   }
 
@@ -1088,6 +1237,11 @@ namespace Mips
     {
       visitor.visit_regimm_tnei (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≠ $immediate then Trap";
+    }
   }
 
   public class Regimm.Tlti : Instruction
@@ -1113,6 +1267,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_regimm_tlti (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] < $immediate then Trap";
     }
   }
 
@@ -1140,6 +1299,11 @@ namespace Mips
     {
       visitor.visit_regimm_tltiu (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] < $immediate then Trap";
+    }
   }
 
   public class Regimm.Tgei : Instruction
@@ -1165,6 +1329,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_regimm_tgei (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≥ $immediate then Trap";
     }
   }
 
@@ -1192,6 +1361,11 @@ namespace Mips
     {
       visitor.visit_regimm_tgeiu (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≥ $immediate then Trap";
+    }
   }
 
   public class Regimm.Bgezal : Instruction
@@ -1214,9 +1388,21 @@ namespace Mips
       this (get_five1_gpr (code), get_halfi (code));
     }
 
+    public bool is_unconditional ()
+    {
+      return rs == 0;
+    }
+
     public override void accept (Visitor visitor)
     {
       visitor.visit_regimm_bgezal (this);
+    }
+
+    public override string? get_description ()
+    {
+      if (is_unconditional ())
+        return "procedure_call";
+      return @"if GPR[$rs] ≥ 0 then procedure_call";
     }
   }
 
@@ -1244,21 +1430,10 @@ namespace Mips
     {
       visitor.visit_regimm_bgezall (this);
     }
-  }
 
-  public class Nop : Instruction
-  {
-    public override void accept (Visitor visitor)
+    public override string? get_description ()
     {
-      visitor.visit_nop (this);
-    }
-  }
-
-  public class Ssnop : Instruction
-  {
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_ssnop (this);
+      return @"if GPR[$rs] ≥ 0 then procedure_call";
     }
   }
 
@@ -1288,6 +1463,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_lw (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
     }
   }
 
@@ -1321,6 +1501,13 @@ namespace Mips
     {
       visitor.visit_jalr (this);
     }
+
+    public override string? get_description ()
+    {
+      if (has_hint ())
+        return @"GPR[$rd] ← return_addr, PC ← GPR[$rs], clear execution and instruction hazards";
+      return @"GPR[$rd] ← return_addr, PC ← GPR[$rs]";
+    }
   }
 
   public class Jr : Instruction
@@ -1351,6 +1538,13 @@ namespace Mips
     {
       visitor.visit_jr (this);
     }
+
+    public override string? get_description ()
+    {
+      if (has_hint ())
+        return @"PC ← GPR[$rs], clear execution and instruction hazards";
+      return @"PC ← GPR[$rs]";
+    }
   }
 
   public class Regimm.Bltzal : Instruction
@@ -1377,6 +1571,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_regimm_bltzal (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] < 0 then procedure_call";
     }
   }
 
@@ -1405,13 +1604,15 @@ namespace Mips
     {
       visitor.visit_regimm_bltzall (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] < 0 then procedure_call_likely";
+    }
   }
 
   public class Sll : Instruction
   {
-    /* SPECIAL
-       000000 00000 rt(5) rd(5) sa(5) 000000
-    */
     public Register rt;
     public Register rd;
     public uint8 sa;
@@ -1431,6 +1632,32 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_sll (this);
+    }
+
+    public bool is_nop ()
+    {
+      return rt == 0 && rd == 0 && sa == 0;
+    }
+
+    public bool is_ssnop ()
+    {
+      return rt == 0 && rd == 0 && sa == 1;
+    }
+
+    public bool is_ehb ()
+    {
+      return rt == 0 && rd == 0 && sa == 3;
+    }
+
+    public override string? get_description ()
+    {
+      if (is_ehb ())
+        return @"stop instruction execution until all execution hazards have been cleared";
+      else if (is_ssnop ())
+        return @"break superscalar issue on a superscalar processor";
+      else if (!is_nop ())
+        return @"GPR[$rd] ← GPR[$rt] << $sa";
+      return null;
     }
   } 
 
@@ -1466,6 +1693,13 @@ namespace Mips
     {
       visitor.visit_beq (this);
     }
+
+    public override string? get_description ()
+    {
+      if (is_unconditional ())
+        return "branch";
+      return @"if GPR[$rs] = GPR[$rt] then branch";
+    }
   }
 
   public class Beql : Instruction
@@ -1499,6 +1733,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_beql (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] = GPR[$rt] then branch_likely";
     }
   }
 
@@ -1534,6 +1773,11 @@ namespace Mips
     {
       visitor.visit_bne (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≠ GPR[$rt] then branch";
+    }
   }
 
   public class Bnel : Instruction
@@ -1568,6 +1812,11 @@ namespace Mips
     {
       visitor.visit_bnel (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≠ GPR[$rt] then branch likely";
+    }
   }
 
   public class Lbu : Instruction
@@ -1595,6 +1844,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_lbu (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
     }
   }
 
@@ -1624,6 +1878,11 @@ namespace Mips
     {
       visitor.visit_sb (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
+    }
   }
 
   public class Seb : Instruction
@@ -1649,6 +1908,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_seb (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← SignExtend(GPR[$rt]7..0)";
     }
   }
 
@@ -1676,6 +1940,73 @@ namespace Mips
     {
       visitor.visit_wsbh (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← SwapBytesWithinHalfwords(GPR[$rt])";
+    }
+  }
+
+  public class Ext : Instruction
+  {
+    public Register rs;
+    public Register rt;
+    public uint8 msbd;
+    public uint8 lsb;
+
+    public Ext (Register rs, Register rt, uint8 msbd, uint8 lsb)
+      {
+        this.rs = rs;
+        this.rt = rt;
+        this.msbd = msbd;
+        this.lsb = lsb;
+      }
+
+    public Ext.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_ext (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← ExtractField(GPR[$rs], $msbd, $lsb)";
+    }
+  }
+
+  public class Ins : Instruction
+  {
+    public Register rs;
+    public Register rt;
+    public uint8 msb;
+    public uint8 lsb;
+
+    public Ins (Register rs, Register rt, uint8 msb, uint8 lsb)
+      {
+        this.rs = rs;
+        this.rt = rt;
+        this.msb = msb;
+        this.lsb = lsb;
+      }
+
+    public Ins.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_ins (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← InsertField(GPR[$rt], GPR[$rs], $msb, $lsb)";
+    }
   }
 
   public class Seh : Instruction
@@ -1701,6 +2032,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_seh (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← SignExtend(GPR[$rt]15..0)";
     }
   }
 
@@ -1730,6 +2066,11 @@ namespace Mips
     {
       visitor.visit_sc (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if atomic_update then memory[GPR[$base] + $offset] ← GPR[$rt], GPR[$rt] ← 1 else GPR[$rt] ← 0";
+    }
   }
 
   public class Sltiu : Instruction
@@ -1757,6 +2098,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_sltiu (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← (GPR[$rs] < $immediate)";
     }
   }
 
@@ -1786,6 +2132,11 @@ namespace Mips
     {
       visitor.visit_slti (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← (GPR[$rs] < $immediate)";
+    }
   }
 
   public class Ori : Instruction
@@ -1813,6 +2164,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_ori (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← GPR[$rs] or $immediate";
     }
   }
 
@@ -1842,6 +2198,11 @@ namespace Mips
     {
       visitor.visit_sltu (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← (GPR[$rs] < GPR[$rt])";
+    }
   }
 
   public class Sllv : Instruction
@@ -1869,6 +2230,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_sllv (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rt] << rs";
     }
   }
 
@@ -1898,6 +2264,11 @@ namespace Mips
     {
       visitor.visit_and (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rs] AND GPR[$rt]";
+    }
   }
 
   public class Or : Instruction
@@ -1925,6 +2296,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_or (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rs] or GPR[$rt]";
     }
   }
 
@@ -1954,6 +2330,11 @@ namespace Mips
     {
       visitor.visit_xor (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rs] XOR GPR[$rt]";
+    }
   }
 
   public class Lhu : Instruction
@@ -1981,6 +2362,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_lhu (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
     }
   }
 
@@ -2010,6 +2396,40 @@ namespace Mips
     {
       visitor.visit_subu (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rs] - GPR[$rt]";
+    }
+  }
+
+  public class Sub : Instruction
+  {
+    public Register rs;
+    public Register rt;
+    public Register rd;
+
+    public Sub (Register rs, Register rt, Register rd)
+      {
+        this.rs = rs;
+        this.rt = rt;
+        this.rd = rd;
+      }
+
+    public Sub.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_sub (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rs] - GPR[$rt]";
+    }
   }
 
   public class Sh : Instruction
@@ -2037,6 +2457,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_sh (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
     }
   }
 
@@ -2066,6 +2491,11 @@ namespace Mips
     {
       visitor.visit_lh (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
+    }
   }
 
   public class Srl : Instruction
@@ -2073,12 +2503,12 @@ namespace Mips
     /* SPECIAL
        000000 00000 rt(5) rd(5) sa(5) 000000
     */
-    public uint8 rotr;
+    public bool rotr;
     public Register rt;
     public Register rd;
     public uint8 sa;
 
-    public Srl (uint8 rotr, Register rt, Register rd, uint8 sa)
+    public Srl (bool rotr, Register rt, Register rd, uint8 sa)
       {
         this.rotr = rotr;
         this.rt = rt;
@@ -2088,17 +2518,24 @@ namespace Mips
 
     public Srl.from_code (int code)
       {
-        this (get_five1 (code), get_five2_gpr (code), get_five3_gpr (code), get_five4 (code));
+        this ((bool) get_five1 (code), get_five2_gpr (code), get_five3_gpr (code), get_five4 (code));
       }
 
     public bool is_rotr ()
     {
-      return rotr == 1;
+      return rotr;
     }
 
     public override void accept (Visitor visitor)
     {
       visitor.visit_srl (this);
+    }
+
+    public override string? get_description ()
+    {
+      if (is_rotr ())
+        return @"GPR[$rd] ← GPR[$rt] ↔(right) $sa";
+      return @"GPR[$rd] ← GPR[$rt] >> $sa (logical)";
     }
   } 
 
@@ -2128,6 +2565,11 @@ namespace Mips
     {
       visitor.visit_andi (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← GPR[$rs] AND $immediate";
+    }
   }
 
   public class Regimm.Bgez : Instruction
@@ -2154,6 +2596,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_regimm_bgez (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≥ 0 then branch";
     }
   }
 
@@ -2182,6 +2629,11 @@ namespace Mips
     {
       visitor.visit_regimm_bgezl (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≥ 0 then branch_likely";
+    }
   }
 
   public class Sra : Instruction
@@ -2209,14 +2661,15 @@ namespace Mips
     {
       visitor.visit_sra (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rt] >> $sa (arithmetic)";
+    }
   }
 
   public class Lb : Instruction
   {
-    /* LB
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public uint16 offset;
@@ -2236,6 +2689,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_lb (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
     }
   }
 
@@ -2265,6 +2723,11 @@ namespace Mips
     {
       visitor.visit_ll (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
+    }
   }
 
   public class Regimm.Bltz : Instruction
@@ -2292,6 +2755,11 @@ namespace Mips
     {
       visitor.visit_regimm_bltz (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] < 0 then branch";
+    }
   }
 
   public class Regimm.Bltzl : Instruction
@@ -2318,6 +2786,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_regimm_bltzl (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] < 0 then branch_likely";
     }
   }
 
@@ -2347,6 +2820,11 @@ namespace Mips
     {
       visitor.visit_slt (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← (GPR[$rs] < GPR[$rt])";
+    }
   }
 
   public class Mult : Instruction
@@ -2372,6 +2850,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_mult (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"(HI, LO) ← GPR[$rs] × GPR[$rt]";
     }
   }
 
@@ -2399,6 +2882,11 @@ namespace Mips
     {
       visitor.visit_multu (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"(HI, LO) ← GPR[$rs] × GPR[$rt]";
+    }
   }
 
   public class Mfhi : Instruction
@@ -2423,6 +2911,11 @@ namespace Mips
     {
       visitor.visit_mfhi (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← HI";
+    }
   }
 
   public class Mthi : Instruction
@@ -2446,6 +2939,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_mthi (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"HI ← GPR[$rs]";
     }
   }
 
@@ -2474,6 +2972,11 @@ namespace Mips
     {
       visitor.visit_blez (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≤ 0 then branch";
+    }
   }
 
   public class Bgtz : Instruction
@@ -2501,6 +3004,11 @@ namespace Mips
     {
       visitor.visit_bgtz (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] > 0 then branch";
+    }
   }
 
   public class Bgtzl : Instruction
@@ -2527,6 +3035,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_bgtzl (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] > 0 then branch_likely";
     }
   }
 
@@ -2556,6 +3069,11 @@ namespace Mips
     {
       visitor.visit_xori (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← GPR[$rs] XOR $immediate";
+    }
   }
 
   public class Clo : Instruction
@@ -2584,14 +3102,15 @@ namespace Mips
     {
       visitor.visit_clo (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← count_leading_ones GPR[$rs]";
+    }
   }
 
   public class Clz : Instruction
   {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public Register rd;
@@ -2611,6 +3130,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_clz (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← count_leading_zeros GPR[$rs]";
     }
   }
 
@@ -2640,6 +3164,11 @@ namespace Mips
     {
       visitor.visit_mul (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rs] × GPR[$rt]";
+    }
   }
 
   public class Nor : Instruction
@@ -2668,6 +3197,11 @@ namespace Mips
     {
       visitor.visit_nor (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rs] NOR GPR[$rt]";
+    }
   }
 
   public class Srlv : Instruction
@@ -2679,9 +3213,9 @@ namespace Mips
     public Register rs;
     public Register rt;
     public Register rd;
-    public uint8 rotr;
+    public bool rotr;
 
-    public Srlv (Register rs, Register rt, Register rd, uint8 rotr)
+    public Srlv (Register rs, Register rt, Register rd, bool rotr)
     {
       this.rs = rs;
       this.rt = rt;
@@ -2691,17 +3225,24 @@ namespace Mips
 
     public Srlv.from_code (int code)
     {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code), get_five4 (code));
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code), (bool) get_five4 (code));
     }
 
     public bool is_rotr ()
     {
-      return rotr == 1;
+      return rotr;
     }
 
     public override void accept (Visitor visitor)
     {
       visitor.visit_srlv (this);
+    }
+
+    public override string? get_description ()
+    {
+      if (is_rotr ())
+        return @"GPR[$rd] ← GPR[$rt] ↔(right) GPR[$rs]";
+      return @"GPR[$rd] ← GPR[$rt] >> GPR[$rs] (logical)";
     }
   }
 
@@ -2731,6 +3272,11 @@ namespace Mips
     {
       visitor.visit_srav (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rt] >> $rs (arithmetic)";
+    }
   }
 
   public class Divu : Instruction
@@ -2757,6 +3303,11 @@ namespace Mips
     {
       visitor.visit_divu (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"(HI, LO) ← GPR[$rs] / GPR[$rt]";
+    }
   }
 
   public class Break : Instruction
@@ -2781,6 +3332,11 @@ namespace Mips
     {
       visitor.visit_break (this);
     }
+
+    public override string? get_description ()
+    {
+      return "breakpoint";
+    }
   }
 
   public class Cop0.Tlbp : Instruction
@@ -2792,6 +3348,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_tlbp (this);
+    }
+
+    public override string? get_description ()
+    {
+      return "find a matching entry in the TLB";
     }
   }
 
@@ -2805,6 +3366,11 @@ namespace Mips
     {
       visitor.visit_cop0_tlbr (this);
     }
+
+    public override string? get_description ()
+    {
+      return "read an entry from the TLB";
+    }
   }
 
   public class Cop0.Tlbwi : Instruction
@@ -2817,6 +3383,11 @@ namespace Mips
     {
       visitor.visit_cop0_tlbwi (this);
     }
+
+    public override string? get_description ()
+    {
+      return "write a TLB entry indexed by the Index register";
+    }
   }
 
   public class Cop0.Tlbwr : Instruction
@@ -2828,6 +3399,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_tlbwr (this);
+    }
+
+    public override string? get_description ()
+    {
+      return "write a TLB entry indexed by the Random register";
     }
   }
 
@@ -2853,6 +3429,11 @@ namespace Mips
     {
       visitor.visit_mflo (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← LO";
+    }
   }
 
   public class Mtlo : Instruction
@@ -2876,6 +3457,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_mtlo (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"LO ← GPR[$rs]";
     }
   }
 
@@ -2905,6 +3491,11 @@ namespace Mips
     {
       visitor.visit_lwl (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← GPR[$rt] MERGE memory[GPR[$base] + $offset]";
+    }
   }
 
   public class Lwr : Instruction
@@ -2932,6 +3523,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_lwr (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← GPR[$rt] MERGE memory[GPR[$base] + $offset]";
     }
   }
 
@@ -2961,6 +3557,11 @@ namespace Mips
     {
       visitor.visit_movz (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rt] = 0 then GPR[$rd] ← GPR[$rs]";
+    }
   }
 
   public class Madd : Instruction
@@ -2986,6 +3587,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_madd (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"(HI,LO) ← (HI,LO) + (GPR[$rs] × GPR[$rt])";
     }
   }
 
@@ -3013,6 +3619,11 @@ namespace Mips
     {
       visitor.visit_msub (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"(HI,LO) ← (HI,LO) - (GPR[$rs] × GPR[$rt])";
+    }
   }
 
   public class Msubu : Instruction
@@ -3039,6 +3650,11 @@ namespace Mips
     {
       visitor.visit_msubu (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"(HI,LO) ← (HI,LO) - (GPR[$rs] × GPR[$rt])";
+    }
   }
 
   public class Maddu : Instruction
@@ -3064,6 +3680,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_maddu (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"(HI,LO) ← (HI,LO) + (GPR[$rs] × GPR[$rt])";
     }
   }
 
@@ -3093,6 +3714,11 @@ namespace Mips
     {
       visitor.visit_movn (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rt] ≠ 0 then GPR[$rd] ← GPR[$rs]";
+    }
   }
 
   public class Div : Instruction
@@ -3118,6 +3744,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_div (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"(HI, LO) ← GPR[$rs] / GPR[$rt]";
     }
   }
 
@@ -3145,6 +3776,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_blezl (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≤ 0 then branch_likely";
     }
   }
 
@@ -3174,6 +3810,11 @@ namespace Mips
     {
       visitor.visit_swl (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
+    }
   }
 
   public class Swr : Instruction
@@ -3201,6 +3842,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_swr (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
     }
   }
 
@@ -3230,6 +3876,11 @@ namespace Mips
     {
       visitor.visit_sdc1 (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ←FPR[$ft]";
+    }
   }
 
   public class Sdc2 : Instruction
@@ -3258,14 +3909,46 @@ namespace Mips
     {
       visitor.visit_sdc2 (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ← CPR[2,$rt,0]";
+    }
+  }
+
+  public class Cop1x.Alnv : Instruction
+  {
+    public Register rs;
+    public FpuRegister ft;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Alnv (Register rs, FpuRegister ft, FpuRegister fs, FpuRegister fd)
+      {
+        this.rs = rs;
+        this.ft = ft;
+        this.fs = fs;
+        this.fd = fd;
+      }
+
+    public Alnv.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1x_alnv (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← ByteAlign(GPR[$rs]2..0, FPR[$fs], FPR[$ft])";
+    }
   }
 
   public class Cop1x.Sdxc1 : Instruction
   {
-    /* SDXC1
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public uint8 index;
     public FpuRegister fs;
@@ -3285,6 +3968,98 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1x_sdxc1 (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + GPR[$index]] ← FPR[$fs]";
+    }
+  }
+
+  public class Cop1x.Ldxc1 : Instruction
+  {
+    public Register @base;
+    public uint8 index;
+    public FpuRegister fd;
+
+    public Ldxc1 (Register @base, uint8 index, FpuRegister fd)
+      {
+        this.@base = @base;
+        this.index = index;
+        this.fd = fd;
+      }
+
+    public Ldxc1.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2 (code), get_five3_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1x_ldxc1 (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← memory[GPR[$base] + GPR[$index]]";
+    }
+  }
+
+  public class Cop1x.Luxc1 : Instruction
+  {
+    public Register @base;
+    public uint8 index;
+    public FpuRegister fd;
+
+    public Luxc1 (Register @base, uint8 index, FpuRegister fd)
+      {
+        this.@base = @base;
+        this.index = index;
+        this.fd = fd;
+      }
+
+    public Luxc1.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2 (code), get_five3_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1x_luxc1 (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← memory[(GPR[$base] + GPR[$index])PSIZE-1..3]";
+    }
+  }
+
+  public class Cop1x.Lwxc1 : Instruction
+  {
+    public Register @base;
+    public uint8 index;
+    public FpuRegister fd;
+
+    public Lwxc1 (Register @base, uint8 index, FpuRegister fd)
+      {
+        this.@base = @base;
+        this.index = index;
+        this.fd = fd;
+      }
+
+    public Lwxc1.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2 (code), get_five3_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1x_lwxc1 (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← memory[GPR[$base] + GPR[$index]]";
     }
   }
 
@@ -3314,6 +4089,11 @@ namespace Mips
     {
       visitor.visit_cop1x_suxc1 (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"memory[(GPR[$base] + GPR[$index])PSIZE-1..3] ← FPR[$fs]";
+    }
   }
 
   public class Cop1x.Swxc1 : Instruction
@@ -3341,6 +4121,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1x_swxc1 (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + GPR[$index]] ← FPR[$fs]";
     }
   }
 
@@ -3370,33 +4155,39 @@ namespace Mips
     {
       visitor.visit_ldc1 (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$ft] ← memory[GPR[$base] + $offset]";
+    }
   }
 
   public class Ldc2 : Instruction
   {
-    /* LDC2
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
-    public FpuRegister ft;
+    public Register rt;
     public uint16 offset;
 
-    public Ldc2 (Register @base, FpuRegister ft, uint16 offset)
+    public Ldc2 (Register @base, Register rt, uint16 offset)
       {
         this.@base = @base;
-        this.ft = ft;
+        this.rt = rt;
         this.offset = offset;
       }
 
     public Ldc2.from_code (int code)
     {
-      this (get_five1_gpr (code), get_five2_fpr (code), get_half (code));
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
     }
 
     public override void accept (Visitor visitor)
     {
       visitor.visit_ldc2 (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"CPR[2,$rt,0] ← memory[GPR[$base] + $offset]";
     }
   }
 
@@ -3426,6 +4217,11 @@ namespace Mips
     {
       visitor.visit_lwc1 (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$ft] ← memory[GPR[$base] + $offset]";
+    }
   }
 
   public class Lwc2 : Instruction
@@ -3435,24 +4231,29 @@ namespace Mips
     */
 
     public Register @base;
-    public FpuRegister ft;
+    public Register rt;
     public uint16 offset;
 
-    public Lwc2 (Register @base, FpuRegister ft, uint16 offset)
+    public Lwc2 (Register @base, Register rt, uint16 offset)
       {
         this.@base = @base;
-        this.ft = ft;
+        this.rt = rt;
         this.offset = offset;
       }
 
     public Lwc2.from_code (int code)
     {
-      this (get_five1_gpr (code), get_five2_fpr (code), get_half (code));
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
     }
 
     public override void accept (Visitor visitor)
     {
       visitor.visit_lwc2 (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"CPR[2,$rt,0] ← memory[GPR[$base] + $offset]";
     }
   }
 
@@ -3482,6 +4283,11 @@ namespace Mips
     {
       visitor.visit_swc1 (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ← FPR[$ft]";
+    }
   }
 
   public class Swc2 : Instruction
@@ -3491,32 +4297,34 @@ namespace Mips
     */
 
     public Register @base;
-    public FpuRegister ft;
+    public Register rt;
     public uint16 offset;
 
-    public Swc2 (Register @base, FpuRegister ft, uint16 offset)
+    public Swc2 (Register @base, Register rt, uint16 offset)
       {
         this.@base = @base;
-        this.ft = ft;
+        this.rt = rt;
         this.offset = offset;
       }
 
     public Swc2.from_code (int code)
     {
-      this (get_five1_gpr (code), get_five2_fpr (code), get_half (code));
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
     }
 
     public override void accept (Visitor visitor)
     {
       visitor.visit_swc2 (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ← CPR[2,$rt,0]";
+    }
   }
 
   public class Cop1.Mov : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -3536,6 +4344,42 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_mov (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← FPR[$fs]";
+    }
+  }
+
+  public class Cop1.Movn : Instruction
+  {
+    public Format fmt;
+    public Register rt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Movn (Format fmt, Register rt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.rt = rt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Movn.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five2_gpr (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_movn (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rt] ≠ 0 then FPR[$fd] ← FPR[$fs]";
     }
   }
 
@@ -3564,6 +4408,11 @@ namespace Mips
     {
       visitor.visit_cop1_neg (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← −FPR[$fs]";
+    }
   }
 
   public class Cop1.Truncw : Instruction
@@ -3590,6 +4439,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_truncw (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
     }
   }
 
@@ -3618,6 +4472,40 @@ namespace Mips
     {
       visitor.visit_cop1_truncl (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
+  }
+
+  public class Cop1.Ceill : Instruction
+  {
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Ceill (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Ceill.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_ceill (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
   }
 
   public class Cop1.Ceilw : Instruction
@@ -3645,13 +4533,44 @@ namespace Mips
     {
       visitor.visit_cop1_ceilw (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
+  }
+
+  public class Cop1.Floorl : Instruction
+  {
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Floorl (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Floorl.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_floorl (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
   }
 
   public class Cop1.Floorw : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -3671,6 +4590,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_floorw (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
     }
   }
 
@@ -3699,6 +4623,11 @@ namespace Mips
     {
       visitor.visit_cop1_roundl (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
   }
 
   public class Cop1.Roundw : Instruction
@@ -3726,6 +4655,11 @@ namespace Mips
     {
       visitor.visit_cop1_roundw (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
   }
 
   public class Cop1.Rsqrt : Instruction
@@ -3752,6 +4686,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_rsqrt (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← 1.0 / sqrt(FPR[$fs])";
     }
   }
 
@@ -3782,6 +4721,11 @@ namespace Mips
     {
       visitor.visit_cop1_sub (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← FPR[$fs] - FPR[$ft]";
+    }
   }
 
   public class Cop1.Mul : Instruction
@@ -3810,6 +4754,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_mul (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← FPR[$fs] × FPR[$ft]";
     }
   }
 
@@ -3840,6 +4789,11 @@ namespace Mips
     {
       visitor.visit_cop1_div (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← FPR[$fs] / FPR[$ft]";
+    }
   }
 
   public class Cop1.Add : Instruction
@@ -3869,6 +4823,11 @@ namespace Mips
     {
       visitor.visit_cop1_add (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← FPR[$fs] + FPR[$ft]";
+    }
   }
 
   public class Cop1.Pll : Instruction
@@ -3895,6 +4854,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_pll (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← lower(FPR[$fs]) || lower(FPR[$ft])";
     }
   }
 
@@ -3923,6 +4887,11 @@ namespace Mips
     {
       visitor.visit_cop1_plu (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← lower(FPR[$fs]) || upper(FPR[$ft])";
+    }
   }
 
   public class Cop1.Pul : Instruction
@@ -3949,6 +4918,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_pul (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← upper(FPR[$fs]) || lower(FPR[$ft])";
     }
   }
 
@@ -3977,13 +4951,15 @@ namespace Mips
     {
       visitor.visit_cop1_puu (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← upper(FPR[$fs]) || upper(FPR[$ft])";
+    }
   }
 
   public class Cop1.Cvtd : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -4003,6 +4979,40 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_cvtd (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
+  }
+
+  public class Cop1.Cvtl : Instruction
+  {
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Cvtl (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Cvtl.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_cvtl (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
     }
   }
 
@@ -4031,6 +5041,11 @@ namespace Mips
     {
       visitor.visit_cop1_cvtw (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
   }
 
   public class Cop1.Cvts : Instruction
@@ -4057,6 +5072,40 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_cvts (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(GPR[$fs])";
+    }
+  }
+
+  public class Cop1.Cvtps : Instruction
+  {
+    public FpuRegister ft;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Cvtps (FpuRegister ft, FpuRegister fs, FpuRegister fd)
+    {
+      this.ft = ft;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Cvtps.from_code (int code)
+    {
+      this (get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_cvtps (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← FPR[$fs]31..0 || FPR[$ft]31..0";
     }
   }
 
@@ -4147,6 +5196,11 @@ namespace Mips
     {
       visitor.visit_cop1_ccond (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPUConditionCode($cc) ← FPR[$fs] compare_cond FPR[$ft]";
+    }
   }
 
   public class Cop1.Bc : Instruction
@@ -4199,13 +5253,15 @@ namespace Mips
     {
       visitor.visit_cop1_bc (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if FPConditionCode($cc) = 0 then branch";
+    }
   }
 
   public class Cop2.Bc : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
     public enum Branch
     {
       FALSE,
@@ -4218,13 +5274,13 @@ namespace Mips
         switch (this)
           {
           case FALSE:
-            return "bc1f";
+            return "bc2f";
           case FALSE_LIKELY:
-            return "bc1fl";
+            return "bc2fl";
           case TRUE:
-            return "bc1t";
+            return "bc2t";
           case TRUE_LIKELY:
-            return "bc1tl";
+            return "bc2tl";
           default:
             assert_not_reached ();
           }
@@ -4250,6 +5306,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop2_bc (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"if COP2Condition($cc) = 0 then branch";
     }
   }
 
@@ -4277,6 +5338,11 @@ namespace Mips
     {
       visitor.visit_cop2_mt (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"CP2CPR[$impl] ← GPR[$rt]";
+    }
   }
 
   public class Cop1.Mt : Instruction
@@ -4302,6 +5368,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_mt (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fs] ← GPR[$rt]";
     }
   }
 
@@ -4329,6 +5400,11 @@ namespace Mips
     {
       visitor.visit_cop1_mf (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← FPR[$fs]";
+    }
   }
 
   public class Cop1.Mfh : Instruction
@@ -4354,6 +5430,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_mfh (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← FPR[$fs]63..32";
     }
   }
 
@@ -4381,6 +5462,11 @@ namespace Mips
     {
       visitor.visit_cop1_mth (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fs]63..32 ← GPR[$rt]";
+    }
   }
 
   public class Cop1.Recip : Instruction
@@ -4407,6 +5493,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_recip (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← 1.0 / FPR[$fs]";
     }
   }
 
@@ -4437,6 +5528,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_movci (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"if FPConditionCode($cc) = $test_true then GPR[$rd] ← GPR[$rs]";
     }
   }
 
@@ -4470,14 +5566,15 @@ namespace Mips
     {
       visitor.visit_cop1_movcf (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if FPConditionCode($cc) = $test_true then FPR[$fd] ← FPR[$fs]";
+    }
   }
 
   public class Jump : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public uint instr_index;
 
     public Jump (uint instr_index)
@@ -4518,14 +5615,42 @@ namespace Mips
     {
       visitor.visit_cop0_wait (this);
     }
+
+    public override string? get_description ()
+    {
+      return "Wait for Event";
+    }
+  }
+
+  public class Cop0.Mfmc0 : Instruction
+  {
+    public Register rt;
+    public bool sc;
+
+    public Mfmc0 (Register rt, bool sc)
+    {
+      this.rt = rt;
+      this.sc = sc;
+    }
+
+    public Mfmc0.from_code (int code)
+    {
+      this (get_five2_gpr (code), (bool)(code & 0x20));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_mfmc0 (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← Status; StatusIE ← $sc";
+    }
   }
 
   public class Jal : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public uint instr_index;
 
     public Jal (uint instr_index)
@@ -4566,6 +5691,11 @@ namespace Mips
     {
       visitor.visit_sdbbp (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"debug breakpoint";
+    }
   }
 
   public class Syscall : Instruction
@@ -4589,6 +5719,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_syscall (this);
+    }
+
+    public override string? get_description ()
+    {
+      return "cause a System Call exception";
     }
   }
 
@@ -4618,6 +5753,11 @@ namespace Mips
     {
       visitor.visit_teq (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] = GPR[$rt] then Trap";
+    }
   }
 
   public class Tltu : Instruction
@@ -4645,6 +5785,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_tltu (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] < GPR[$rt] then Trap";
     }
   }
 
@@ -4674,6 +5819,11 @@ namespace Mips
     {
       visitor.visit_tne (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≠ GPR[$rt] then Trap";
+    }
   }
 
   public class Tlt : Instruction
@@ -4701,6 +5851,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_tlt (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] < GPR[$rt] then Trap";
     }
   }
 
@@ -4730,6 +5885,11 @@ namespace Mips
     {
       visitor.visit_tgeu (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≥ GPR[$rt] then Trap";
+    }
   }
 
   public class Tge : Instruction
@@ -4757,6 +5917,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_tge (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≥ GPR[$rt] then Trap";
     }
   }
 
@@ -4790,6 +5955,11 @@ namespace Mips
     {
       visitor.visit_cop1x_madd (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← (FPR[$fs] × FPR[$ft]) + FPR[$fr]";
+    }
   }
 
   public class Cop1x.Nmadd : Instruction
@@ -4821,6 +5991,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1x_nmadd (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← − ((FPR[$fs] × FPR[$ft]) + FPR[$fr])";
     }
   }
 
@@ -4854,6 +6029,11 @@ namespace Mips
     {
       visitor.visit_cop1x_nmsub (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← - ((FPR[$fs] × FPR[$ft]) - FPR[$fr])";
+    }
   }
 
   public class Cop1x.Msub : Instruction
@@ -4886,6 +6066,11 @@ namespace Mips
     {
       visitor.visit_cop1x_msub (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← (FPR[$fs] × FPR[$ft]) − FPR[$fr]";
+    }
   }
 
   public class Cop1x.Prefx : Instruction
@@ -4914,6 +6099,11 @@ namespace Mips
     {
       visitor.visit_cop1x_prefx (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"prefetch_memory[GPR[$base] + GPR[$index]]";
+    }
   }
 
   public class Rdhwr : Instruction
@@ -4939,6 +6129,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_rdhwr (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← HWR[$rd]";
     }
   }
 
@@ -4966,6 +6161,11 @@ namespace Mips
     {
       visitor.visit_cop0_rdpgpr (this);
     }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← SGPR[SRSCtlPSS, $rt]";
+    }
   }
 
   public class Cop0.Wrpgpr : Instruction
@@ -4991,6 +6191,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_wrpgpr (this);
+    }
+
+    public override string? get_description ()
+    {
+      return @"SGPR[SRSCtlPSS, $rd] ← GPR[$rt]";
     }
   }
 }
