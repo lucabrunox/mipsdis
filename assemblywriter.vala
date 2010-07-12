@@ -125,10 +125,17 @@ namespace Mips
 
     public override void visit_cop1_cvts (Cop1.Cvts inst)
     {
-      if (inst.fmt == 0x16)
-            write_line ("cvt.s.pu\t%4s, %s", inst.fd.to_string(), inst.fs.to_string());
-          else
-            write_line ("cvt.s.%s\t%4s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
+      write_line ("cvt.s.%s\t%4s, %s", inst.fmt.to_string(), inst.fd.to_string(), inst.fs.to_string());
+    }
+
+    public override void visit_cop1_cvtspl (Cop1.Cvtspl inst)
+    {
+      write_line ("cvt.s.pl\t%4s, %s", inst.fd.to_string(), inst.fs.to_string());
+    }
+
+    public override void visit_cop1_cvtspu (Cop1.Cvtspu inst)
+    {
+      write_line ("cvt.s.pu\t%4s, %s", inst.fd.to_string(), inst.fs.to_string());
     }
 
     public override void visit_cop1_mov (Cop1.Mov inst)

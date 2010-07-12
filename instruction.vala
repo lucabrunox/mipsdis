@@ -289,6 +289,8 @@ namespace Mips
     public abstract void visit_cop1_cvtl (Cop1.Cvtl inst);
     public abstract void visit_cop1_cvtw (Cop1.Cvtw inst);
     public abstract void visit_cop1_cvts (Cop1.Cvts inst);
+    public abstract void visit_cop1_cvtspl (Cop1.Cvtspl inst);
+    public abstract void visit_cop1_cvtspu (Cop1.Cvtspu inst);
     public abstract void visit_cop1_cvtps (Cop1.Cvtps inst);
     public abstract void visit_cop1_add (Cop1.Add inst);
     public abstract void visit_cop1_pll (Cop1.Pll inst);
@@ -470,7 +472,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"abs.$fmt";
     }
 
     public override string? get_description ()
@@ -504,7 +506,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "add";
     }
 
     public override string? get_description ()
@@ -540,7 +542,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"add.$fmt";
     }
 
     public override string? get_description ()
@@ -574,7 +576,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "addi";
     }
 
     public override string? get_description ()
@@ -609,7 +611,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "addiu";
     }
 
     public override string? get_description ()
@@ -643,7 +645,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "addu";
     }
 
     public override string? get_description ()
@@ -679,7 +681,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "alnv.ps";
     }
 
     public override string? get_description ()
@@ -713,7 +715,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "and";
     }
 
     public override string? get_description ()
@@ -747,7 +749,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "andi";
     }
 
     public override string? get_description ()
@@ -806,7 +808,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return branch.to_string ();
     }
 
     public override string? get_description ()
@@ -865,7 +867,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return branch.to_string ();
     }
 
     public override string? get_description ()
@@ -905,7 +907,9 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      if (is_unconditional ())
+        return "b";
+      return "beq";
     }
 
     public override string? get_description ()
@@ -947,7 +951,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "beql";
     }
 
     public override string? get_description ()
@@ -980,7 +984,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "bgez";
     }
 
     public override string? get_description ()
@@ -1018,7 +1022,9 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      if (is_unconditional ())
+        return "bal";
+      return "bgezal";
     }
 
     public override string? get_description ()
@@ -1053,7 +1059,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "bgezall";
     }
 
     public override string? get_description ()
@@ -1086,7 +1092,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "bgezl";
     }
 
     public override string? get_description ()
@@ -1119,7 +1125,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "bgtz";
     }
 
     public override string? get_description ()
@@ -1152,7 +1158,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "bgtzl";
     }
 
     public override string? get_description ()
@@ -1185,7 +1191,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "blez";
     }
 
     public override string? get_description ()
@@ -1218,7 +1224,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "blezl";
     }
 
     public override string? get_description ()
@@ -1251,7 +1257,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "bltz";
     }
 
     public override string? get_description ()
@@ -1284,7 +1290,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "bltzal";
     }
 
     public override string? get_description ()
@@ -1317,7 +1323,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "bltzall";
     }
 
     public override string? get_description ()
@@ -1350,7 +1356,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "bltzl";
     }
 
     public override string? get_description ()
@@ -1390,7 +1396,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "bne";
     }
 
     public override string? get_description ()
@@ -1430,7 +1436,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "bnel";
     }
 
     public override string? get_description ()
@@ -1460,7 +1466,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "break";
     }
 
     public override string? get_description ()
@@ -1559,7 +1565,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"c.$cond.$fmt";
     }
 
     public override string? get_description ()
@@ -1593,7 +1599,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "cache";
     }
 
     public override string? get_description ()
@@ -1627,7 +1633,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"ceil.l.$fmt";
     }
 
     public override string? get_description ()
@@ -1661,7 +1667,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"ceil.w.$fmt";
     }
 
     public override string? get_description ()
@@ -1693,7 +1699,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "cfc1";
     }
 
     public override string? get_description ()
@@ -1725,7 +1731,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "cfc2";
     }
 
     public override string? get_description ()
@@ -1759,7 +1765,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "clo";
     }
 
     public override string? get_description ()
@@ -1793,7 +1799,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "clz";
     }
 
     public override string? get_description ()
@@ -1823,7 +1829,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "cop2";
     }
 
     public override string? get_description ()
@@ -1855,7 +1861,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "ctc1";
     }
 
     public override string? get_description ()
@@ -1887,7 +1893,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "ctc2";
     }
 
     public override string? get_description ()
@@ -1921,7 +1927,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"cvt.d.$fmt";
     }
 
     public override string? get_description ()
@@ -1955,7 +1961,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"cvt.l.$fmt";
     }
 
     public override string? get_description ()
@@ -1989,7 +1995,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "cvt.ps.s";
     }
 
     public override string? get_description ()
@@ -2023,12 +2029,76 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"cvt.s.$fmt";
     }
 
     public override string? get_description ()
     {
       return @"FPR[$fd] ← convert_and_round(GPR[$fs])";
+    }
+  }
+
+  public class Cop1.Cvtspl : Instruction
+  {
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Cvtspl (FpuRegister fs, FpuRegister fd)
+    {
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Cvtspl.from_code (int code)
+    {
+      this (get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_cvtspl (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "cvt.s.pl";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$fd] ← convert_and_round(GPR[$fs])";
+    }
+  }
+
+  public class Cop1.Cvtspu : Instruction
+  {
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Cvtspu (FpuRegister fs, FpuRegister fd)
+    {
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Cvtspu.from_code (int code)
+    {
+      this (get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_cvtspu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "cvt.s.pu";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
     }
   }
 
@@ -2057,7 +2127,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"cvt.w.$fmt";
     }
 
     public override string? get_description ()
@@ -2075,7 +2145,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "deret";
     }
 
     public override string? get_description ()
@@ -2107,7 +2177,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "div";
     }
 
     public override string? get_description ()
@@ -2143,7 +2213,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"div.$fmt";
     }
 
     public override string? get_description ()
@@ -2175,7 +2245,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "divu";
     }
 
     public override string? get_description ()
@@ -2193,7 +2263,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "eret";
     }
 
     public override string? get_description ()
@@ -2229,7 +2299,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "ext";
     }
 
     public override string? get_description ()
@@ -2263,7 +2333,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"floor.l.$fmt";
     }
 
     public override string? get_description ()
@@ -2297,7 +2367,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"floor.w.$fmt";
     }
 
     public override string? get_description ()
@@ -2333,7 +2403,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "ins";
     }
 
     public override string? get_description ()
@@ -2363,7 +2433,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "j";
     }
 
     public override string? get_description ()
@@ -2393,7 +2463,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "jal";
     }
 
     public override string? get_description ()
@@ -2432,7 +2502,9 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      if (has_hint ())
+        return "jalr.hb";
+      return "jalr";
     }
 
     public override string? get_description ()
@@ -2471,7 +2543,9 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      if (has_hint ())
+        return "jr.hb";
+      return "jr";
     }
 
     public override string? get_description ()
@@ -2507,7 +2581,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "lb";
     }
 
     public override string? get_description ()
@@ -2541,7 +2615,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "lbu";
     }
 
     public override string? get_description ()
@@ -2575,7 +2649,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "ldc1";
     }
 
     public override string? get_description ()
@@ -2609,7 +2683,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "ldc2";
     }
 
     public override string? get_description ()
@@ -2643,7 +2717,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "ldxc1";
     }
 
     public override string? get_description ()
@@ -2677,7 +2751,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "lh";
     }
 
     public override string? get_description ()
@@ -2711,7 +2785,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "lhu";
     }
 
     public override string? get_description ()
@@ -2745,7 +2819,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "ll";
     }
 
     public override string? get_description ()
@@ -2777,7 +2851,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "lui";
     }
 
     public override string? get_description ()
@@ -2811,7 +2885,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "luxc1";
     }
 
     public override string? get_description ()
@@ -2846,7 +2920,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "lw";
     }
 
     public override string? get_description ()
@@ -2880,7 +2954,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "lwc1";
     }
 
     public override string? get_description ()
@@ -2914,7 +2988,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "lwc2";
     }
 
     public override string? get_description ()
@@ -2948,7 +3022,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "lwl";
     }
 
     public override string? get_description ()
@@ -2982,7 +3056,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "lwr";
     }
 
     public override string? get_description ()
@@ -3016,7 +3090,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "lwxc1";
     }
 
     public override string? get_description ()
@@ -3048,7 +3122,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "madd";
     }
 
     public override string? get_description ()
@@ -3086,7 +3160,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"madd.$fmt";
     }
 
     public override string? get_description ()
@@ -3118,7 +3192,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "maddu";
     }
 
     public override string? get_description ()
@@ -3152,7 +3226,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "mfc0";
     }
 
     public override string? get_description ()
@@ -3184,7 +3258,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "mfc1";
     }
 
     public override string? get_description ()
@@ -3216,7 +3290,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "mfc2";
     }
 
     public override string? get_description ()
@@ -3248,7 +3322,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "mfhc1";
     }
 
     public override string? get_description ()
@@ -3280,7 +3354,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "mfhc2";
     }
 
     public override string? get_description ()
@@ -3310,7 +3384,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "mfhi";
     }
 
     public override string? get_description ()
@@ -3340,7 +3414,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "mflo";
     }
 
     public override string? get_description ()
@@ -3372,7 +3446,10 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      if (!sc)
+        return "di";
+      else
+        return "ei";
     }
 
     public override string? get_description ()
@@ -3406,12 +3483,51 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"mov.$fmt";
     }
 
     public override string? get_description ()
     {
       return @"FPR[$fd] ← FPR[$fs]";
+    }
+  }
+
+  public class Movci : Instruction
+  {
+    public Register rs;
+    public uint8 cc;
+    public bool test_true;
+    public Register rd;
+
+    public Movci (Register rs, uint8 cc, bool test_true, Register rd)
+    {
+      this.rs = rs;
+      this.cc = cc;
+      this.test_true = test_true;
+      this.rd = rd;
+    }
+
+    public Movci.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2 (code) >> 2, (code & 0x10000) == 1, get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_movci (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      if (test_true)
+        return "movt";
+      else
+        return "movf";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if FPConditionCode($cc) = $test_true then GPR[$rd] ← GPR[$rs]";
     }
   }
 
@@ -3444,48 +3560,15 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      if (test_true)
+        return @"movt.$fmt";
+      else
+        return @"movf.$fmt";
     }
 
     public override string? get_description ()
     {
       return @"if FPConditionCode($cc) = $test_true then FPR[$fd] ← FPR[$fs]";
-    }
-  }
-
-  public class Movci : Instruction
-  {
-    public Register rs;
-    public uint8 cc;
-    public bool test_true;
-    public Register rd;
-
-    public Movci (Register rs, uint8 cc, bool test_true, Register rd)
-    {
-      this.rs = rs;
-      this.cc = cc;
-      this.test_true = test_true;
-      this.rd = rd;
-    }
-
-    public Movci.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2 (code) >> 2, (code & 0x10000) == 1, get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_movci (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if FPConditionCode($cc) = $test_true then GPR[$rd] ← GPR[$rs]";
     }
   }
 
@@ -3514,7 +3597,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "movn";
     }
 
     public override string? get_description ()
@@ -3550,7 +3633,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"movn.$fmt";
     }
 
     public override string? get_description ()
@@ -3584,7 +3667,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "movz";
     }
 
     public override string? get_description ()
@@ -3620,7 +3703,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"movz.$fmt";
     }
 
     public override string? get_description ()
@@ -3652,7 +3735,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "msub";
     }
 
     public override string? get_description ()
@@ -3690,7 +3773,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"msub.$fmt";
     }
 
     public override string? get_description ()
@@ -3722,7 +3805,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "msubu";
     }
 
     public override string? get_description ()
@@ -3756,7 +3839,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "mtc0";
     }
 
     public override string? get_description ()
@@ -3788,7 +3871,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "mtc1";
     }
 
     public override string? get_description ()
@@ -3820,7 +3903,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "mtc2";
     }
 
     public override string? get_description ()
@@ -3852,7 +3935,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "mthc1";
     }
 
     public override string? get_description ()
@@ -3884,7 +3967,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "mthc2";
     }
 
     public override string? get_description ()
@@ -3914,7 +3997,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "mthi";
     }
 
     public override string? get_description ()
@@ -3944,7 +4027,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "mtlo";
     }
 
     public override string? get_description ()
@@ -3978,7 +4061,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "mul";
     }
 
     public override string? get_description ()
@@ -4014,7 +4097,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"mul.$fmt";
     }
 
     public override string? get_description ()
@@ -4046,7 +4129,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "mult";
     }
 
     public override string? get_description ()
@@ -4078,7 +4161,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "multu";
     }
 
     public override string? get_description ()
@@ -4112,7 +4195,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"neg.$fmt";
     }
 
     public override string? get_description ()
@@ -4150,7 +4233,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"nmadd.$fmt";
     }
 
     public override string? get_description ()
@@ -4188,7 +4271,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"nmsub.$fmt";
     }
 
     public override string? get_description ()
@@ -4222,7 +4305,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "nor";
     }
 
     public override string? get_description ()
@@ -4256,7 +4339,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "or";
     }
 
     public override string? get_description ()
@@ -4290,7 +4373,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "ori";
     }
 
     public override string? get_description ()
@@ -4324,7 +4407,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "pll.ps";
     }
 
     public override string? get_description ()
@@ -4358,7 +4441,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "plu.ps";
     }
 
     public override string? get_description ()
@@ -4392,7 +4475,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "pref";
     }
 
     public override string? get_description ()
@@ -4426,7 +4509,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "prefx";
     }
 
     public override string? get_description ()
@@ -4460,7 +4543,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "pul.ps";
     }
 
     public override string? get_description ()
@@ -4494,7 +4577,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "puu.ps";
     }
 
     public override string? get_description ()
@@ -4526,7 +4609,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "rdhwr";
     }
 
     public override string? get_description ()
@@ -4558,7 +4641,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "rdpgpr";
     }
 
     public override string? get_description ()
@@ -4592,7 +4675,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"recip.$fmt";
     }
 
     public override string? get_description ()
@@ -4626,7 +4709,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"round.l.$fmt";
     }
 
     public override string? get_description ()
@@ -4660,7 +4743,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"round.w.$fmt";
     }
 
     public override string? get_description ()
@@ -4694,7 +4777,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"rsqrt.$fmt";
     }
 
     public override string? get_description ()
@@ -4728,7 +4811,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "sb";
     }
 
     public override string? get_description ()
@@ -4762,7 +4845,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "sc";
     }
 
     public override string? get_description ()
@@ -4792,7 +4875,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "sdbbp";
     }
 
     public override string? get_description ()
@@ -4826,7 +4909,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "sdc1";
     }
 
     public override string? get_description ()
@@ -4860,7 +4943,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "sdc2";
     }
 
     public override string? get_description ()
@@ -4894,7 +4977,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "sdxc1";
     }
 
     public override string? get_description ()
@@ -4926,7 +5009,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "seb";
     }
 
     public override string? get_description ()
@@ -4958,7 +5041,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "seh";
     }
 
     public override string? get_description ()
@@ -4992,7 +5075,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "sh";
     }
 
     public override string? get_description ()
@@ -5041,7 +5124,13 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      if (is_ehb ())
+        return "ehb";
+      else if (is_nop ())
+        return "nop";
+      else if (is_ssnop ())
+        return "ssnop";
+      return "sll";
     }
 
     public override string? get_description ()
@@ -5081,7 +5170,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "sllv";
     }
 
     public override string? get_description ()
@@ -5115,7 +5204,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "slt";
     }
 
     public override string? get_description ()
@@ -5149,7 +5238,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "slti";
     }
 
     public override string? get_description ()
@@ -5183,7 +5272,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "sltiu";
     }
 
     public override string? get_description ()
@@ -5217,7 +5306,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "sltu";
     }
 
     public override string? get_description ()
@@ -5251,7 +5340,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"sqrt.$fmt";
     }
 
     public override string? get_description ()
@@ -5285,7 +5374,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "sra";
     }
 
     public override string? get_description ()
@@ -5319,7 +5408,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "srav";
     }
 
     public override string? get_description ()
@@ -5360,7 +5449,9 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      if (is_rotr ())
+        return "rotr";
+      return "srl";
     }
 
     public override string? get_description ()
@@ -5403,7 +5494,9 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      if (is_rotr ())
+        return "rotrv";
+      return "srlv";
     }
 
     public override string? get_description ()
@@ -5439,7 +5532,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "sub";
     }
 
     public override string? get_description ()
@@ -5475,7 +5568,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"sub.$fmt";
     }
 
     public override string? get_description ()
@@ -5509,7 +5602,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "subu";
     }
 
     public override string? get_description ()
@@ -5543,7 +5636,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "suxc1";
     }
 
     public override string? get_description ()
@@ -5577,7 +5670,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "sw";
     }
 
     public override string? get_description ()
@@ -5611,7 +5704,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "swc1";
     }
 
     public override string? get_description ()
@@ -5645,7 +5738,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "swc2";
     }
 
     public override string? get_description ()
@@ -5679,7 +5772,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "swl";
     }
 
     public override string? get_description ()
@@ -5713,7 +5806,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "swr";
     }
 
     public override string? get_description ()
@@ -5747,7 +5840,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "swxc1";
     }
 
     public override string? get_description ()
@@ -5777,7 +5870,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "sync";
     }
 
     public override string? get_description ()
@@ -5809,7 +5902,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "synci";
     }
 
     public override string? get_description ()
@@ -5839,7 +5932,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "syscall";
     }
 
     public override string? get_description ()
@@ -5873,7 +5966,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "teq";
     }
 
     public override string? get_description ()
@@ -5905,7 +5998,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "teqi";
     }
 
     public override string? get_description ()
@@ -5939,7 +6032,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "tge";
     }
 
     public override string? get_description ()
@@ -5971,7 +6064,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "tgei";
     }
 
     public override string? get_description ()
@@ -6003,7 +6096,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "tgeiu";
     }
 
     public override string? get_description ()
@@ -6037,7 +6130,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "tgeu";
     }
 
     public override string? get_description ()
@@ -6055,7 +6148,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "tlbp";
     }
 
     public override string? get_description ()
@@ -6073,7 +6166,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "tlbr";
     }
 
     public override string? get_description ()
@@ -6091,7 +6184,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "tlbwi";
     }
 
     public override string? get_description ()
@@ -6109,7 +6202,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "tlbwr";
     }
 
     public override string? get_description ()
@@ -6143,7 +6236,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "tlt";
     }
 
     public override string? get_description ()
@@ -6175,7 +6268,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "tlti";
     }
 
     public override string? get_description ()
@@ -6207,7 +6300,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "tltiu";
     }
 
     public override string? get_description ()
@@ -6241,7 +6334,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "tltu";
     }
 
     public override string? get_description ()
@@ -6275,7 +6368,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "tne";
     }
 
     public override string? get_description ()
@@ -6307,7 +6400,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "tnei";
     }
 
     public override string? get_description ()
@@ -6341,7 +6434,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"trunc.l.$fmt";
     }
 
     public override string? get_description ()
@@ -6375,7 +6468,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return @"trunc.w.$fmt";
     }
 
     public override string? get_description ()
@@ -6405,7 +6498,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "wait";
     }
 
     public override string? get_description ()
@@ -6437,7 +6530,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "wrpgpr";
     }
 
     public override string? get_description ()
@@ -6469,7 +6562,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "wsbh";
     }
 
     public override string? get_description ()
@@ -6503,7 +6596,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "xor";
     }
 
     public override string? get_description ()
@@ -6537,7 +6630,7 @@ namespace Mips
 
     public override string get_mnemonic ()
     {
-      return "";
+      return "xori";
     }
 
     public override string? get_description ()

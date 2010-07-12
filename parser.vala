@@ -449,9 +449,18 @@ namespace Mips
               throw new ParserError.INVALID_INSTRUCTION ("RQSRT 20-16 not zero");
             return new Cop1.Rsqrt.from_code (code);
           case 0x20:
-            if (get_five2 (code) != 0)
-              throw new ParserError.INVALID_INSTRUCTION ("CVT.S 20-16 not zero");
-            return new Cop1.Cvts.from_code (code);
+            if (get_five1 (code) == 0x16)
+              {
+                if (get_five2 (code) != 0)
+                  throw new ParserError.INVALID_INSTRUCTION ("CVT.S.PU 20-16 not zero");
+                return new Cop1.Cvtspu.from_code (code);
+              }
+            else
+              {
+                if (get_five2 (code) != 0)
+                  throw new ParserError.INVALID_INSTRUCTION ("CVT.S 20-16 not zero");
+                return new Cop1.Cvts.from_code (code);
+              }
           case 0x21:
             if (get_five2 (code) != 0)
               throw new ParserError.INVALID_INSTRUCTION ("CVT.D 20-16 not zero");
@@ -468,6 +477,12 @@ namespace Mips
             if (get_five1 (code) != 0x10)
               throw new ParserError.INVALID_INSTRUCTION ("CVT.PS 25-21 not 0x10");
             return new Cop1.Cvtps.from_code (code);
+          case 0x28:
+            if (get_five1 (code) != 0x16)
+              throw new ParserError.INVALID_INSTRUCTION ("CVT.S.PL 25-21 not 0x16");
+            if (get_five2 (code) != 0)
+              throw new ParserError.INVALID_INSTRUCTION ("CVT.S.PL 20-16 not zero");
+            return new Cop1.Cvtspl.from_code (code);
           case 0x2C:
             if (get_five1 (code) != 0x16)
               throw new ParserError.INVALID_INSTRUCTION ("PLL.PS 20-16 not 0x16");

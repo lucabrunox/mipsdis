@@ -182,6 +182,12 @@ namespace Mips
     public override void visit_cop1_cvts (Cop1.Cvts inst)
     {
     }
+    public override void visit_cop1_cvtspl (Cop1.Cvtspl inst)
+    {
+    }
+    public override void visit_cop1_cvtspu (Cop1.Cvtspu inst)
+    {
+    }
     public override void visit_cop1_add (Cop1.Add inst)
     {
     }
