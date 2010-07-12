@@ -441,6 +441,7 @@ namespace Mips
   public abstract class Instruction
   {
     public abstract void accept (Visitor visitor);
+    public abstract string get_mnemonic ();
     public virtual string? get_description () { return null; }
   }
 
@@ -453,6 +454,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_deret (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -470,6 +476,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_eret (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -504,6 +515,11 @@ namespace Mips
       visitor.visit_cop1_abs (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← abs(FPR[$fs])";
@@ -534,6 +550,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_mf (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -568,6 +589,11 @@ namespace Mips
       visitor.visit_cop0_mt (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"CPR[0, $rd, $sel] ← GPR[$rt]";
@@ -598,6 +624,11 @@ namespace Mips
       visitor.visit_cop1_cf (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rt] ← FP_Control[FPR[$fs]]";
@@ -625,6 +656,11 @@ namespace Mips
       visitor.visit_cop1_ct (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FP_Control[$fs] ← GPR[$rt]";
@@ -648,6 +684,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop2_co (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -677,6 +718,11 @@ namespace Mips
       visitor.visit_cop2_cf (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rt] ← CP2CCR[Impl]";
@@ -702,6 +748,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop2_ct (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -734,6 +785,11 @@ namespace Mips
       visitor.visit_cop2_mf (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rt] ← CP2CPR[$impl]";
@@ -762,6 +818,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop2_mfh (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -794,6 +855,11 @@ namespace Mips
       visitor.visit_cop2_mth (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"CP2CPR[$impl]63..32 ← GPR[$rt]";
@@ -824,6 +890,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_sqrt (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -860,6 +931,11 @@ namespace Mips
       visitor.visit_cop1_movz (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if GPR[$rt] = 0 then FPR[$fd] ← FPR[$fs]";
@@ -892,6 +968,11 @@ namespace Mips
       visitor.visit_add (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rd] ← GPR[$rs] + GPR[$rt]";
@@ -920,6 +1001,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_lui (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -956,6 +1042,11 @@ namespace Mips
       visitor.visit_addiu (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rt] ← GPR[$rs] + $immediate";
@@ -987,6 +1078,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_addi (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -1021,6 +1117,16 @@ namespace Mips
     {
       visitor.visit_addu (this);
     }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rs] + GPR[$rt]";
+    }
   }
 
   public class Sw : Instruction
@@ -1048,6 +1154,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_sw (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -1083,6 +1194,11 @@ namespace Mips
       visitor.visit_cache (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"perform the cache operation $op";
@@ -1116,6 +1232,11 @@ namespace Mips
       visitor.visit_pref (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"prefetch_memory(GPR[$base] + $offset)";
@@ -1143,6 +1264,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_sync (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -1176,6 +1302,11 @@ namespace Mips
       visitor.visit_regimm_synci (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return "synchronize all caches to make instruction writes effective";
@@ -1205,6 +1336,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_regimm_teqi (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -1238,6 +1374,11 @@ namespace Mips
       visitor.visit_regimm_tnei (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if GPR[$rs] ≠ $immediate then Trap";
@@ -1267,6 +1408,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_regimm_tlti (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -1300,6 +1446,11 @@ namespace Mips
       visitor.visit_regimm_tltiu (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if GPR[$rs] < $immediate then Trap";
@@ -1331,6 +1482,11 @@ namespace Mips
       visitor.visit_regimm_tgei (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if GPR[$rs] ≥ $immediate then Trap";
@@ -1360,6 +1516,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_regimm_tgeiu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -1398,6 +1559,11 @@ namespace Mips
       visitor.visit_regimm_bgezal (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       if (is_unconditional ())
@@ -1429,6 +1595,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_regimm_bgezall (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -1463,6 +1634,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_lw (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -1502,6 +1678,11 @@ namespace Mips
       visitor.visit_jalr (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       if (has_hint ())
@@ -1539,6 +1720,11 @@ namespace Mips
       visitor.visit_jr (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       if (has_hint ())
@@ -1573,6 +1759,11 @@ namespace Mips
       visitor.visit_regimm_bltzal (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if GPR[$rs] < 0 then procedure_call";
@@ -1603,6 +1794,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_regimm_bltzall (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -1647,6 +1843,11 @@ namespace Mips
     public bool is_ehb ()
     {
       return rt == 0 && rd == 0 && sa == 3;
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -1694,6 +1895,11 @@ namespace Mips
       visitor.visit_beq (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       if (is_unconditional ())
@@ -1735,6 +1941,11 @@ namespace Mips
       visitor.visit_beql (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if GPR[$rs] = GPR[$rt] then branch_likely";
@@ -1772,6 +1983,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_bne (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -1813,6 +2029,11 @@ namespace Mips
       visitor.visit_bnel (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if GPR[$rs] ≠ GPR[$rt] then branch likely";
@@ -1844,6 +2065,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_lbu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -1879,6 +2105,11 @@ namespace Mips
       visitor.visit_sb (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
@@ -1908,6 +2139,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_seb (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -1941,6 +2177,11 @@ namespace Mips
       visitor.visit_wsbh (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rd] ← SwapBytesWithinHalfwords(GPR[$rt])";
@@ -1970,6 +2211,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_ext (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -2003,6 +2249,11 @@ namespace Mips
       visitor.visit_ins (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rt] ← InsertField(GPR[$rt], GPR[$rs], $msb, $lsb)";
@@ -2032,6 +2283,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_seh (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -2067,6 +2323,11 @@ namespace Mips
       visitor.visit_sc (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if atomic_update then memory[GPR[$base] + $offset] ← GPR[$rt], GPR[$rt] ← 1 else GPR[$rt] ← 0";
@@ -2098,6 +2359,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_sltiu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -2133,6 +2399,11 @@ namespace Mips
       visitor.visit_slti (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rt] ← (GPR[$rs] < $immediate)";
@@ -2164,6 +2435,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_ori (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -2199,6 +2475,11 @@ namespace Mips
       visitor.visit_sltu (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rd] ← (GPR[$rs] < GPR[$rt])";
@@ -2230,6 +2511,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_sllv (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -2265,6 +2551,11 @@ namespace Mips
       visitor.visit_and (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rd] ← GPR[$rs] AND GPR[$rt]";
@@ -2296,6 +2587,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_or (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -2331,6 +2627,11 @@ namespace Mips
       visitor.visit_xor (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rd] ← GPR[$rs] XOR GPR[$rt]";
@@ -2362,6 +2663,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_lhu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -2397,6 +2703,11 @@ namespace Mips
       visitor.visit_subu (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rd] ← GPR[$rs] - GPR[$rt]";
@@ -2424,6 +2735,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_sub (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -2459,6 +2775,11 @@ namespace Mips
       visitor.visit_sh (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
@@ -2490,6 +2811,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_lh (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -2531,6 +2857,11 @@ namespace Mips
       visitor.visit_srl (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       if (is_rotr ())
@@ -2566,6 +2897,11 @@ namespace Mips
       visitor.visit_andi (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rt] ← GPR[$rs] AND $immediate";
@@ -2596,6 +2932,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_regimm_bgez (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -2630,6 +2971,11 @@ namespace Mips
       visitor.visit_regimm_bgezl (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if GPR[$rs] ≥ 0 then branch_likely";
@@ -2662,6 +3008,11 @@ namespace Mips
       visitor.visit_sra (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rd] ← GPR[$rt] >> $sa (arithmetic)";
@@ -2689,6 +3040,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_lb (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -2724,6 +3080,11 @@ namespace Mips
       visitor.visit_ll (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
@@ -2756,6 +3117,11 @@ namespace Mips
       visitor.visit_regimm_bltz (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if GPR[$rs] < 0 then branch";
@@ -2786,6 +3152,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_regimm_bltzl (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -2821,6 +3192,11 @@ namespace Mips
       visitor.visit_slt (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rd] ← (GPR[$rs] < GPR[$rt])";
@@ -2850,6 +3226,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_mult (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -2883,6 +3264,11 @@ namespace Mips
       visitor.visit_multu (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"(HI, LO) ← GPR[$rs] × GPR[$rt]";
@@ -2912,6 +3298,11 @@ namespace Mips
       visitor.visit_mfhi (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rd] ← HI";
@@ -2939,6 +3330,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_mthi (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -2973,6 +3369,11 @@ namespace Mips
       visitor.visit_blez (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if GPR[$rs] ≤ 0 then branch";
@@ -3005,6 +3406,11 @@ namespace Mips
       visitor.visit_bgtz (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if GPR[$rs] > 0 then branch";
@@ -3035,6 +3441,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_bgtzl (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -3070,6 +3481,11 @@ namespace Mips
       visitor.visit_xori (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rt] ← GPR[$rs] XOR $immediate";
@@ -3103,6 +3519,11 @@ namespace Mips
       visitor.visit_clo (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rd] ← count_leading_ones GPR[$rs]";
@@ -3130,6 +3551,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_clz (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -3165,6 +3591,11 @@ namespace Mips
       visitor.visit_mul (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rd] ← GPR[$rs] × GPR[$rt]";
@@ -3196,6 +3627,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_nor (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -3238,6 +3674,11 @@ namespace Mips
       visitor.visit_srlv (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       if (is_rotr ())
@@ -3273,6 +3714,11 @@ namespace Mips
       visitor.visit_srav (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rd] ← GPR[$rt] >> $rs (arithmetic)";
@@ -3304,6 +3750,11 @@ namespace Mips
       visitor.visit_divu (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"(HI, LO) ← GPR[$rs] / GPR[$rt]";
@@ -3333,6 +3784,11 @@ namespace Mips
       visitor.visit_break (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return "breakpoint";
@@ -3348,6 +3804,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_tlbp (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -3367,6 +3828,11 @@ namespace Mips
       visitor.visit_cop0_tlbr (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return "read an entry from the TLB";
@@ -3384,6 +3850,11 @@ namespace Mips
       visitor.visit_cop0_tlbwi (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return "write a TLB entry indexed by the Index register";
@@ -3399,6 +3870,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_tlbwr (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -3430,6 +3906,11 @@ namespace Mips
       visitor.visit_mflo (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rd] ← LO";
@@ -3457,6 +3938,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_mtlo (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -3492,6 +3978,11 @@ namespace Mips
       visitor.visit_lwl (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rt] ← GPR[$rt] MERGE memory[GPR[$base] + $offset]";
@@ -3523,6 +4014,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_lwr (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -3558,6 +4054,11 @@ namespace Mips
       visitor.visit_movz (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if GPR[$rt] = 0 then GPR[$rd] ← GPR[$rs]";
@@ -3587,6 +4088,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_madd (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -3620,6 +4126,11 @@ namespace Mips
       visitor.visit_msub (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"(HI,LO) ← (HI,LO) - (GPR[$rs] × GPR[$rt])";
@@ -3651,6 +4162,11 @@ namespace Mips
       visitor.visit_msubu (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"(HI,LO) ← (HI,LO) - (GPR[$rs] × GPR[$rt])";
@@ -3680,6 +4196,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_maddu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -3715,6 +4236,11 @@ namespace Mips
       visitor.visit_movn (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if GPR[$rt] ≠ 0 then GPR[$rd] ← GPR[$rs]";
@@ -3744,6 +4270,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_div (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -3776,6 +4307,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_blezl (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -3811,6 +4347,11 @@ namespace Mips
       visitor.visit_swl (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
@@ -3842,6 +4383,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_swr (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -3877,6 +4423,11 @@ namespace Mips
       visitor.visit_sdc1 (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"memory[GPR[$base] + $offset] ←FPR[$ft]";
@@ -3910,6 +4461,11 @@ namespace Mips
       visitor.visit_sdc2 (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"memory[GPR[$base] + $offset] ← CPR[2,$rt,0]";
@@ -3941,6 +4497,11 @@ namespace Mips
       visitor.visit_cop1x_alnv (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← ByteAlign(GPR[$rs]2..0, FPR[$fs], FPR[$ft])";
@@ -3968,6 +4529,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1x_sdxc1 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -3999,6 +4565,11 @@ namespace Mips
       visitor.visit_cop1x_ldxc1 (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← memory[GPR[$base] + GPR[$index]]";
@@ -4028,6 +4599,11 @@ namespace Mips
       visitor.visit_cop1x_luxc1 (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← memory[(GPR[$base] + GPR[$index])PSIZE-1..3]";
@@ -4055,6 +4631,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1x_lwxc1 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -4090,6 +4671,11 @@ namespace Mips
       visitor.visit_cop1x_suxc1 (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"memory[(GPR[$base] + GPR[$index])PSIZE-1..3] ← FPR[$fs]";
@@ -4121,6 +4707,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1x_swxc1 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -4156,6 +4747,11 @@ namespace Mips
       visitor.visit_ldc1 (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$ft] ← memory[GPR[$base] + $offset]";
@@ -4183,6 +4779,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_ldc2 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -4218,6 +4819,11 @@ namespace Mips
       visitor.visit_lwc1 (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$ft] ← memory[GPR[$base] + $offset]";
@@ -4249,6 +4855,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_lwc2 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -4284,6 +4895,11 @@ namespace Mips
       visitor.visit_swc1 (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"memory[GPR[$base] + $offset] ← FPR[$ft]";
@@ -4317,6 +4933,11 @@ namespace Mips
       visitor.visit_swc2 (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"memory[GPR[$base] + $offset] ← CPR[2,$rt,0]";
@@ -4344,6 +4965,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_mov (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -4375,6 +5001,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_movn (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -4409,6 +5040,11 @@ namespace Mips
       visitor.visit_cop1_neg (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← −FPR[$fs]";
@@ -4439,6 +5075,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_truncw (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -4473,6 +5114,11 @@ namespace Mips
       visitor.visit_cop1_truncl (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
@@ -4500,6 +5146,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_ceill (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -4534,6 +5185,11 @@ namespace Mips
       visitor.visit_cop1_ceilw (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
@@ -4563,6 +5219,11 @@ namespace Mips
       visitor.visit_cop1_floorl (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
@@ -4590,6 +5251,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_floorw (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -4624,6 +5290,11 @@ namespace Mips
       visitor.visit_cop1_roundl (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
@@ -4656,6 +5327,11 @@ namespace Mips
       visitor.visit_cop1_roundw (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
@@ -4686,6 +5362,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_rsqrt (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -4722,6 +5403,11 @@ namespace Mips
       visitor.visit_cop1_sub (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← FPR[$fs] - FPR[$ft]";
@@ -4754,6 +5440,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_mul (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -4790,6 +5481,11 @@ namespace Mips
       visitor.visit_cop1_div (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← FPR[$fs] / FPR[$ft]";
@@ -4824,6 +5520,11 @@ namespace Mips
       visitor.visit_cop1_add (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← FPR[$fs] + FPR[$ft]";
@@ -4854,6 +5555,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_pll (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -4888,6 +5594,11 @@ namespace Mips
       visitor.visit_cop1_plu (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← lower(FPR[$fs]) || upper(FPR[$ft])";
@@ -4918,6 +5629,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_pul (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -4952,6 +5668,11 @@ namespace Mips
       visitor.visit_cop1_puu (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← upper(FPR[$fs]) || upper(FPR[$ft])";
@@ -4981,6 +5702,11 @@ namespace Mips
       visitor.visit_cop1_cvtd (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
@@ -5008,6 +5734,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_cvtl (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -5042,6 +5773,11 @@ namespace Mips
       visitor.visit_cop1_cvtw (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
@@ -5074,6 +5810,11 @@ namespace Mips
       visitor.visit_cop1_cvts (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← convert_and_round(GPR[$fs])";
@@ -5101,6 +5842,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_cvtps (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -5197,6 +5943,11 @@ namespace Mips
       visitor.visit_cop1_ccond (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPUConditionCode($cc) ← FPR[$fs] compare_cond FPR[$ft]";
@@ -5254,6 +6005,11 @@ namespace Mips
       visitor.visit_cop1_bc (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if FPConditionCode($cc) = 0 then branch";
@@ -5308,6 +6064,11 @@ namespace Mips
       visitor.visit_cop2_bc (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if COP2Condition($cc) = 0 then branch";
@@ -5337,6 +6098,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop2_mt (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -5370,6 +6136,11 @@ namespace Mips
       visitor.visit_cop1_mt (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fs] ← GPR[$rt]";
@@ -5399,6 +6170,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_mf (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -5432,6 +6208,11 @@ namespace Mips
       visitor.visit_cop1_mfh (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rt] ← FPR[$fs]63..32";
@@ -5461,6 +6242,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_mth (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -5493,6 +6279,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1_recip (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -5528,6 +6319,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_movci (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -5567,6 +6363,11 @@ namespace Mips
       visitor.visit_cop1_movcf (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if FPConditionCode($cc) = $test_true then FPR[$fd] ← FPR[$fs]";
@@ -5591,6 +6392,16 @@ namespace Mips
     {
       visitor.visit_jump (this);
     }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return "branch within the current 256 MB-aligned region";
+    }
   }
 
   public class Cop0.Wait : Instruction
@@ -5614,6 +6425,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_wait (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -5643,6 +6459,11 @@ namespace Mips
       visitor.visit_cop0_mfmc0 (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rt] ← Status; StatusIE ← $sc";
@@ -5667,6 +6488,16 @@ namespace Mips
     {
       visitor.visit_jal (this);
     }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return "execute a procedure call within the current 256 MB-aligned region";
+    }
   }
 
   public class Sdbbp : Instruction
@@ -5690,6 +6521,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_sdbbp (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -5719,6 +6555,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_syscall (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -5754,6 +6595,11 @@ namespace Mips
       visitor.visit_teq (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if GPR[$rs] = GPR[$rt] then Trap";
@@ -5785,6 +6631,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_tltu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -5820,6 +6671,11 @@ namespace Mips
       visitor.visit_tne (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if GPR[$rs] ≠ GPR[$rt] then Trap";
@@ -5851,6 +6707,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_tlt (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -5886,6 +6747,11 @@ namespace Mips
       visitor.visit_tgeu (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"if GPR[$rs] ≥ GPR[$rt] then Trap";
@@ -5917,6 +6783,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_tge (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -5956,6 +6827,11 @@ namespace Mips
       visitor.visit_cop1x_madd (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← (FPR[$fs] × FPR[$ft]) + FPR[$fr]";
@@ -5991,6 +6867,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop1x_nmadd (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -6030,6 +6911,11 @@ namespace Mips
       visitor.visit_cop1x_nmsub (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← - ((FPR[$fs] × FPR[$ft]) - FPR[$fr])";
@@ -6067,6 +6953,11 @@ namespace Mips
       visitor.visit_cop1x_msub (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"FPR[$fd] ← (FPR[$fs] × FPR[$ft]) − FPR[$fr]";
@@ -6100,6 +6991,11 @@ namespace Mips
       visitor.visit_cop1x_prefx (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"prefetch_memory[GPR[$base] + GPR[$index]]";
@@ -6129,6 +7025,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_rdhwr (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
@@ -6162,6 +7063,11 @@ namespace Mips
       visitor.visit_cop0_rdpgpr (this);
     }
 
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
     public override string? get_description ()
     {
       return @"GPR[$rd] ← SGPR[SRSCtlPSS, $rt]";
@@ -6191,6 +7097,11 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_wrpgpr (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
     }
 
     public override string? get_description ()
