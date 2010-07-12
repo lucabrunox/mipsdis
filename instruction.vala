@@ -447,9 +447,6 @@ namespace Mips
 
   public class Cop1.Abs : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -484,9 +481,6 @@ namespace Mips
 
   public class Add : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100000
-    */
     public Register rs;
     public Register rt;
     public Register rd;
@@ -521,9 +515,6 @@ namespace Mips
 
   public class Cop1.Add : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister ft;
     public FpuRegister fs;
@@ -560,10 +551,6 @@ namespace Mips
 
   public class Addi : Instruction
   {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public int16 immediate;
@@ -598,10 +585,6 @@ namespace Mips
 
   public class Addiu : Instruction
   {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public uint16 immediate;
@@ -637,10 +620,6 @@ namespace Mips
 
   public class Addu : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
     public Register rs;
     public Register rt;
     public Register rd;
@@ -711,10 +690,6 @@ namespace Mips
 
   public class And : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
     public Register rs;
     public Register rt;
     public Register rd;
@@ -749,10 +724,6 @@ namespace Mips
 
   public class Andi : Instruction
   {
-    /*
-      001011 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public int16 immediate;
@@ -787,9 +758,6 @@ namespace Mips
 
   public class Cop1.Bc : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
     public enum Branch
     {
       FALSE,
@@ -908,10 +876,6 @@ namespace Mips
 
   public class Beq : Instruction
   {
-    /* BEQ
-       000100 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public int16 offset;
@@ -954,10 +918,6 @@ namespace Mips
 
   public class Beql : Instruction
   {
-    /* BEQL
-       000100 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public int16 offset;
@@ -998,10 +958,6 @@ namespace Mips
 
   public class Regimm.Bgez : Instruction
   {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
     public Register rs;
     public int16 offset;
     public BinaryInstruction reference;
@@ -1035,9 +991,6 @@ namespace Mips
 
   public class Regimm.Bgezal : Instruction
   {
-    /* REGIMM
-       000001 00000 10001 offset(16)
-    */
     public Register rs;
     public int16 offset;
     public BinaryInstruction reference;
@@ -1078,9 +1031,6 @@ namespace Mips
 
   public class Regimm.Bgezall : Instruction
   {
-    /* REGIMM
-       000001 00000 10001 offset(16)
-    */
     public Register rs;
     public int16 offset;
     public BinaryInstruction reference;
@@ -1114,10 +1064,6 @@ namespace Mips
 
   public class Regimm.Bgezl : Instruction
   {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
     public Register rs;
     public int16 offset;
     public BinaryInstruction reference;
@@ -1151,10 +1097,6 @@ namespace Mips
 
   public class Bgtz : Instruction
   {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
     public Register rs;
     public int16 offset;
     public BinaryInstruction reference;
@@ -1188,10 +1130,6 @@ namespace Mips
 
   public class Bgtzl : Instruction
   {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
     public Register rs;
     public int16 offset;
     public BinaryInstruction reference;
@@ -1225,10 +1163,6 @@ namespace Mips
 
   public class Blez : Instruction
   {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
     public Register rs;
     public int16 offset;
     public BinaryInstruction reference;
@@ -1262,10 +1196,6 @@ namespace Mips
 
   public class Blezl : Instruction
   {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
     public Register rs;
     public int16 offset;
     public BinaryInstruction reference;
@@ -1299,10 +1229,6 @@ namespace Mips
 
   public class Regimm.Bltz : Instruction
   {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
     public Register rs;
     public int16 offset;
     public BinaryInstruction reference;
@@ -1336,10 +1262,6 @@ namespace Mips
 
   public class Regimm.Bltzal : Instruction
   {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
     public Register rs;
     public int16 offset;
     public BinaryInstruction reference;
@@ -1373,10 +1295,6 @@ namespace Mips
 
   public class Regimm.Bltzall : Instruction
   {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
     public Register rs;
     public int16 offset;
     public BinaryInstruction reference;
@@ -1410,10 +1328,6 @@ namespace Mips
 
   public class Regimm.Bltzl : Instruction
   {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
     public Register rs;
     public int16 offset;
     public BinaryInstruction reference;
@@ -1447,10 +1361,6 @@ namespace Mips
 
   public class Bne : Instruction
   {
-    /* BNE
-       000101 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public int16 offset;
@@ -1491,10 +1401,6 @@ namespace Mips
 
   public class Bnel : Instruction
   {
-    /* BNEL
-       000101 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public int16 offset;
@@ -1535,10 +1441,6 @@ namespace Mips
 
   public class Break : Instruction
   {
-    /* SPECIAL
-       000000 code(20) 001101
-    */
-
     public uint code;
 
     public Break (uint code)
@@ -1668,10 +1570,6 @@ namespace Mips
 
   public class Cache : Instruction
   {
-    /* CACHE
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public uint8 op;
     public uint16 offset;
@@ -1740,9 +1638,6 @@ namespace Mips
 
   public class Cop1.Ceilw : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -1777,9 +1672,6 @@ namespace Mips
 
   public class Cop1.Cf : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Register rt;
     public FpuRegister fs;
 
@@ -1844,10 +1736,6 @@ namespace Mips
 
   public class Clo : Instruction
   {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public Register rd;
@@ -2112,9 +2000,6 @@ namespace Mips
 
   public class Cop1.Cvts : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -2149,9 +2034,6 @@ namespace Mips
 
   public class Cop1.Cvtw : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -2186,10 +2068,6 @@ namespace Mips
 
   public class Cop0.Deret : Instruction
   {
-    /* COP0
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_deret (this);
@@ -2208,10 +2086,6 @@ namespace Mips
 
   public class Div : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
     public Register rs;
     public Register rt;
 
@@ -2244,9 +2118,6 @@ namespace Mips
 
   public class Cop1.Div : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister ft;
     public FpuRegister fs;
@@ -2283,10 +2154,6 @@ namespace Mips
 
   public class Divu : Instruction
   {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
 
@@ -2319,10 +2186,6 @@ namespace Mips
 
   public class Cop0.Eret : Instruction
   {
-    /* COP0
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_eret (this);
@@ -2541,9 +2404,6 @@ namespace Mips
 
   public class Jalr : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) 00000 rd(5) hint(5) 001001
-    */
     public Register rs;
     public Register rd;
     public uint8 hint;
@@ -2585,9 +2445,6 @@ namespace Mips
 
   public class Jr : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) 00000 00000 hint(5) 001000
-    */
     public Register rs;
     public uint8 hint;
 
@@ -2661,10 +2518,6 @@ namespace Mips
 
   public class Lbu : Instruction
   {
-    /* LBU
-       100100 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public uint16 offset;
@@ -2699,10 +2552,6 @@ namespace Mips
 
   public class Ldc1 : Instruction
   {
-    /* LDC1
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public FpuRegister ft;
     public uint16 offset;
@@ -2805,10 +2654,6 @@ namespace Mips
 
   public class Lh : Instruction
   {
-    /* LH
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public uint16 offset;
@@ -2843,10 +2688,6 @@ namespace Mips
 
   public class Lhu : Instruction
   {
-    /* LHU
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public uint16 offset;
@@ -2881,10 +2722,6 @@ namespace Mips
 
   public class Ll : Instruction
   {
-    /* LL
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public uint16 offset;
@@ -2919,9 +2756,6 @@ namespace Mips
 
   public class Lui : Instruction
   {
-    /*
-      001111 00000 rt(5) immediate(16)
-    */
     public Register rt;
     public uint16 immediate;
 
@@ -2988,10 +2822,6 @@ namespace Mips
 
   public class Lw : Instruction
   {
-    /* SW
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public int16 offset;
@@ -3027,10 +2857,6 @@ namespace Mips
 
   public class Lwc1 : Instruction
   {
-    /* LWC1
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public FpuRegister ft;
     public uint16 offset;
@@ -3065,10 +2891,6 @@ namespace Mips
 
   public class Lwc2 : Instruction
   {
-    /* LWC2
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public uint16 offset;
@@ -3103,10 +2925,6 @@ namespace Mips
 
   public class Lwl : Instruction
   {
-    /* SW
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public uint16 offset;
@@ -3141,10 +2959,6 @@ namespace Mips
 
   public class Lwr : Instruction
   {
-    /* SW
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public uint16 offset;
@@ -3213,10 +3027,6 @@ namespace Mips
 
   public class Madd : Instruction
   {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
 
@@ -3249,10 +3059,6 @@ namespace Mips
 
   public class Cop1x.Madd : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public FpuRegister fr;
     public FpuRegister ft;
     public FpuRegister fs;
@@ -3291,10 +3097,6 @@ namespace Mips
 
   public class Maddu : Instruction
   {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
 
@@ -3327,9 +3129,6 @@ namespace Mips
 
   public class Cop0.Mf : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Register rt;
     public Register rd;
     public uint8 sel;
@@ -3364,10 +3163,6 @@ namespace Mips
 
   public class Cop1.Mf : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Register rt;
     public FpuRegister fs;
 
@@ -3400,9 +3195,6 @@ namespace Mips
 
   public class Cop2.Mf : Instruction
   {
-    /* COP2
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Register rt;
     public uint16 impl;
 
@@ -3435,10 +3227,6 @@ namespace Mips
 
   public class Cop1.Mfh : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Register rt;
     public FpuRegister fs;
 
@@ -3471,9 +3259,6 @@ namespace Mips
 
   public class Cop2.Mfh : Instruction
   {
-    /* COP2
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Register rt;
     public uint16 impl;
 
@@ -3506,10 +3291,6 @@ namespace Mips
 
   public class Mfhi : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
     public Register rd;
 
     public Mfhi (Register rd)
@@ -3540,10 +3321,6 @@ namespace Mips
 
   public class Mflo : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
     public Register rd;
 
     public Mflo (Register rd)
@@ -3640,10 +3417,6 @@ namespace Mips
 
   public class Cop1.Movcf : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Format fmt;
     public uint8 cc;
     public bool test_true;
@@ -3682,10 +3455,6 @@ namespace Mips
 
   public class Movci : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Register rs;
     public uint8 cc;
     public bool test_true;
@@ -3722,10 +3491,6 @@ namespace Mips
 
   public class Movn : Instruction
   {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public Register rd;
@@ -3796,10 +3561,6 @@ namespace Mips
 
   public class Movz : Instruction
   {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public Register rd;
@@ -3834,9 +3595,6 @@ namespace Mips
 
   public class Cop1.Movz : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public Register rt;
     public FpuRegister fs;
@@ -3873,10 +3631,6 @@ namespace Mips
 
   public class Msub : Instruction
   {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
 
@@ -3909,10 +3663,6 @@ namespace Mips
 
   public class Cop1x.Msub : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public FpuRegister fr;
     public FpuRegister ft;
     public FpuRegister fs;
@@ -3951,10 +3701,6 @@ namespace Mips
 
   public class Msubu : Instruction
   {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
 
@@ -3987,9 +3733,6 @@ namespace Mips
 
   public class Cop0.Mt : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Register rt;
     public Register rd;
     public uint8 sel;
@@ -4024,10 +3767,6 @@ namespace Mips
 
   public class Cop1.Mt : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Register rt;
     public FpuRegister fs;
 
@@ -4060,10 +3799,6 @@ namespace Mips
 
   public class Cop2.Mt : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Register rt;
     public uint16 impl;
 
@@ -4096,10 +3831,6 @@ namespace Mips
 
   public class Cop1.Mth : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Register rt;
     public FpuRegister fs;
 
@@ -4132,9 +3863,6 @@ namespace Mips
 
   public class Cop2.Mth : Instruction
   {
-    /* COP2
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Register rt;
     public uint16 impl;
 
@@ -4167,10 +3895,6 @@ namespace Mips
 
   public class Mthi : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
     public Register rs;
 
     public Mthi (Register rs)
@@ -4201,10 +3925,6 @@ namespace Mips
 
   public class Mtlo : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
     public Register rs;
 
     public Mtlo (Register rs)
@@ -4235,10 +3955,6 @@ namespace Mips
 
   public class Mul : Instruction
   {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public Register rd;
@@ -4273,9 +3989,6 @@ namespace Mips
 
   public class Cop1.Mul : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister ft;
     public FpuRegister fs;
@@ -4312,10 +4025,6 @@ namespace Mips
 
   public class Mult : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
     public Register rs;
     public Register rt;
 
@@ -4348,10 +4057,6 @@ namespace Mips
 
   public class Multu : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
     public Register rs;
     public Register rt;
 
@@ -4384,9 +4089,6 @@ namespace Mips
 
   public class Cop1.Neg : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -4421,10 +4123,6 @@ namespace Mips
 
   public class Cop1x.Nmadd : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public FpuRegister fr;
     public FpuRegister ft;
     public FpuRegister fs;
@@ -4463,10 +4161,6 @@ namespace Mips
 
   public class Cop1x.Nmsub : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public FpuRegister fr;
     public FpuRegister ft;
     public FpuRegister fs;
@@ -4505,10 +4199,6 @@ namespace Mips
 
   public class Nor : Instruction
   {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public Register rd;
@@ -4543,10 +4233,6 @@ namespace Mips
 
   public class Or : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
     public Register rs;
     public Register rt;
     public Register rd;
@@ -4581,10 +4267,6 @@ namespace Mips
 
   public class Ori : Instruction
   {
-    /*
-      001011 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public int16 immediate;
@@ -4619,9 +4301,6 @@ namespace Mips
 
   public class Cop1.Pll : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public FpuRegister ft;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -4656,9 +4335,6 @@ namespace Mips
 
   public class Cop1.Plu : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public FpuRegister ft;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -4693,10 +4369,6 @@ namespace Mips
 
   public class Pref : Instruction
   {
-    /* PREF
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public uint8 hint;
     public uint16 offset;
@@ -4731,10 +4403,6 @@ namespace Mips
 
   public class Cop1x.Prefx : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Register @base;
     public uint8 index;
     public uint8 hint;
@@ -4769,9 +4437,6 @@ namespace Mips
 
   public class Cop1.Pul : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public FpuRegister ft;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -4806,9 +4471,6 @@ namespace Mips
 
   public class Cop1.Puu : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public FpuRegister ft;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -4843,10 +4505,6 @@ namespace Mips
 
   public class Rdhwr : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Register rt;
     public Register rd;
 
@@ -4879,10 +4537,6 @@ namespace Mips
 
   public class Cop0.Rdpgpr : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Register rt;
     public Register rd;
 
@@ -4915,9 +4569,6 @@ namespace Mips
 
   public class Cop1.Recip : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
     public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -4952,9 +4603,6 @@ namespace Mips
 
   public class Cop1.Roundl : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -4989,9 +4637,6 @@ namespace Mips
 
   public class Cop1.Roundw : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -5026,9 +4671,6 @@ namespace Mips
 
   public class Cop1.Rsqrt : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -5063,10 +4705,6 @@ namespace Mips
 
   public class Sb : Instruction
   {
-    /* SB
-       101000 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public uint16 offset;
@@ -5101,10 +4739,6 @@ namespace Mips
 
   public class Sc : Instruction
   {
-    /* SB
-       101000 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public uint16 offset;
@@ -5139,10 +4773,6 @@ namespace Mips
 
   public class Sdbbp : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public uint code;
 
     public Sdbbp (uint code)
@@ -5173,10 +4803,6 @@ namespace Mips
 
   public class Sdc1 : Instruction
   {
-    /* SDC1
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public FpuRegister ft;
     public uint16 offset;
@@ -5211,10 +4837,6 @@ namespace Mips
 
   public class Sdc2 : Instruction
   {
-    /* SDC2
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public uint16 offset;
@@ -5283,10 +4905,6 @@ namespace Mips
 
   public class Seb : Instruction
   {
-    /* SEB
-       101000 base(5) rt(5) offset(16)
-    */
-
     public Register rt;
     public Register rd;
 
@@ -5319,10 +4937,6 @@ namespace Mips
 
   public class Seh : Instruction
   {
-    /* SEH
-       101000 base(5) rt(5) offset(16)
-    */
-
     public Register rt;
     public Register rd;
 
@@ -5355,10 +4969,6 @@ namespace Mips
 
   public class Sh : Instruction
   {
-    /* SH
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public uint16 offset;
@@ -5448,10 +5058,6 @@ namespace Mips
 
   public class Sllv : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
     public Register rs;
     public Register rt;
     public Register rd;
@@ -5486,10 +5092,6 @@ namespace Mips
 
   public class Slt : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
     public Register rs;
     public Register rt;
     public Register rd;
@@ -5524,10 +5126,6 @@ namespace Mips
 
   public class Slti : Instruction
   {
-    /*
-      001011 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public int16 immediate;
@@ -5562,10 +5160,6 @@ namespace Mips
 
   public class Sltiu : Instruction
   {
-    /*
-      001011 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public uint16 immediate;
@@ -5600,10 +5194,6 @@ namespace Mips
 
   public class Sltu : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
     public Register rs;
     public Register rt;
     public Register rd;
@@ -5638,9 +5228,6 @@ namespace Mips
 
   public class Cop1.Sqrt : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -5675,9 +5262,6 @@ namespace Mips
 
   public class Sra : Instruction
   {
-    /* SPECIAL
-       000000 00000 rt(5) rd(5) sa(5) 000000
-    */
     public Register rt;
     public Register rd;
     public uint8 sa;
@@ -5712,10 +5296,6 @@ namespace Mips
 
   public class Srav : Instruction
   {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public Register rd;
@@ -5750,9 +5330,6 @@ namespace Mips
 
   public class Srl : Instruction
   {
-    /* SPECIAL
-       000000 00000 rt(5) rd(5) sa(5) 000000
-    */
     public bool rotr;
     public Register rt;
     public Register rd;
@@ -5796,10 +5373,6 @@ namespace Mips
 
   public class Srlv : Instruction
   {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public Register rd;
@@ -5877,9 +5450,6 @@ namespace Mips
 
   public class Cop1.Sub : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister ft;
     public FpuRegister fs;
@@ -5916,10 +5486,6 @@ namespace Mips
 
   public class Subu : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
     public Register rs;
     public Register rt;
     public Register rd;
@@ -5954,10 +5520,6 @@ namespace Mips
 
   public class Cop1x.Suxc1 : Instruction
   {
-    /* SUXC1
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public uint8 index;
     public FpuRegister fs;
@@ -5992,10 +5554,6 @@ namespace Mips
 
   public class Sw : Instruction
   {
-    /* SW
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public uint16 offset;
@@ -6030,10 +5588,6 @@ namespace Mips
 
   public class Swc1 : Instruction
   {
-    /* SWC1
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public FpuRegister ft;
     public uint16 offset;
@@ -6068,10 +5622,6 @@ namespace Mips
 
   public class Swc2 : Instruction
   {
-    /* SWC2
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public uint16 offset;
@@ -6106,10 +5656,6 @@ namespace Mips
 
   public class Swl : Instruction
   {
-    /* SWL
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public uint16 offset;
@@ -6144,10 +5690,6 @@ namespace Mips
 
   public class Swr : Instruction
   {
-    /* SWR
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public Register rt;
     public uint16 offset;
@@ -6182,10 +5724,6 @@ namespace Mips
 
   public class Cop1x.Swxc1 : Instruction
   {
-    /* SWXC1
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public uint8 index;
     public FpuRegister fs;
@@ -6220,10 +5758,6 @@ namespace Mips
 
   public class Sync : Instruction
   {
-    /* SYNC
-       101011 base(5) rt(5) offset(16)
-    */
-
     public uint8 stype;
 
     public Sync (uint8 stype)
@@ -6254,10 +5788,6 @@ namespace Mips
 
   public class Regimm.Synci : Instruction
   {
-    /* SYNCI
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register @base;
     public uint16 offset;
 
@@ -6290,10 +5820,6 @@ namespace Mips
 
   public class Syscall : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public uint code;
 
     public Syscall (uint code)
@@ -6324,10 +5850,6 @@ namespace Mips
 
   public class Teq : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Register rs;
     public Register rt;
     public uint16 code;
@@ -6362,10 +5884,6 @@ namespace Mips
 
   public class Regimm.Teqi : Instruction
   {
-    /* TEQI
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register rs;
     public uint16 immediate;
 
@@ -6398,10 +5916,6 @@ namespace Mips
 
   public class Tge : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Register rs;
     public Register rt;
     public uint16 code;
@@ -6436,10 +5950,6 @@ namespace Mips
 
   public class Regimm.Tgei : Instruction
   {
-    /* TGEI
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register rs;
     public uint16 immediate;
 
@@ -6472,10 +5982,6 @@ namespace Mips
 
   public class Regimm.Tgeiu : Instruction
   {
-    /* TGEIU
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register rs;
     public uint16 immediate;
 
@@ -6508,10 +6014,6 @@ namespace Mips
 
   public class Tgeu : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Register rs;
     public Register rt;
     public uint16 code;
@@ -6546,10 +6048,6 @@ namespace Mips
 
   public class Cop0.Tlbp : Instruction
   {
-    /* SPECIAL
-       000000 code(20) 001101
-    */
-
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_tlbp (this);
@@ -6568,10 +6066,6 @@ namespace Mips
 
   public class Cop0.Tlbr : Instruction
   {
-    /* SPECIAL
-       000000 code(20) 001101
-    */
-
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_tlbr (this);
@@ -6590,10 +6084,6 @@ namespace Mips
 
   public class Cop0.Tlbwi : Instruction
   {
-    /* SPECIAL
-       000000 code(20) 001101
-    */
-
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_tlbwi (this);
@@ -6612,10 +6102,6 @@ namespace Mips
 
   public class Cop0.Tlbwr : Instruction
   {
-    /* SPECIAL
-       000000 code(20) 001101
-    */
-
     public override void accept (Visitor visitor)
     {
       visitor.visit_cop0_tlbwr (this);
@@ -6634,10 +6120,6 @@ namespace Mips
 
   public class Tlt : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Register rs;
     public Register rt;
     public uint16 code;
@@ -6672,10 +6154,6 @@ namespace Mips
 
   public class Regimm.Tlti : Instruction
   {
-    /* TLTI
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register rs;
     public uint16 immediate;
 
@@ -6708,10 +6186,6 @@ namespace Mips
 
   public class Regimm.Tltiu : Instruction
   {
-    /* TLTIU
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register rs;
     public uint16 immediate;
 
@@ -6744,10 +6218,6 @@ namespace Mips
 
   public class Tltu : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Register rs;
     public Register rt;
     public uint16 code;
@@ -6782,10 +6252,6 @@ namespace Mips
 
   public class Tne : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Register rs;
     public Register rt;
     public uint16 code;
@@ -6820,10 +6286,6 @@ namespace Mips
 
   public class Regimm.Tnei : Instruction
   {
-    /* TNEI
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register rs;
     public uint16 immediate;
 
@@ -6856,9 +6318,6 @@ namespace Mips
 
   public class Cop1.Truncl : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -6893,9 +6352,6 @@ namespace Mips
 
   public class Cop1.Truncw : Instruction
   {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
     public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
@@ -6930,10 +6386,6 @@ namespace Mips
 
   public class Cop0.Wait : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public uint code;
 
     public Wait (uint code)
@@ -6964,10 +6416,6 @@ namespace Mips
 
   public class Cop0.Wrpgpr : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
     public Register rt;
     public Register rd;
 
@@ -7000,10 +6448,6 @@ namespace Mips
 
   public class Wsbh : Instruction
   {
-    /* WSBH
-       101000 base(5) rt(5) offset(16)
-    */
-
     public Register rt;
     public Register rd;
 
@@ -7036,10 +6480,6 @@ namespace Mips
 
   public class Xor : Instruction
   {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
     public Register rs;
     public Register rt;
     public Register rd;
@@ -7074,10 +6514,6 @@ namespace Mips
 
   public class Xori : Instruction
   {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
     public Register rs;
     public Register rt;
     public uint16 immediate;
