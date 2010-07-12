@@ -445,50 +445,6 @@ namespace Mips
     public virtual string? get_description () { return null; }
   }
 
-  public class Cop0.Deret : Instruction
-  {
-    /* COP0
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop0_deret (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return "return from a debug exception";
-    }
-  }
-
-  public class Cop0.Eret : Instruction
-  {
-    /* COP0
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop0_eret (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return "return from interrupt, exception, or error trap";
-    }
-  }
-
   public class Cop1.Abs : Instruction
   {
     /* COP1
@@ -523,422 +479,6 @@ namespace Mips
     public override string? get_description ()
     {
       return @"FPR[$fd] ← abs(FPR[$fs])";
-    }
-  }
-
-  public class Cop0.Mf : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Register rt;
-    public Register rd;
-    public uint8 sel;
-
-    public Mf (Register rt, Register rd, uint8 sel)
-    {
-      this.rt = rt;
-      this.rd = rd;
-      this.sel = sel;
-    }
-
-    public Mf.from_code (int code)
-    {
-      this (get_five2_gpr (code), get_five3_gpr (code), get_three (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop0_mf (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← CPR[0,$rd,$sel]";
-    }
-  }
-
-  public class Cop0.Mt : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Register rt;
-    public Register rd;
-    public uint8 sel;
-
-    public Mt (Register rt, Register rd, uint8 sel)
-    {
-      this.rt = rt;
-      this.rd = rd;
-      this.sel = sel;
-    }
-
-    public Mt.from_code (int code)
-    {
-      this (get_five2_gpr (code), get_five3_gpr (code), get_three (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop0_mt (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"CPR[0, $rd, $sel] ← GPR[$rt]";
-    }
-  }
-
-  public class Cop1.Cf : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Register rt;
-    public FpuRegister fs;
-
-    public Cf (Register rt, FpuRegister fs)
-    {
-      this.rt = rt;
-      this.fs = fs;
-    }
-
-    public Cf.from_code (int code)
-    {
-      this (get_five2_gpr (code), get_five3_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_cf (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← FP_Control[FPR[$fs]]";
-    }
-  }
-
-  public class Cop1.Ct : Instruction
-  {
-    public Register rt;
-    public FpuRegister fs;
-
-    public Ct (Register rt, FpuRegister fs)
-    {
-      this.rt = rt;
-      this.fs = fs;
-    }
-
-    public Ct.from_code (int code)
-    {
-      this (get_five2_gpr (code), get_five3_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_ct (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FP_Control[$fs] ← GPR[$rt]";
-    }
-  }
-
-  public class Cop2.Co : Instruction
-  {
-    public int cofun;
-
-    public Co (int cofun)
-    {
-      this.cofun = cofun;
-    }
-
-    public Co.from_code (int code)
-    {
-      this (code & 0x1FFFFFF);
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop2_co (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"CoprocessorOperation(2, cofun)";
-    }
-  }
-
-  public class Cop2.Cf : Instruction
-  {
-    public Register rt;
-    public Register rd;
-
-    public Cf (Register rt, Register rd)
-    {
-      this.rt = rt;
-      this.rd = rd;
-    }
-
-    public Cf.from_code (int code)
-    {
-      this (get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop2_cf (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← CP2CCR[Impl]";
-    }
-  }
-
-  public class Cop2.Ct : Instruction
-  {
-    public Register rt;
-    public Register rd;
-
-    public Ct (Register rt, Register rd)
-    {
-      this.rt = rt;
-      this.rd = rd;
-    }
-
-    public Ct.from_code (int code)
-    {
-      this (get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop2_ct (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"CP2CCR[Impl] ← GPR[$rt]";
-    }
-  }
-
-  public class Cop2.Mf : Instruction
-  {
-    /* COP2
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Register rt;
-    public uint16 impl;
-
-    public Mf (Register rt, uint16 impl)
-    {
-      this.rt = rt;
-      this.impl = impl;
-    }
-
-    public Mf.from_code (int code)
-    {
-      this (get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop2_mf (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← CP2CPR[$impl]";
-    }
-  }
-
-  public class Cop2.Mfh : Instruction
-  {
-    /* COP2
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Register rt;
-    public uint16 impl;
-
-    public Mfh (Register rt, uint16 impl)
-    {
-      this.rt = rt;
-      this.impl = impl;
-    }
-
-    public Mfh.from_code (int code)
-    {
-      this (get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop2_mfh (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← CP2CPR[$impl]63..32";
-    }
-  }
-
-  public class Cop2.Mth : Instruction
-  {
-    /* COP2
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Register rt;
-    public uint16 impl;
-
-    public Mth (Register rt, uint16 impl)
-    {
-      this.rt = rt;
-      this.impl = impl;
-    }
-
-    public Mth.from_code (int code)
-    {
-      this (get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop2_mth (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"CP2CPR[$impl]63..32 ← GPR[$rt]";
-    }
-  }
-
-  public class Cop1.Sqrt : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Format fmt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Sqrt (Format fmt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Sqrt.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_sqrt (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← SQRT(FPR[$fs])";
-    }
-  }
-
-  public class Cop1.Movz : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Format fmt;
-    public Register rt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Movz (Format fmt, Register rt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.rt = rt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Movz.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five2_gpr (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_movz (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rt] = 0 then FPR[$fd] ← FPR[$fs]";
     }
   }
 
@@ -979,28 +519,32 @@ namespace Mips
     }
   }
 
-  public class Lui : Instruction
+  public class Cop1.Add : Instruction
   {
-    /*
-      001111 00000 rt(5) immediate(16)
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-    public Register rt;
-    public uint16 immediate;
+    public Format fmt;
+    public FpuRegister ft;
+    public FpuRegister fs;
+    public FpuRegister fd;
 
-    public Lui (Register rt, uint16 immediate)
+    public Add (Format fmt, FpuRegister ft, FpuRegister fs, FpuRegister fd)
     {
-      this.rt = rt;
-      this.immediate = immediate;
+      this.fmt = fmt;
+      this.ft = ft;
+      this.fs = fs;
+      this.fd = fd;
     }
 
-    public Lui.from_code (int code)
+    public Add.from_code (int code)
     {
-      this (get_five2_gpr (code), get_half (code));
+      this ((Format)get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
     }
-    
+
     public override void accept (Visitor visitor)
     {
-      visitor.visit_lui (this);
+      visitor.visit_cop1_add (this);
     }
 
     public override string get_mnemonic ()
@@ -1010,7 +554,45 @@ namespace Mips
 
     public override string? get_description ()
     {
-      return @"GPR[$rt] ← $immediate || 0^16";
+      return @"FPR[$fd] ← FPR[$fs] + FPR[$ft]";
+    }
+  }
+
+  public class Addi : Instruction
+  {
+    /*
+      001001 rs(5) rt(5) immediate(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public int16 immediate;
+
+    public Addi (Register rs, Register rt, int16 immediate)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.immediate = immediate;
+    }
+
+    public Addi.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), (int16)get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_addi (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← GPR[$rs] + $immediate";
     }
   }
 
@@ -1040,44 +622,6 @@ namespace Mips
     public override void accept (Visitor visitor)
     {
       visitor.visit_addiu (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← GPR[$rs] + $immediate";
-    }
-  }
-
-  public class Addi : Instruction
-  {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public int16 immediate;
-
-    public Addi (Register rs, Register rt, int16 immediate)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.immediate = immediate;
-    }
-
-    public Addi.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), (int16)get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_addi (this);
     }
 
     public override string get_mnemonic ()
@@ -1129,213 +673,29 @@ namespace Mips
     }
   }
 
-  public class Sw : Instruction
+  public class Cop1x.Alnv : Instruction
   {
-    /* SW
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Sw (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Sw.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_sw (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
-    }
-  }
-
-  public class Cache : Instruction
-  {
-    /* CACHE
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public uint8 op;
-    public uint16 offset;
-
-    public Cache (Register @base, uint8 op, uint16 offset)
-      {
-        this.@base = @base;
-        this.op = op;
-        this.offset = offset;
-      }
-
-    public Cache.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2 (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cache (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"perform the cache operation $op";
-    }
-  }
-
-  public class Pref : Instruction
-  {
-    /* PREF
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public uint8 hint;
-    public uint16 offset;
-
-    public Pref (Register @base, uint8 hint, uint16 offset)
-      {
-        this.@base = @base;
-        this.hint = hint;
-        this.offset = offset;
-      }
-
-    public Pref.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2 (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_pref (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"prefetch_memory(GPR[$base] + $offset)";
-    }
-  }
-
-  public class Sync : Instruction
-  {
-    /* SYNC
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public uint8 stype;
-
-    public Sync (uint8 stype)
-      {
-        this.stype = stype;
-      }
-
-    public Sync.from_code (int code)
-    {
-      this (get_five4 (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_sync (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return "order loads and stores";
-    }
-  }
-
-  public class Regimm.Synci : Instruction
-  {
-    /* SYNCI
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public uint16 offset;
-
-    public Synci (Register @base, uint16 offset)
-      {
-        this.@base = @base;
-        this.offset = offset;
-      }
-
-    public Synci.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_regimm_synci (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return "synchronize all caches to make instruction writes effective";
-    }
-  }
-
-  public class Regimm.Teqi : Instruction
-  {
-    /* TEQI
-       101011 base(5) rt(5) offset(16)
-    */
-
     public Register rs;
-    public uint16 immediate;
+    public FpuRegister ft;
+    public FpuRegister fs;
+    public FpuRegister fd;
 
-    public Teqi (Register rs, uint16 immediate)
+    public Alnv (Register rs, FpuRegister ft, FpuRegister fs, FpuRegister fd)
       {
         this.rs = rs;
-        this.immediate = immediate;
+        this.ft = ft;
+        this.fs = fs;
+        this.fd = fd;
       }
 
-    public Teqi.from_code (int code)
+    public Alnv.from_code (int code)
     {
-      this (get_five1_gpr (code), get_half (code));
+      this (get_five1_gpr (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_regimm_teqi (this);
+      visitor.visit_cop1x_alnv (this);
     }
 
     public override string get_mnemonic ()
@@ -1345,1182 +705,7 @@ namespace Mips
 
     public override string? get_description ()
     {
-      return @"if GPR[$rs] = $immediate then Trap";
-    }
-  }
-
-  public class Regimm.Tnei : Instruction
-  {
-    /* TNEI
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register rs;
-    public uint16 immediate;
-
-    public Tnei (Register rs, uint16 immediate)
-      {
-        this.rs = rs;
-        this.immediate = immediate;
-      }
-
-    public Tnei.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_regimm_tnei (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] ≠ $immediate then Trap";
-    }
-  }
-
-  public class Regimm.Tlti : Instruction
-  {
-    /* TLTI
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register rs;
-    public uint16 immediate;
-
-    public Tlti (Register rs, uint16 immediate)
-      {
-        this.rs = rs;
-        this.immediate = immediate;
-      }
-
-    public Tlti.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_regimm_tlti (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] < $immediate then Trap";
-    }
-  }
-
-  public class Regimm.Tltiu : Instruction
-  {
-    /* TLTIU
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register rs;
-    public uint16 immediate;
-
-    public Tltiu (Register rs, uint16 immediate)
-      {
-        this.rs = rs;
-        this.immediate = immediate;
-      }
-
-    public Tltiu.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_regimm_tltiu (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] < $immediate then Trap";
-    }
-  }
-
-  public class Regimm.Tgei : Instruction
-  {
-    /* TGEI
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register rs;
-    public uint16 immediate;
-
-    public Tgei (Register rs, uint16 immediate)
-      {
-        this.rs = rs;
-        this.immediate = immediate;
-      }
-
-    public Tgei.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_regimm_tgei (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] ≥ $immediate then Trap";
-    }
-  }
-
-  public class Regimm.Tgeiu : Instruction
-  {
-    /* TGEIU
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register rs;
-    public uint16 immediate;
-
-    public Tgeiu (Register rs, uint16 immediate)
-      {
-        this.rs = rs;
-        this.immediate = immediate;
-      }
-
-    public Tgeiu.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_regimm_tgeiu (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] ≥ $immediate then Trap";
-    }
-  }
-
-  public class Regimm.Bgezal : Instruction
-  {
-    /* REGIMM
-       000001 00000 10001 offset(16)
-    */
-    public Register rs;
-    public int16 offset;
-    public BinaryInstruction reference;
-
-    public Bgezal (Register rs, int16 offset)
-      {
-        this.rs = rs;
-        this.offset = offset;
-      }
-
-    public Bgezal.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_halfi (code));
-    }
-
-    public bool is_unconditional ()
-    {
-      return rs == 0;
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_regimm_bgezal (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      if (is_unconditional ())
-        return "procedure_call";
-      return @"if GPR[$rs] ≥ 0 then procedure_call";
-    }
-  }
-
-  public class Regimm.Bgezall : Instruction
-  {
-    /* REGIMM
-       000001 00000 10001 offset(16)
-    */
-    public Register rs;
-    public int16 offset;
-    public BinaryInstruction reference;
-
-    public Bgezall (Register rs, int16 offset)
-      {
-        this.rs = rs;
-        this.offset = offset;
-      }
-
-    public Bgezall.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_halfi (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_regimm_bgezall (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] ≥ 0 then procedure_call";
-    }
-  }
-
-  public class Lw : Instruction
-  {
-    /* SW
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public Register rt;
-    public int16 offset;
-    public BinaryReference reference;
-
-    public Lw (Register @base, Register rt, int16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Lw.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_halfi (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_lw (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
-    }
-  }
-
-  public class Jalr : Instruction
-  {
-    /* SPECIAL
-       000000 rs(5) 00000 rd(5) hint(5) 001001
-    */
-    public Register rs;
-    public Register rd;
-    public uint8 hint;
-
-    public Jalr (Register rs, Register rd, uint8 hint)
-      {
-        this.rs = rs;
-        this.rd = rd;
-        this.hint = hint;
-      }
-
-    public Jalr.from_code (int code)
-      {
-        this (get_five1_gpr (code), get_five3_gpr (code), get_five4 (code));
-      }
-
-    public bool has_hint ()
-    {
-      return hint >> 4 == 1;
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_jalr (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      if (has_hint ())
-        return @"GPR[$rd] ← return_addr, PC ← GPR[$rs], clear execution and instruction hazards";
-      return @"GPR[$rd] ← return_addr, PC ← GPR[$rs]";
-    }
-  }
-
-  public class Jr : Instruction
-  {
-    /* SPECIAL
-       000000 rs(5) 00000 00000 hint(5) 001000
-    */
-    public Register rs;
-    public uint8 hint;
-
-    public Jr (Register rs, uint8 hint)
-      {
-        this.rs = rs;
-        this.hint = hint;
-      }
-
-    public Jr.from_code (int code)
-      {
-        this (get_five1_gpr (code), get_five4 (code));
-      }
-
-    public bool has_hint ()
-    {
-      return hint >> 4 == 1;
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_jr (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      if (has_hint ())
-        return @"PC ← GPR[$rs], clear execution and instruction hazards";
-      return @"PC ← GPR[$rs]";
-    }
-  }
-
-  public class Regimm.Bltzal : Instruction
-  {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
-    public Register rs;
-    public int16 offset;
-    public BinaryInstruction reference;
-
-    public Bltzal (Register rs, int16 offset)
-      {
-        this.rs = rs;
-        this.offset = offset;
-      }
-
-    public Bltzal.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_halfi (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_regimm_bltzal (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] < 0 then procedure_call";
-    }
-  }
-
-  public class Regimm.Bltzall : Instruction
-  {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
-    public Register rs;
-    public int16 offset;
-    public BinaryInstruction reference;
-
-    public Bltzall (Register rs, int16 offset)
-      {
-        this.rs = rs;
-        this.offset = offset;
-      }
-
-    public Bltzall.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_halfi (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_regimm_bltzall (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] < 0 then procedure_call_likely";
-    }
-  }
-
-  public class Sll : Instruction
-  {
-    public Register rt;
-    public Register rd;
-    public uint8 sa;
-
-    public Sll (Register rt, Register rd, uint8 sa)
-      {
-        this.rt = rt;
-        this.rd = rd;
-        this.sa = sa;
-      }
-
-    public Sll.from_code (int code)
-      {
-        this (get_five2_gpr (code), get_five3_gpr (code), get_five4_gpr (code));
-      }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_sll (this);
-    }
-
-    public bool is_nop ()
-    {
-      return rt == 0 && rd == 0 && sa == 0;
-    }
-
-    public bool is_ssnop ()
-    {
-      return rt == 0 && rd == 0 && sa == 1;
-    }
-
-    public bool is_ehb ()
-    {
-      return rt == 0 && rd == 0 && sa == 3;
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      if (is_ehb ())
-        return @"stop instruction execution until all execution hazards have been cleared";
-      else if (is_ssnop ())
-        return @"break superscalar issue on a superscalar processor";
-      else if (!is_nop ())
-        return @"GPR[$rd] ← GPR[$rt] << $sa";
-      return null;
-    }
-  } 
-
-  public class Beq : Instruction
-  {
-    /* BEQ
-       000100 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public int16 offset;
-    public BinaryInstruction reference;
-
-    public Beq (Register rs, Register rt, int16 offset)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.offset = offset;
-    }
-
-    public Beq.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), (int16)get_half (code));
-    }
-
-    public bool is_unconditional ()
-    {
-      return rs == 0 && rt == 0;
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_beq (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      if (is_unconditional ())
-        return "branch";
-      return @"if GPR[$rs] = GPR[$rt] then branch";
-    }
-  }
-
-  public class Beql : Instruction
-  {
-    /* BEQL
-       000100 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public int16 offset;
-    public BinaryInstruction reference;
-
-    public Beql (Register rs, Register rt, int16 offset)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.offset = offset;
-    }
-
-    public Beql.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), (int16)get_half (code));
-    }
-
-    public bool is_unconditional ()
-    {
-      return rs == 0 && rt == 0;
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_beql (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] = GPR[$rt] then branch_likely";
-    }
-  }
-
-  public class Bne : Instruction
-  {
-    /* BNE
-       000101 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public int16 offset;
-    public BinaryInstruction reference;
-
-    public Bne (Register rs, Register rt, int16 offset)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.offset = offset;
-    }
-
-    public Bne.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), (int16)get_half (code));
-    }
-
-    public bool is_unconditional ()
-    {
-      return rs == 0 && rt == 0;
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_bne (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] ≠ GPR[$rt] then branch";
-    }
-  }
-
-  public class Bnel : Instruction
-  {
-    /* BNEL
-       000101 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public int16 offset;
-    public BinaryInstruction reference;
-
-    public Bnel (Register rs, Register rt, int16 offset)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.offset = offset;
-    }
-
-    public Bnel.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), (int16)get_half (code));
-    }
-
-    public bool is_unconditional ()
-    {
-      return rs == 0 && rt == 0;
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_bnel (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] ≠ GPR[$rt] then branch likely";
-    }
-  }
-
-  public class Lbu : Instruction
-  {
-    /* LBU
-       100100 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Lbu (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Lbu.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_lbu (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
-    }
-  }
-
-  public class Sb : Instruction
-  {
-    /* SB
-       101000 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Sb (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Sb.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_sb (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
-    }
-  }
-
-  public class Seb : Instruction
-  {
-    /* SEB
-       101000 base(5) rt(5) offset(16)
-    */
-
-    public Register rt;
-    public Register rd;
-
-    public Seb (Register rt, Register rd)
-      {
-        this.rt = rt;
-        this.rd = rd;
-      }
-
-    public Seb.from_code (int code)
-    {
-      this (get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_seb (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← SignExtend(GPR[$rt]7..0)";
-    }
-  }
-
-  public class Wsbh : Instruction
-  {
-    /* WSBH
-       101000 base(5) rt(5) offset(16)
-    */
-
-    public Register rt;
-    public Register rd;
-
-    public Wsbh (Register rt, Register rd)
-      {
-        this.rt = rt;
-        this.rd = rd;
-      }
-
-    public Wsbh.from_code (int code)
-    {
-      this (get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_wsbh (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← SwapBytesWithinHalfwords(GPR[$rt])";
-    }
-  }
-
-  public class Ext : Instruction
-  {
-    public Register rs;
-    public Register rt;
-    public uint8 msbd;
-    public uint8 lsb;
-
-    public Ext (Register rs, Register rt, uint8 msbd, uint8 lsb)
-      {
-        this.rs = rs;
-        this.rt = rt;
-        this.msbd = msbd;
-        this.lsb = lsb;
-      }
-
-    public Ext.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3 (code), get_five4 (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_ext (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← ExtractField(GPR[$rs], $msbd, $lsb)";
-    }
-  }
-
-  public class Ins : Instruction
-  {
-    public Register rs;
-    public Register rt;
-    public uint8 msb;
-    public uint8 lsb;
-
-    public Ins (Register rs, Register rt, uint8 msb, uint8 lsb)
-      {
-        this.rs = rs;
-        this.rt = rt;
-        this.msb = msb;
-        this.lsb = lsb;
-      }
-
-    public Ins.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3 (code), get_five4 (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_ins (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← InsertField(GPR[$rt], GPR[$rs], $msb, $lsb)";
-    }
-  }
-
-  public class Seh : Instruction
-  {
-    /* SEH
-       101000 base(5) rt(5) offset(16)
-    */
-
-    public Register rt;
-    public Register rd;
-
-    public Seh (Register rt, Register rd)
-      {
-        this.rt = rt;
-        this.rd = rd;
-      }
-
-    public Seh.from_code (int code)
-    {
-      this (get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_seh (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← SignExtend(GPR[$rt]15..0)";
-    }
-  }
-
-  public class Sc : Instruction
-  {
-    /* SB
-       101000 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Sc (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Sc.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_sc (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if atomic_update then memory[GPR[$base] + $offset] ← GPR[$rt], GPR[$rt] ← 1 else GPR[$rt] ← 0";
-    }
-  }
-
-  public class Sltiu : Instruction
-  {
-    /*
-      001011 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public uint16 immediate;
-
-    public Sltiu (Register rs, Register rt, uint16 immediate)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.immediate = immediate;
-    }
-
-    public Sltiu.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_sltiu (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← (GPR[$rs] < $immediate)";
-    }
-  }
-
-  public class Slti : Instruction
-  {
-    /*
-      001011 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public int16 immediate;
-
-    public Slti (Register rs, Register rt, int16 immediate)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.immediate = immediate;
-    }
-
-    public Slti.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), (int16)get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_slti (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← (GPR[$rs] < $immediate)";
-    }
-  }
-
-  public class Ori : Instruction
-  {
-    /*
-      001011 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public int16 immediate;
-
-    public Ori (Register rs, Register rt, int16 immediate)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.immediate = immediate;
-    }
-
-    public Ori.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), (int16)get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_ori (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← GPR[$rs] or $immediate";
-    }
-  }
-
-  public class Sltu : Instruction
-  {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
-    public Register rs;
-    public Register rt;
-    public Register rd;
-
-    public Sltu (Register rs, Register rt, Register rd)
-      {
-        this.rs = rs;
-        this.rt = rt;
-        this.rd = rd;
-      }
-
-    public Sltu.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_sltu (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← (GPR[$rs] < GPR[$rt])";
-    }
-  }
-
-  public class Sllv : Instruction
-  {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
-    public Register rs;
-    public Register rt;
-    public Register rd;
-
-    public Sllv (Register rs, Register rt, Register rd)
-      {
-        this.rs = rs;
-        this.rt = rt;
-        this.rd = rd;
-      }
-
-    public Sllv.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_sllv (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← GPR[$rt] << rs";
+      return @"FPR[$fd] ← ByteAlign(GPR[$rs]2..0, FPR[$fs], FPR[$ft])";
     }
   }
 
@@ -2562,314 +747,6 @@ namespace Mips
     }
   }
 
-  public class Or : Instruction
-  {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
-    public Register rs;
-    public Register rt;
-    public Register rd;
-
-    public Or (Register rs, Register rt, Register rd)
-      {
-        this.rs = rs;
-        this.rt = rt;
-        this.rd = rd;
-      }
-
-    public Or.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_or (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← GPR[$rs] or GPR[$rt]";
-    }
-  }
-
-  public class Xor : Instruction
-  {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
-    public Register rs;
-    public Register rt;
-    public Register rd;
-
-    public Xor (Register rs, Register rt, Register rd)
-      {
-        this.rs = rs;
-        this.rt = rt;
-        this.rd = rd;
-      }
-
-    public Xor.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_xor (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← GPR[$rs] XOR GPR[$rt]";
-    }
-  }
-
-  public class Lhu : Instruction
-  {
-    /* LHU
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Lhu (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Lhu.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_lhu (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
-    }
-  }
-
-  public class Subu : Instruction
-  {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
-    public Register rs;
-    public Register rt;
-    public Register rd;
-
-    public Subu (Register rs, Register rt, Register rd)
-      {
-        this.rs = rs;
-        this.rt = rt;
-        this.rd = rd;
-      }
-
-    public Subu.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_subu (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← GPR[$rs] - GPR[$rt]";
-    }
-  }
-
-  public class Sub : Instruction
-  {
-    public Register rs;
-    public Register rt;
-    public Register rd;
-
-    public Sub (Register rs, Register rt, Register rd)
-      {
-        this.rs = rs;
-        this.rt = rt;
-        this.rd = rd;
-      }
-
-    public Sub.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_sub (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← GPR[$rs] - GPR[$rt]";
-    }
-  }
-
-  public class Sh : Instruction
-  {
-    /* SH
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Sh (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Sh.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_sh (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
-    }
-  }
-
-  public class Lh : Instruction
-  {
-    /* LH
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Lh (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Lh.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_lh (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
-    }
-  }
-
-  public class Srl : Instruction
-  {
-    /* SPECIAL
-       000000 00000 rt(5) rd(5) sa(5) 000000
-    */
-    public bool rotr;
-    public Register rt;
-    public Register rd;
-    public uint8 sa;
-
-    public Srl (bool rotr, Register rt, Register rd, uint8 sa)
-      {
-        this.rotr = rotr;
-        this.rt = rt;
-        this.rd = rd;
-        this.sa = sa;
-      }
-
-    public Srl.from_code (int code)
-      {
-        this ((bool) get_five1 (code), get_five2_gpr (code), get_five3_gpr (code), get_five4 (code));
-      }
-
-    public bool is_rotr ()
-    {
-      return rotr;
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_srl (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      if (is_rotr ())
-        return @"GPR[$rd] ← GPR[$rt] ↔(right) $sa";
-      return @"GPR[$rd] ← GPR[$rt] >> $sa (logical)";
-    }
-  } 
-
   public class Andi : Instruction
   {
     /*
@@ -2905,3052 +782,6 @@ namespace Mips
     public override string? get_description ()
     {
       return @"GPR[$rt] ← GPR[$rs] AND $immediate";
-    }
-  }
-
-  public class Regimm.Bgez : Instruction
-  {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
-    public Register rs;
-    public int16 offset;
-    public BinaryInstruction reference;
-
-    public Bgez (Register rs, int16 offset)
-      {
-        this.rs = rs;
-        this.offset = offset;
-      }
-
-    public Bgez.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_halfi (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_regimm_bgez (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] ≥ 0 then branch";
-    }
-  }
-
-  public class Regimm.Bgezl : Instruction
-  {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
-    public Register rs;
-    public int16 offset;
-    public BinaryInstruction reference;
-
-    public Bgezl (Register rs, int16 offset)
-      {
-        this.rs = rs;
-        this.offset = offset;
-      }
-
-    public Bgezl.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_halfi (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_regimm_bgezl (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] ≥ 0 then branch_likely";
-    }
-  }
-
-  public class Sra : Instruction
-  {
-    /* SPECIAL
-       000000 00000 rt(5) rd(5) sa(5) 000000
-    */
-    public Register rt;
-    public Register rd;
-    public uint8 sa;
-
-    public Sra (Register rt, Register rd, uint8 sa)
-      {
-        this.rt = rt;
-        this.rd = rd;
-        this.sa = sa;
-      }
-
-    public Sra.from_code (int code)
-      {
-        this (get_five2_gpr (code), get_five3_gpr (code), get_five4 (code));
-      }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_sra (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← GPR[$rt] >> $sa (arithmetic)";
-    }
-  }
-
-  public class Lb : Instruction
-  {
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Lb (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Lb.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_lb (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
-    }
-  }
-
-  public class Ll : Instruction
-  {
-    /* LL
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Ll (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Ll.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_ll (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
-    }
-  }
-
-  public class Regimm.Bltz : Instruction
-  {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
-    public Register rs;
-    public int16 offset;
-    public BinaryInstruction reference;
-
-    public Bltz (Register rs, int16 offset)
-      {
-        this.rs = rs;
-        this.offset = offset;
-      }
-
-    public Bltz.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_halfi (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_regimm_bltz (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] < 0 then branch";
-    }
-  }
-
-  public class Regimm.Bltzl : Instruction
-  {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
-    public Register rs;
-    public int16 offset;
-    public BinaryInstruction reference;
-
-    public Bltzl (Register rs, int16 offset)
-      {
-        this.rs = rs;
-        this.offset = offset;
-      }
-
-    public Bltzl.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_halfi (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_regimm_bltzl (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] < 0 then branch_likely";
-    }
-  }
-
-  public class Slt : Instruction
-  {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
-    public Register rs;
-    public Register rt;
-    public Register rd;
-
-    public Slt (Register rs, Register rt, Register rd)
-      {
-        this.rs = rs;
-        this.rt = rt;
-        this.rd = rd;
-      }
-
-    public Slt.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_slt (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← (GPR[$rs] < GPR[$rt])";
-    }
-  }
-
-  public class Mult : Instruction
-  {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
-    public Register rs;
-    public Register rt;
-
-    public Mult (Register rs, Register rt)
-      {
-        this.rs = rs;
-        this.rt = rt;
-      }
-
-    public Mult.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_mult (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"(HI, LO) ← GPR[$rs] × GPR[$rt]";
-    }
-  }
-
-  public class Multu : Instruction
-  {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
-    public Register rs;
-    public Register rt;
-
-    public Multu (Register rs, Register rt)
-      {
-        this.rs = rs;
-        this.rt = rt;
-      }
-
-    public Multu.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_multu (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"(HI, LO) ← GPR[$rs] × GPR[$rt]";
-    }
-  }
-
-  public class Mfhi : Instruction
-  {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
-    public Register rd;
-
-    public Mfhi (Register rd)
-      {
-        this.rd = rd;
-      }
-
-    public Mfhi.from_code (int code)
-    {
-      this (get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_mfhi (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← HI";
-    }
-  }
-
-  public class Mthi : Instruction
-  {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
-    public Register rs;
-
-    public Mthi (Register rs)
-      {
-        this.rs = rs;
-      }
-
-    public Mthi.from_code (int code)
-    {
-      this (get_five1_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_mthi (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"HI ← GPR[$rs]";
-    }
-  }
-
-  public class Blez : Instruction
-  {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
-    public Register rs;
-    public int16 offset;
-    public BinaryInstruction reference;
-
-    public Blez (Register rs, int16 offset)
-      {
-        this.rs = rs;
-        this.offset = offset;
-      }
-
-    public Blez.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_halfi (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_blez (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] ≤ 0 then branch";
-    }
-  }
-
-  public class Bgtz : Instruction
-  {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
-    public Register rs;
-    public int16 offset;
-    public BinaryInstruction reference;
-
-    public Bgtz (Register rs, int16 offset)
-      {
-        this.rs = rs;
-        this.offset = offset;
-      }
-
-    public Bgtz.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_halfi (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_bgtz (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] > 0 then branch";
-    }
-  }
-
-  public class Bgtzl : Instruction
-  {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
-    public Register rs;
-    public int16 offset;
-    public BinaryInstruction reference;
-
-    public Bgtzl (Register rs, int16 offset)
-      {
-        this.rs = rs;
-        this.offset = offset;
-      }
-
-    public Bgtzl.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_halfi (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_bgtzl (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] > 0 then branch_likely";
-    }
-  }
-
-  public class Xori : Instruction
-  {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public uint16 immediate;
-
-    public Xori (Register rs, Register rt, uint16 immediate)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.immediate = immediate;
-    }
-
-    public Xori.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_xori (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← GPR[$rs] XOR $immediate";
-    }
-  }
-
-  public class Clo : Instruction
-  {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public Register rd;
-
-    public Clo (Register rs, Register rt, Register rd)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.rd = rd;
-    }
-
-    public Clo.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_clo (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← count_leading_ones GPR[$rs]";
-    }
-  }
-
-  public class Clz : Instruction
-  {
-    public Register rs;
-    public Register rt;
-    public Register rd;
-
-    public Clz (Register rs, Register rt, Register rd)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.rd = rd;
-    }
-
-    public Clz.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_clz (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← count_leading_zeros GPR[$rs]";
-    }
-  }
-
-  public class Mul : Instruction
-  {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public Register rd;
-
-    public Mul (Register rs, Register rt, Register rd)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.rd = rd;
-    }
-
-    public Mul.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_mul (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← GPR[$rs] × GPR[$rt]";
-    }
-  }
-
-  public class Nor : Instruction
-  {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public Register rd;
-
-    public Nor (Register rs, Register rt, Register rd)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.rd = rd;
-    }
-
-    public Nor.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_nor (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← GPR[$rs] NOR GPR[$rt]";
-    }
-  }
-
-  public class Srlv : Instruction
-  {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public Register rd;
-    public bool rotr;
-
-    public Srlv (Register rs, Register rt, Register rd, bool rotr)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.rd = rd;
-      this.rotr = rotr;
-    }
-
-    public Srlv.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code), (bool) get_five4 (code));
-    }
-
-    public bool is_rotr ()
-    {
-      return rotr;
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_srlv (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      if (is_rotr ())
-        return @"GPR[$rd] ← GPR[$rt] ↔(right) GPR[$rs]";
-      return @"GPR[$rd] ← GPR[$rt] >> GPR[$rs] (logical)";
-    }
-  }
-
-  public class Srav : Instruction
-  {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public Register rd;
-
-    public Srav (Register rs, Register rt, Register rd)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.rd = rd;
-    }
-
-    public Srav.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_srav (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← GPR[$rt] >> $rs (arithmetic)";
-    }
-  }
-
-  public class Divu : Instruction
-  {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-
-    public Divu (Register rs, Register rt)
-    {
-      this.rs = rs;
-      this.rt = rt;
-    }
-
-    public Divu.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_divu (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"(HI, LO) ← GPR[$rs] / GPR[$rt]";
-    }
-  }
-
-  public class Break : Instruction
-  {
-    /* SPECIAL
-       000000 code(20) 001101
-    */
-
-    public uint code;
-
-    public Break (uint code)
-    {
-      this.code = code;
-    }
-
-    public Break.from_code (int code)
-    {
-      this ((code >> 6) & 0xFFFFF);
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_break (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return "breakpoint";
-    }
-  }
-
-  public class Cop0.Tlbp : Instruction
-  {
-    /* SPECIAL
-       000000 code(20) 001101
-    */
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop0_tlbp (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return "find a matching entry in the TLB";
-    }
-  }
-
-  public class Cop0.Tlbr : Instruction
-  {
-    /* SPECIAL
-       000000 code(20) 001101
-    */
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop0_tlbr (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return "read an entry from the TLB";
-    }
-  }
-
-  public class Cop0.Tlbwi : Instruction
-  {
-    /* SPECIAL
-       000000 code(20) 001101
-    */
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop0_tlbwi (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return "write a TLB entry indexed by the Index register";
-    }
-  }
-
-  public class Cop0.Tlbwr : Instruction
-  {
-    /* SPECIAL
-       000000 code(20) 001101
-    */
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop0_tlbwr (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return "write a TLB entry indexed by the Random register";
-    }
-  }
-
-  public class Mflo : Instruction
-  {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
-    public Register rd;
-
-    public Mflo (Register rd)
-      {
-        this.rd = rd;
-      }
-
-    public Mflo.from_code (int code)
-    {
-      this (get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_mflo (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rd] ← LO";
-    }
-  }
-
-  public class Mtlo : Instruction
-  {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
-    public Register rs;
-
-    public Mtlo (Register rs)
-      {
-        this.rs = rs;
-      }
-
-    public Mtlo.from_code (int code)
-    {
-      this (get_five1_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_mtlo (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"LO ← GPR[$rs]";
-    }
-  }
-
-  public class Lwl : Instruction
-  {
-    /* SW
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Lwl (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Lwl.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_lwl (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← GPR[$rt] MERGE memory[GPR[$base] + $offset]";
-    }
-  }
-
-  public class Lwr : Instruction
-  {
-    /* SW
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Lwr (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Lwr.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_lwr (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← GPR[$rt] MERGE memory[GPR[$base] + $offset]";
-    }
-  }
-
-  public class Movz : Instruction
-  {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public Register rd;
-
-    public Movz (Register rs, Register rt, Register rd)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.rd = rd;
-    }
-
-    public Movz.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_movz (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rt] = 0 then GPR[$rd] ← GPR[$rs]";
-    }
-  }
-
-  public class Madd : Instruction
-  {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-
-    public Madd (Register rs, Register rt)
-    {
-      this.rs = rs;
-      this.rt = rt;
-    }
-
-    public Madd.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_madd (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"(HI,LO) ← (HI,LO) + (GPR[$rs] × GPR[$rt])";
-    }
-  }
-
-  public class Msub : Instruction
-  {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-
-    public Msub (Register rs, Register rt)
-    {
-      this.rs = rs;
-      this.rt = rt;
-    }
-
-    public Msub.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_msub (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"(HI,LO) ← (HI,LO) - (GPR[$rs] × GPR[$rt])";
-    }
-  }
-
-  public class Msubu : Instruction
-  {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-
-    public Msubu (Register rs, Register rt)
-    {
-      this.rs = rs;
-      this.rt = rt;
-    }
-
-    public Msubu.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_msubu (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"(HI,LO) ← (HI,LO) - (GPR[$rs] × GPR[$rt])";
-    }
-  }
-
-  public class Maddu : Instruction
-  {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-
-    public Maddu (Register rs, Register rt)
-    {
-      this.rs = rs;
-      this.rt = rt;
-    }
-
-    public Maddu.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_maddu (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"(HI,LO) ← (HI,LO) + (GPR[$rs] × GPR[$rt])";
-    }
-  }
-
-  public class Movn : Instruction
-  {
-    /*
-      001001 rs(5) rt(5) immediate(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public Register rd;
-
-    public Movn (Register rs, Register rt, Register rd)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.rd = rd;
-    }
-
-    public Movn.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_movn (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rt] ≠ 0 then GPR[$rd] ← GPR[$rs]";
-    }
-  }
-
-  public class Div : Instruction
-  {
-    /* SPECIAL
-       000000 rs(5) rt(5) rd(5) 00000 100001
-    */
-
-    public Register rs;
-    public Register rt;
-
-    public Div (Register rs, Register rt)
-      {
-        this.rs = rs;
-        this.rt = rt;
-      }
-
-    public Div.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_div (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"(HI, LO) ← GPR[$rs] / GPR[$rt]";
-    }
-  }
-
-  public class Blezl : Instruction
-  {
-    /* REGIMM
-       000001 rs(5) 10000 offset(16)
-    */
-
-    public Register rs;
-    public int16 offset;
-    public BinaryInstruction reference;
-
-    public Blezl (Register rs, int16 offset)
-      {
-        this.rs = rs;
-        this.offset = offset;
-      }
-
-    public Blezl.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_halfi (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_blezl (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] ≤ 0 then branch_likely";
-    }
-  }
-
-  public class Swl : Instruction
-  {
-    /* SWL
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Swl (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Swl.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_swl (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
-    }
-  }
-
-  public class Swr : Instruction
-  {
-    /* SWR
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Swr (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Swr.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_swr (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
-    }
-  }
-
-  public class Sdc1 : Instruction
-  {
-    /* SDC1
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public FpuRegister ft;
-    public uint16 offset;
-
-    public Sdc1 (Register @base, FpuRegister ft, uint16 offset)
-      {
-        this.@base = @base;
-        this.ft = ft;
-        this.offset = offset;
-      }
-
-    public Sdc1.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_fpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_sdc1 (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"memory[GPR[$base] + $offset] ←FPR[$ft]";
-    }
-  }
-
-  public class Sdc2 : Instruction
-  {
-    /* SDC2
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Sdc2 (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Sdc2.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_sdc2 (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"memory[GPR[$base] + $offset] ← CPR[2,$rt,0]";
-    }
-  }
-
-  public class Cop1x.Alnv : Instruction
-  {
-    public Register rs;
-    public FpuRegister ft;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Alnv (Register rs, FpuRegister ft, FpuRegister fs, FpuRegister fd)
-      {
-        this.rs = rs;
-        this.ft = ft;
-        this.fs = fs;
-        this.fd = fd;
-      }
-
-    public Alnv.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1x_alnv (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← ByteAlign(GPR[$rs]2..0, FPR[$fs], FPR[$ft])";
-    }
-  }
-
-  public class Cop1x.Sdxc1 : Instruction
-  {
-    public Register @base;
-    public uint8 index;
-    public FpuRegister fs;
-
-    public Sdxc1 (Register @base, uint8 index, FpuRegister fs)
-      {
-        this.@base = @base;
-        this.index = index;
-        this.fs = fs;
-      }
-
-    public Sdxc1.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2 (code), get_five3_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1x_sdxc1 (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"memory[GPR[$base] + GPR[$index]] ← FPR[$fs]";
-    }
-  }
-
-  public class Cop1x.Ldxc1 : Instruction
-  {
-    public Register @base;
-    public uint8 index;
-    public FpuRegister fd;
-
-    public Ldxc1 (Register @base, uint8 index, FpuRegister fd)
-      {
-        this.@base = @base;
-        this.index = index;
-        this.fd = fd;
-      }
-
-    public Ldxc1.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2 (code), get_five3_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1x_ldxc1 (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← memory[GPR[$base] + GPR[$index]]";
-    }
-  }
-
-  public class Cop1x.Luxc1 : Instruction
-  {
-    public Register @base;
-    public uint8 index;
-    public FpuRegister fd;
-
-    public Luxc1 (Register @base, uint8 index, FpuRegister fd)
-      {
-        this.@base = @base;
-        this.index = index;
-        this.fd = fd;
-      }
-
-    public Luxc1.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2 (code), get_five3_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1x_luxc1 (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← memory[(GPR[$base] + GPR[$index])PSIZE-1..3]";
-    }
-  }
-
-  public class Cop1x.Lwxc1 : Instruction
-  {
-    public Register @base;
-    public uint8 index;
-    public FpuRegister fd;
-
-    public Lwxc1 (Register @base, uint8 index, FpuRegister fd)
-      {
-        this.@base = @base;
-        this.index = index;
-        this.fd = fd;
-      }
-
-    public Lwxc1.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2 (code), get_five3_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1x_lwxc1 (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← memory[GPR[$base] + GPR[$index]]";
-    }
-  }
-
-  public class Cop1x.Suxc1 : Instruction
-  {
-    /* SUXC1
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public uint8 index;
-    public FpuRegister fs;
-
-    public Suxc1 (Register @base, uint8 index, FpuRegister fs)
-      {
-        this.@base = @base;
-        this.index = index;
-        this.fs = fs;
-      }
-
-    public Suxc1.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2 (code), get_five3_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1x_suxc1 (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"memory[(GPR[$base] + GPR[$index])PSIZE-1..3] ← FPR[$fs]";
-    }
-  }
-
-  public class Cop1x.Swxc1 : Instruction
-  {
-    /* SWXC1
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public uint8 index;
-    public FpuRegister fs;
-
-    public Swxc1 (Register @base, uint8 index, FpuRegister fs)
-      {
-        this.@base = @base;
-        this.index = index;
-        this.fs = fs;
-      }
-
-    public Swxc1.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2 (code), get_five3_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1x_swxc1 (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"memory[GPR[$base] + GPR[$index]] ← FPR[$fs]";
-    }
-  }
-
-  public class Ldc1 : Instruction
-  {
-    /* LDC1
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public FpuRegister ft;
-    public uint16 offset;
-
-    public Ldc1 (Register @base, FpuRegister ft, uint16 offset)
-      {
-        this.@base = @base;
-        this.ft = ft;
-        this.offset = offset;
-      }
-
-    public Ldc1.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_fpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_ldc1 (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$ft] ← memory[GPR[$base] + $offset]";
-    }
-  }
-
-  public class Ldc2 : Instruction
-  {
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Ldc2 (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Ldc2.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_ldc2 (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"CPR[2,$rt,0] ← memory[GPR[$base] + $offset]";
-    }
-  }
-
-  public class Lwc1 : Instruction
-  {
-    /* LWC1
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public FpuRegister ft;
-    public uint16 offset;
-
-    public Lwc1 (Register @base, FpuRegister ft, uint16 offset)
-      {
-        this.@base = @base;
-        this.ft = ft;
-        this.offset = offset;
-      }
-
-    public Lwc1.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_fpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_lwc1 (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$ft] ← memory[GPR[$base] + $offset]";
-    }
-  }
-
-  public class Lwc2 : Instruction
-  {
-    /* LWC2
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Lwc2 (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Lwc2.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_lwc2 (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"CPR[2,$rt,0] ← memory[GPR[$base] + $offset]";
-    }
-  }
-
-  public class Swc1 : Instruction
-  {
-    /* SWC1
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public FpuRegister ft;
-    public uint16 offset;
-
-    public Swc1 (Register @base, FpuRegister ft, uint16 offset)
-      {
-        this.@base = @base;
-        this.ft = ft;
-        this.offset = offset;
-      }
-
-    public Swc1.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_fpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_swc1 (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"memory[GPR[$base] + $offset] ← FPR[$ft]";
-    }
-  }
-
-  public class Swc2 : Instruction
-  {
-    /* SWC2
-       101011 base(5) rt(5) offset(16)
-    */
-
-    public Register @base;
-    public Register rt;
-    public uint16 offset;
-
-    public Swc2 (Register @base, Register rt, uint16 offset)
-      {
-        this.@base = @base;
-        this.rt = rt;
-        this.offset = offset;
-      }
-
-    public Swc2.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_swc2 (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"memory[GPR[$base] + $offset] ← CPR[2,$rt,0]";
-    }
-  }
-
-  public class Cop1.Mov : Instruction
-  {
-    public Format fmt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Mov (Format fmt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Mov.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_mov (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← FPR[$fs]";
-    }
-  }
-
-  public class Cop1.Movn : Instruction
-  {
-    public Format fmt;
-    public Register rt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Movn (Format fmt, Register rt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.rt = rt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Movn.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five2_gpr (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_movn (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rt] ≠ 0 then FPR[$fd] ← FPR[$fs]";
-    }
-  }
-
-  public class Cop1.Neg : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Format fmt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Neg (Format fmt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Neg.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_neg (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← −FPR[$fs]";
-    }
-  }
-
-  public class Cop1.Truncw : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Format fmt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Truncw (Format fmt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Truncw.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_truncw (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
-    }
-  }
-
-  public class Cop1.Truncl : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Format fmt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Truncl (Format fmt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Truncl.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_truncl (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
-    }
-  }
-
-  public class Cop1.Ceill : Instruction
-  {
-    public Format fmt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Ceill (Format fmt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Ceill.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_ceill (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
-    }
-  }
-
-  public class Cop1.Ceilw : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Format fmt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Ceilw (Format fmt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Ceilw.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_ceilw (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
-    }
-  }
-
-  public class Cop1.Floorl : Instruction
-  {
-    public Format fmt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Floorl (Format fmt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Floorl.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_floorl (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
-    }
-  }
-
-  public class Cop1.Floorw : Instruction
-  {
-    public Format fmt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Floorw (Format fmt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Floorw.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_floorw (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
-    }
-  }
-
-  public class Cop1.Roundl : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Format fmt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Roundl (Format fmt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Roundl.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_roundl (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
-    }
-  }
-
-  public class Cop1.Roundw : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Format fmt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Roundw (Format fmt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Roundw.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_roundw (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
-    }
-  }
-
-  public class Cop1.Rsqrt : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Format fmt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Rsqrt (Format fmt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Rsqrt.from_code (int code)
-    {
-      this ((Format)(Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_rsqrt (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← 1.0 / sqrt(FPR[$fs])";
-    }
-  }
-
-  public class Cop1.Sub : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Format fmt;
-    public FpuRegister ft;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Sub (Format fmt, FpuRegister ft, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.ft = ft;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Sub.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_sub (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← FPR[$fs] - FPR[$ft]";
-    }
-  }
-
-  public class Cop1.Mul : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Format fmt;
-    public FpuRegister ft;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Mul (Format fmt, FpuRegister ft, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.ft = ft;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Mul.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_mul (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← FPR[$fs] × FPR[$ft]";
-    }
-  }
-
-  public class Cop1.Div : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Format fmt;
-    public FpuRegister ft;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Div (Format fmt, FpuRegister ft, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.ft = ft;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Div.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_div (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← FPR[$fs] / FPR[$ft]";
-    }
-  }
-
-  public class Cop1.Add : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Format fmt;
-    public FpuRegister ft;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Add (Format fmt, FpuRegister ft, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.ft = ft;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Add.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_add (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← FPR[$fs] + FPR[$ft]";
-    }
-  }
-
-  public class Cop1.Pll : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public FpuRegister ft;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Pll (FpuRegister ft, FpuRegister fs, FpuRegister fd)
-    {
-      this.ft = ft;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Pll.from_code (int code)
-    {
-      this (get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_pll (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← lower(FPR[$fs]) || lower(FPR[$ft])";
-    }
-  }
-
-  public class Cop1.Plu : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public FpuRegister ft;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Plu (FpuRegister ft, FpuRegister fs, FpuRegister fd)
-    {
-      this.ft = ft;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Plu.from_code (int code)
-    {
-      this (get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_plu (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← lower(FPR[$fs]) || upper(FPR[$ft])";
-    }
-  }
-
-  public class Cop1.Pul : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public FpuRegister ft;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Pul (FpuRegister ft, FpuRegister fs, FpuRegister fd)
-    {
-      this.ft = ft;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Pul.from_code (int code)
-    {
-      this (get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_pul (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← upper(FPR[$fs]) || lower(FPR[$ft])";
-    }
-  }
-
-  public class Cop1.Puu : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public FpuRegister ft;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Puu (FpuRegister ft, FpuRegister fs, FpuRegister fd)
-    {
-      this.ft = ft;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Puu.from_code (int code)
-    {
-      this (get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_puu (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← upper(FPR[$fs]) || upper(FPR[$ft])";
-    }
-  }
-
-  public class Cop1.Cvtd : Instruction
-  {
-    public Format fmt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Cvtd (Format fmt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Cvtd.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_cvtd (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
-    }
-  }
-
-  public class Cop1.Cvtl : Instruction
-  {
-    public Format fmt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Cvtl (Format fmt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Cvtl.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_cvtl (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
-    }
-  }
-
-  public class Cop1.Cvtw : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Format fmt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Cvtw (Format fmt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Cvtw.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_cvtw (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
-    }
-  }
-
-  public class Cop1.Cvts : Instruction
-  {
-    /* COP1
-       010001 fmt(5) 00000 fs(5) fd(5) 000101
-    */
-    public Format fmt;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Cvts (Format fmt, FpuRegister fs, FpuRegister fd)
-    {
-      this.fmt = fmt;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Cvts.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_cvts (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← convert_and_round(GPR[$fs])";
-    }
-  }
-
-  public class Cop1.Cvtps : Instruction
-  {
-    public FpuRegister ft;
-    public FpuRegister fs;
-    public FpuRegister fd;
-
-    public Cvtps (FpuRegister ft, FpuRegister fs, FpuRegister fd)
-    {
-      this.ft = ft;
-      this.fs = fs;
-      this.fd = fd;
-    }
-
-    public Cvtps.from_code (int code)
-    {
-      this (get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_cvtps (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPR[$fd] ← FPR[$fs]31..0 || FPR[$ft]31..0";
-    }
-  }
-
-  public class Cop1.Ccond : Instruction
-  {
-    public enum ConditionType
-    {
-      F,
-        UN,
-        EQ,
-        UEQ,
-        OLT,
-        ULT,
-        OLE,
-        ULE,
-        SF,
-        NGLE,
-        SEQ,
-        NGL,
-        LT,
-        NGE,
-        LE,
-        NGT;
-
-      public string to_string ()
-      {
-        switch (this)
-          {
-          case F:
-            return "f";
-          case UN:
-            return "un";
-          case EQ:
-            return "eq";
-          case UEQ:
-            return "ueq";
-          case OLT:
-            return "olt";
-          case ULT:
-            return "ult";
-          case OLE:
-            return "ole";
-          case ULE:
-            return "ule";
-          case SF:
-            return "sf";
-          case NGLE:
-            return "ngle";
-          case SEQ:
-            return "seq";
-          case NGL:
-            return "ngl";
-          case LT:
-            return "lt";
-          case NGE:
-            return "nge";
-          case LE:
-            return "le";
-          case NGT:
-            return "ngt";
-          default:
-            assert_not_reached ();
-          }
-      }
-    }
-
-    public Format fmt;
-    public FpuRegister ft;
-    public FpuRegister fs;
-    public uint8 cc;
-    public ConditionType cond;
-
-    public Ccond (Format fmt, FpuRegister ft, FpuRegister fs, uint8 cc, ConditionType cond)
-    {
-      this.fmt = fmt;
-      this.ft = ft;
-      this.fs = fs;
-      this.cc = cc;
-      this.cond = cond;
-    }
-
-    public Ccond.from_code (int code)
-    {
-      this ((Format)get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4 (code) >> 2, (ConditionType)(code & 0x0F));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop1_ccond (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"FPUConditionCode($cc) ← FPR[$fs] compare_cond FPR[$ft]";
     }
   }
 
@@ -6075,29 +906,37 @@ namespace Mips
     }
   }
 
-  public class Cop2.Mt : Instruction
+  public class Beq : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    /* BEQ
+       000100 rs(5) rt(5) immediate(16)
     */
 
+    public Register rs;
     public Register rt;
-    public uint16 impl;
+    public int16 offset;
+    public BinaryInstruction reference;
 
-    public Mt (Register rt, uint16 impl)
+    public Beq (Register rs, Register rt, int16 offset)
     {
+      this.rs = rs;
       this.rt = rt;
-      this.impl = impl;
+      this.offset = offset;
     }
 
-    public Mt.from_code (int code)
+    public Beq.from_code (int code)
     {
-      this (get_five2_gpr (code), get_half (code));
+      this (get_five1_gpr (code), get_five2_gpr (code), (int16)get_half (code));
+    }
+
+    public bool is_unconditional ()
+    {
+      return rs == 0 && rt == 0;
     }
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_cop2_mt (this);
+      visitor.visit_beq (this);
     }
 
     public override string get_mnemonic ()
@@ -6107,33 +946,857 @@ namespace Mips
 
     public override string? get_description ()
     {
-      return @"CP2CPR[$impl] ← GPR[$rt]";
+      if (is_unconditional ())
+        return "branch";
+      return @"if GPR[$rs] = GPR[$rt] then branch";
     }
   }
 
-  public class Cop1.Mt : Instruction
+  public class Beql : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    /* BEQL
+       000100 rs(5) rt(5) immediate(16)
     */
 
+    public Register rs;
+    public Register rt;
+    public int16 offset;
+    public BinaryInstruction reference;
+
+    public Beql (Register rs, Register rt, int16 offset)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.offset = offset;
+    }
+
+    public Beql.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), (int16)get_half (code));
+    }
+
+    public bool is_unconditional ()
+    {
+      return rs == 0 && rt == 0;
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_beql (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] = GPR[$rt] then branch_likely";
+    }
+  }
+
+  public class Regimm.Bgez : Instruction
+  {
+    /* REGIMM
+       000001 rs(5) 10000 offset(16)
+    */
+
+    public Register rs;
+    public int16 offset;
+    public BinaryInstruction reference;
+
+    public Bgez (Register rs, int16 offset)
+      {
+        this.rs = rs;
+        this.offset = offset;
+      }
+
+    public Bgez.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_halfi (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_bgez (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≥ 0 then branch";
+    }
+  }
+
+  public class Regimm.Bgezal : Instruction
+  {
+    /* REGIMM
+       000001 00000 10001 offset(16)
+    */
+    public Register rs;
+    public int16 offset;
+    public BinaryInstruction reference;
+
+    public Bgezal (Register rs, int16 offset)
+      {
+        this.rs = rs;
+        this.offset = offset;
+      }
+
+    public Bgezal.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_halfi (code));
+    }
+
+    public bool is_unconditional ()
+    {
+      return rs == 0;
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_bgezal (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      if (is_unconditional ())
+        return "procedure_call";
+      return @"if GPR[$rs] ≥ 0 then procedure_call";
+    }
+  }
+
+  public class Regimm.Bgezall : Instruction
+  {
+    /* REGIMM
+       000001 00000 10001 offset(16)
+    */
+    public Register rs;
+    public int16 offset;
+    public BinaryInstruction reference;
+
+    public Bgezall (Register rs, int16 offset)
+      {
+        this.rs = rs;
+        this.offset = offset;
+      }
+
+    public Bgezall.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_halfi (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_bgezall (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≥ 0 then procedure_call";
+    }
+  }
+
+  public class Regimm.Bgezl : Instruction
+  {
+    /* REGIMM
+       000001 rs(5) 10000 offset(16)
+    */
+
+    public Register rs;
+    public int16 offset;
+    public BinaryInstruction reference;
+
+    public Bgezl (Register rs, int16 offset)
+      {
+        this.rs = rs;
+        this.offset = offset;
+      }
+
+    public Bgezl.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_halfi (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_bgezl (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≥ 0 then branch_likely";
+    }
+  }
+
+  public class Bgtz : Instruction
+  {
+    /* REGIMM
+       000001 rs(5) 10000 offset(16)
+    */
+
+    public Register rs;
+    public int16 offset;
+    public BinaryInstruction reference;
+
+    public Bgtz (Register rs, int16 offset)
+      {
+        this.rs = rs;
+        this.offset = offset;
+      }
+
+    public Bgtz.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_halfi (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_bgtz (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] > 0 then branch";
+    }
+  }
+
+  public class Bgtzl : Instruction
+  {
+    /* REGIMM
+       000001 rs(5) 10000 offset(16)
+    */
+
+    public Register rs;
+    public int16 offset;
+    public BinaryInstruction reference;
+
+    public Bgtzl (Register rs, int16 offset)
+      {
+        this.rs = rs;
+        this.offset = offset;
+      }
+
+    public Bgtzl.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_halfi (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_bgtzl (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] > 0 then branch_likely";
+    }
+  }
+
+  public class Blez : Instruction
+  {
+    /* REGIMM
+       000001 rs(5) 10000 offset(16)
+    */
+
+    public Register rs;
+    public int16 offset;
+    public BinaryInstruction reference;
+
+    public Blez (Register rs, int16 offset)
+      {
+        this.rs = rs;
+        this.offset = offset;
+      }
+
+    public Blez.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_halfi (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_blez (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≤ 0 then branch";
+    }
+  }
+
+  public class Blezl : Instruction
+  {
+    /* REGIMM
+       000001 rs(5) 10000 offset(16)
+    */
+
+    public Register rs;
+    public int16 offset;
+    public BinaryInstruction reference;
+
+    public Blezl (Register rs, int16 offset)
+      {
+        this.rs = rs;
+        this.offset = offset;
+      }
+
+    public Blezl.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_halfi (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_blezl (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≤ 0 then branch_likely";
+    }
+  }
+
+  public class Regimm.Bltz : Instruction
+  {
+    /* REGIMM
+       000001 rs(5) 10000 offset(16)
+    */
+
+    public Register rs;
+    public int16 offset;
+    public BinaryInstruction reference;
+
+    public Bltz (Register rs, int16 offset)
+      {
+        this.rs = rs;
+        this.offset = offset;
+      }
+
+    public Bltz.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_halfi (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_bltz (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] < 0 then branch";
+    }
+  }
+
+  public class Regimm.Bltzal : Instruction
+  {
+    /* REGIMM
+       000001 rs(5) 10000 offset(16)
+    */
+
+    public Register rs;
+    public int16 offset;
+    public BinaryInstruction reference;
+
+    public Bltzal (Register rs, int16 offset)
+      {
+        this.rs = rs;
+        this.offset = offset;
+      }
+
+    public Bltzal.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_halfi (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_bltzal (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] < 0 then procedure_call";
+    }
+  }
+
+  public class Regimm.Bltzall : Instruction
+  {
+    /* REGIMM
+       000001 rs(5) 10000 offset(16)
+    */
+
+    public Register rs;
+    public int16 offset;
+    public BinaryInstruction reference;
+
+    public Bltzall (Register rs, int16 offset)
+      {
+        this.rs = rs;
+        this.offset = offset;
+      }
+
+    public Bltzall.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_halfi (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_bltzall (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] < 0 then procedure_call_likely";
+    }
+  }
+
+  public class Regimm.Bltzl : Instruction
+  {
+    /* REGIMM
+       000001 rs(5) 10000 offset(16)
+    */
+
+    public Register rs;
+    public int16 offset;
+    public BinaryInstruction reference;
+
+    public Bltzl (Register rs, int16 offset)
+      {
+        this.rs = rs;
+        this.offset = offset;
+      }
+
+    public Bltzl.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_halfi (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_bltzl (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] < 0 then branch_likely";
+    }
+  }
+
+  public class Bne : Instruction
+  {
+    /* BNE
+       000101 rs(5) rt(5) immediate(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public int16 offset;
+    public BinaryInstruction reference;
+
+    public Bne (Register rs, Register rt, int16 offset)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.offset = offset;
+    }
+
+    public Bne.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), (int16)get_half (code));
+    }
+
+    public bool is_unconditional ()
+    {
+      return rs == 0 && rt == 0;
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_bne (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≠ GPR[$rt] then branch";
+    }
+  }
+
+  public class Bnel : Instruction
+  {
+    /* BNEL
+       000101 rs(5) rt(5) immediate(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public int16 offset;
+    public BinaryInstruction reference;
+
+    public Bnel (Register rs, Register rt, int16 offset)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.offset = offset;
+    }
+
+    public Bnel.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), (int16)get_half (code));
+    }
+
+    public bool is_unconditional ()
+    {
+      return rs == 0 && rt == 0;
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_bnel (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≠ GPR[$rt] then branch likely";
+    }
+  }
+
+  public class Break : Instruction
+  {
+    /* SPECIAL
+       000000 code(20) 001101
+    */
+
+    public uint code;
+
+    public Break (uint code)
+    {
+      this.code = code;
+    }
+
+    public Break.from_code (int code)
+    {
+      this ((code >> 6) & 0xFFFFF);
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_break (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return "breakpoint";
+    }
+  }
+
+  public class Cop1.Ccond : Instruction
+  {
+    public enum ConditionType
+    {
+      F,
+        UN,
+        EQ,
+        UEQ,
+        OLT,
+        ULT,
+        OLE,
+        ULE,
+        SF,
+        NGLE,
+        SEQ,
+        NGL,
+        LT,
+        NGE,
+        LE,
+        NGT;
+
+      public string to_string ()
+      {
+        switch (this)
+          {
+          case F:
+            return "f";
+          case UN:
+            return "un";
+          case EQ:
+            return "eq";
+          case UEQ:
+            return "ueq";
+          case OLT:
+            return "olt";
+          case ULT:
+            return "ult";
+          case OLE:
+            return "ole";
+          case ULE:
+            return "ule";
+          case SF:
+            return "sf";
+          case NGLE:
+            return "ngle";
+          case SEQ:
+            return "seq";
+          case NGL:
+            return "ngl";
+          case LT:
+            return "lt";
+          case NGE:
+            return "nge";
+          case LE:
+            return "le";
+          case NGT:
+            return "ngt";
+          default:
+            assert_not_reached ();
+          }
+      }
+    }
+
+    public Format fmt;
+    public FpuRegister ft;
+    public FpuRegister fs;
+    public uint8 cc;
+    public ConditionType cond;
+
+    public Ccond (Format fmt, FpuRegister ft, FpuRegister fs, uint8 cc, ConditionType cond)
+    {
+      this.fmt = fmt;
+      this.ft = ft;
+      this.fs = fs;
+      this.cc = cc;
+      this.cond = cond;
+    }
+
+    public Ccond.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4 (code) >> 2, (ConditionType)(code & 0x0F));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_ccond (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPUConditionCode($cc) ← FPR[$fs] compare_cond FPR[$ft]";
+    }
+  }
+
+  public class Cache : Instruction
+  {
+    /* CACHE
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public uint8 op;
+    public uint16 offset;
+
+    public Cache (Register @base, uint8 op, uint16 offset)
+      {
+        this.@base = @base;
+        this.op = op;
+        this.offset = offset;
+      }
+
+    public Cache.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cache (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"perform the cache operation $op";
+    }
+  }
+
+  public class Cop1.Ceill : Instruction
+  {
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Ceill (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Ceill.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_ceill (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
+  }
+
+  public class Cop1.Ceilw : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Ceilw (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Ceilw.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_ceilw (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
+  }
+
+  public class Cop1.Cf : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
     public Register rt;
     public FpuRegister fs;
 
-    public Mt (Register rt, FpuRegister fs)
+    public Cf (Register rt, FpuRegister fs)
     {
       this.rt = rt;
       this.fs = fs;
     }
 
-    public Mt.from_code (int code)
+    public Cf.from_code (int code)
     {
       this (get_five2_gpr (code), get_five3_fpr (code));
     }
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_cop1_mt (this);
+      visitor.visit_cop1_cf (this);
     }
 
     public override string get_mnemonic ()
@@ -6143,7 +1806,1559 @@ namespace Mips
 
     public override string? get_description ()
     {
-      return @"FPR[$fs] ← GPR[$rt]";
+      return @"GPR[$rt] ← FP_Control[FPR[$fs]]";
+    }
+  }
+
+  public class Cop2.Cf : Instruction
+  {
+    public Register rt;
+    public Register rd;
+
+    public Cf (Register rt, Register rd)
+    {
+      this.rt = rt;
+      this.rd = rd;
+    }
+
+    public Cf.from_code (int code)
+    {
+      this (get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop2_cf (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← CP2CCR[Impl]";
+    }
+  }
+
+  public class Clo : Instruction
+  {
+    /*
+      001001 rs(5) rt(5) immediate(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public Register rd;
+
+    public Clo (Register rs, Register rt, Register rd)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.rd = rd;
+    }
+
+    public Clo.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_clo (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← count_leading_ones GPR[$rs]";
+    }
+  }
+
+  public class Clz : Instruction
+  {
+    public Register rs;
+    public Register rt;
+    public Register rd;
+
+    public Clz (Register rs, Register rt, Register rd)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.rd = rd;
+    }
+
+    public Clz.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_clz (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← count_leading_zeros GPR[$rs]";
+    }
+  }
+
+  public class Cop2.Co : Instruction
+  {
+    public int cofun;
+
+    public Co (int cofun)
+    {
+      this.cofun = cofun;
+    }
+
+    public Co.from_code (int code)
+    {
+      this (code & 0x1FFFFFF);
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop2_co (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"CoprocessorOperation(2, cofun)";
+    }
+  }
+
+  public class Cop1.Ct : Instruction
+  {
+    public Register rt;
+    public FpuRegister fs;
+
+    public Ct (Register rt, FpuRegister fs)
+    {
+      this.rt = rt;
+      this.fs = fs;
+    }
+
+    public Ct.from_code (int code)
+    {
+      this (get_five2_gpr (code), get_five3_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_ct (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FP_Control[$fs] ← GPR[$rt]";
+    }
+  }
+
+  public class Cop2.Ct : Instruction
+  {
+    public Register rt;
+    public Register rd;
+
+    public Ct (Register rt, Register rd)
+    {
+      this.rt = rt;
+      this.rd = rd;
+    }
+
+    public Ct.from_code (int code)
+    {
+      this (get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop2_ct (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"CP2CCR[Impl] ← GPR[$rt]";
+    }
+  }
+
+  public class Cop1.Cvtd : Instruction
+  {
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Cvtd (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Cvtd.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_cvtd (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
+  }
+
+  public class Cop1.Cvtl : Instruction
+  {
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Cvtl (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Cvtl.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_cvtl (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
+  }
+
+  public class Cop1.Cvtps : Instruction
+  {
+    public FpuRegister ft;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Cvtps (FpuRegister ft, FpuRegister fs, FpuRegister fd)
+    {
+      this.ft = ft;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Cvtps.from_code (int code)
+    {
+      this (get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_cvtps (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← FPR[$fs]31..0 || FPR[$ft]31..0";
+    }
+  }
+
+  public class Cop1.Cvts : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Cvts (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Cvts.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_cvts (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(GPR[$fs])";
+    }
+  }
+
+  public class Cop1.Cvtw : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Cvtw (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Cvtw.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_cvtw (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
+  }
+
+  public class Cop0.Deret : Instruction
+  {
+    /* COP0
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_deret (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return "return from a debug exception";
+    }
+  }
+
+  public class Div : Instruction
+  {
+    /* SPECIAL
+       000000 rs(5) rt(5) rd(5) 00000 100001
+    */
+
+    public Register rs;
+    public Register rt;
+
+    public Div (Register rs, Register rt)
+      {
+        this.rs = rs;
+        this.rt = rt;
+      }
+
+    public Div.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_div (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"(HI, LO) ← GPR[$rs] / GPR[$rt]";
+    }
+  }
+
+  public class Cop1.Div : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Format fmt;
+    public FpuRegister ft;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Div (Format fmt, FpuRegister ft, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.ft = ft;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Div.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_div (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← FPR[$fs] / FPR[$ft]";
+    }
+  }
+
+  public class Divu : Instruction
+  {
+    /*
+      001001 rs(5) rt(5) immediate(16)
+    */
+
+    public Register rs;
+    public Register rt;
+
+    public Divu (Register rs, Register rt)
+    {
+      this.rs = rs;
+      this.rt = rt;
+    }
+
+    public Divu.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_divu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"(HI, LO) ← GPR[$rs] / GPR[$rt]";
+    }
+  }
+
+  public class Cop0.Eret : Instruction
+  {
+    /* COP0
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_eret (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return "return from interrupt, exception, or error trap";
+    }
+  }
+
+  public class Ext : Instruction
+  {
+    public Register rs;
+    public Register rt;
+    public uint8 msbd;
+    public uint8 lsb;
+
+    public Ext (Register rs, Register rt, uint8 msbd, uint8 lsb)
+      {
+        this.rs = rs;
+        this.rt = rt;
+        this.msbd = msbd;
+        this.lsb = lsb;
+      }
+
+    public Ext.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_ext (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← ExtractField(GPR[$rs], $msbd, $lsb)";
+    }
+  }
+
+  public class Cop1.Floorl : Instruction
+  {
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Floorl (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Floorl.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_floorl (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
+  }
+
+  public class Cop1.Floorw : Instruction
+  {
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Floorw (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Floorw.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_floorw (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
+  }
+
+  public class Ins : Instruction
+  {
+    public Register rs;
+    public Register rt;
+    public uint8 msb;
+    public uint8 lsb;
+
+    public Ins (Register rs, Register rt, uint8 msb, uint8 lsb)
+      {
+        this.rs = rs;
+        this.rt = rt;
+        this.msb = msb;
+        this.lsb = lsb;
+      }
+
+    public Ins.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3 (code), get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_ins (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← InsertField(GPR[$rt], GPR[$rs], $msb, $lsb)";
+    }
+  }
+
+  public class Jump : Instruction
+  {
+    public uint instr_index;
+
+    public Jump (uint instr_index)
+    {
+      this.instr_index = instr_index;
+    }
+
+    public Jump.from_code (int code)
+    {
+      this (code & 0x3FFFFFF);
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_jump (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return "branch within the current 256 MB-aligned region";
+    }
+  }
+
+  public class Jal : Instruction
+  {
+    public uint instr_index;
+
+    public Jal (uint instr_index)
+    {
+      this.instr_index = instr_index;
+    }
+
+    public Jal.from_code (int code)
+    {
+      this (code & 0x3FFFFFF);
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_jal (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return "execute a procedure call within the current 256 MB-aligned region";
+    }
+  }
+
+  public class Jalr : Instruction
+  {
+    /* SPECIAL
+       000000 rs(5) 00000 rd(5) hint(5) 001001
+    */
+    public Register rs;
+    public Register rd;
+    public uint8 hint;
+
+    public Jalr (Register rs, Register rd, uint8 hint)
+      {
+        this.rs = rs;
+        this.rd = rd;
+        this.hint = hint;
+      }
+
+    public Jalr.from_code (int code)
+      {
+        this (get_five1_gpr (code), get_five3_gpr (code), get_five4 (code));
+      }
+
+    public bool has_hint ()
+    {
+      return hint >> 4 == 1;
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_jalr (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      if (has_hint ())
+        return @"GPR[$rd] ← return_addr, PC ← GPR[$rs], clear execution and instruction hazards";
+      return @"GPR[$rd] ← return_addr, PC ← GPR[$rs]";
+    }
+  }
+
+  public class Jr : Instruction
+  {
+    /* SPECIAL
+       000000 rs(5) 00000 00000 hint(5) 001000
+    */
+    public Register rs;
+    public uint8 hint;
+
+    public Jr (Register rs, uint8 hint)
+      {
+        this.rs = rs;
+        this.hint = hint;
+      }
+
+    public Jr.from_code (int code)
+      {
+        this (get_five1_gpr (code), get_five4 (code));
+      }
+
+    public bool has_hint ()
+    {
+      return hint >> 4 == 1;
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_jr (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      if (has_hint ())
+        return @"PC ← GPR[$rs], clear execution and instruction hazards";
+      return @"PC ← GPR[$rs]";
+    }
+  }
+
+  public class Lb : Instruction
+  {
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Lb (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Lb.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_lb (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
+    }
+  }
+
+  public class Lbu : Instruction
+  {
+    /* LBU
+       100100 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Lbu (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Lbu.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_lbu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
+    }
+  }
+
+  public class Ldc1 : Instruction
+  {
+    /* LDC1
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public FpuRegister ft;
+    public uint16 offset;
+
+    public Ldc1 (Register @base, FpuRegister ft, uint16 offset)
+      {
+        this.@base = @base;
+        this.ft = ft;
+        this.offset = offset;
+      }
+
+    public Ldc1.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_fpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_ldc1 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$ft] ← memory[GPR[$base] + $offset]";
+    }
+  }
+
+  public class Ldc2 : Instruction
+  {
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Ldc2 (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Ldc2.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_ldc2 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"CPR[2,$rt,0] ← memory[GPR[$base] + $offset]";
+    }
+  }
+
+  public class Cop1x.Ldxc1 : Instruction
+  {
+    public Register @base;
+    public uint8 index;
+    public FpuRegister fd;
+
+    public Ldxc1 (Register @base, uint8 index, FpuRegister fd)
+      {
+        this.@base = @base;
+        this.index = index;
+        this.fd = fd;
+      }
+
+    public Ldxc1.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2 (code), get_five3_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1x_ldxc1 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← memory[GPR[$base] + GPR[$index]]";
+    }
+  }
+
+  public class Lh : Instruction
+  {
+    /* LH
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Lh (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Lh.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_lh (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
+    }
+  }
+
+  public class Lhu : Instruction
+  {
+    /* LHU
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Lhu (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Lhu.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_lhu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
+    }
+  }
+
+  public class Ll : Instruction
+  {
+    /* LL
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Ll (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Ll.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_ll (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
+    }
+  }
+
+  public class Lui : Instruction
+  {
+    /*
+      001111 00000 rt(5) immediate(16)
+    */
+    public Register rt;
+    public uint16 immediate;
+
+    public Lui (Register rt, uint16 immediate)
+    {
+      this.rt = rt;
+      this.immediate = immediate;
+    }
+
+    public Lui.from_code (int code)
+    {
+      this (get_five2_gpr (code), get_half (code));
+    }
+    
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_lui (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← $immediate || 0^16";
+    }
+  }
+
+  public class Cop1x.Luxc1 : Instruction
+  {
+    public Register @base;
+    public uint8 index;
+    public FpuRegister fd;
+
+    public Luxc1 (Register @base, uint8 index, FpuRegister fd)
+      {
+        this.@base = @base;
+        this.index = index;
+        this.fd = fd;
+      }
+
+    public Luxc1.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2 (code), get_five3_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1x_luxc1 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← memory[(GPR[$base] + GPR[$index])PSIZE-1..3]";
+    }
+  }
+
+  public class Lw : Instruction
+  {
+    /* SW
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public Register rt;
+    public int16 offset;
+    public BinaryReference reference;
+
+    public Lw (Register @base, Register rt, int16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Lw.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_halfi (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_lw (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← memory[GPR[$base] + $offset]";
+    }
+  }
+
+  public class Lwc1 : Instruction
+  {
+    /* LWC1
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public FpuRegister ft;
+    public uint16 offset;
+
+    public Lwc1 (Register @base, FpuRegister ft, uint16 offset)
+      {
+        this.@base = @base;
+        this.ft = ft;
+        this.offset = offset;
+      }
+
+    public Lwc1.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_fpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_lwc1 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$ft] ← memory[GPR[$base] + $offset]";
+    }
+  }
+
+  public class Lwc2 : Instruction
+  {
+    /* LWC2
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Lwc2 (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Lwc2.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_lwc2 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"CPR[2,$rt,0] ← memory[GPR[$base] + $offset]";
+    }
+  }
+
+  public class Lwl : Instruction
+  {
+    /* SW
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Lwl (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Lwl.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_lwl (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← GPR[$rt] MERGE memory[GPR[$base] + $offset]";
+    }
+  }
+
+  public class Lwr : Instruction
+  {
+    /* SW
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Lwr (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Lwr.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_lwr (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← GPR[$rt] MERGE memory[GPR[$base] + $offset]";
+    }
+  }
+
+  public class Cop1x.Lwxc1 : Instruction
+  {
+    public Register @base;
+    public uint8 index;
+    public FpuRegister fd;
+
+    public Lwxc1 (Register @base, uint8 index, FpuRegister fd)
+      {
+        this.@base = @base;
+        this.index = index;
+        this.fd = fd;
+      }
+
+    public Lwxc1.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2 (code), get_five3_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1x_lwxc1 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← memory[GPR[$base] + GPR[$index]]";
+    }
+  }
+
+  public class Madd : Instruction
+  {
+    /*
+      001001 rs(5) rt(5) immediate(16)
+    */
+
+    public Register rs;
+    public Register rt;
+
+    public Madd (Register rs, Register rt)
+    {
+      this.rs = rs;
+      this.rt = rt;
+    }
+
+    public Madd.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_madd (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"(HI,LO) ← (HI,LO) + (GPR[$rs] × GPR[$rt])";
+    }
+  }
+
+  public class Cop1x.Madd : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public FpuRegister fr;
+    public FpuRegister ft;
+    public FpuRegister fs;
+    public FpuRegister fd;
+    public Format fmt;
+
+    public Madd (FpuRegister fr, FpuRegister ft, FpuRegister fs, FpuRegister fd, Format fmt)
+    {
+      this.fr = fr;
+      this.ft = ft;
+      this.fs = fs;
+      this.fd = fd;
+      this.fmt = fmt;
+    }
+
+    public Madd.from_code (int code)
+    {
+      this (get_five1_fpr (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code), (Format)get_three (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1x_madd (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← (FPR[$fs] × FPR[$ft]) + FPR[$fr]";
+    }
+  }
+
+  public class Maddu : Instruction
+  {
+    /*
+      001001 rs(5) rt(5) immediate(16)
+    */
+
+    public Register rs;
+    public Register rt;
+
+    public Maddu (Register rs, Register rt)
+    {
+      this.rs = rs;
+      this.rt = rt;
+    }
+
+    public Maddu.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_maddu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"(HI,LO) ← (HI,LO) + (GPR[$rs] × GPR[$rt])";
+    }
+  }
+
+  public class Cop0.Mf : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Register rt;
+    public Register rd;
+    public uint8 sel;
+
+    public Mf (Register rt, Register rd, uint8 sel)
+    {
+      this.rt = rt;
+      this.rd = rd;
+      this.sel = sel;
+    }
+
+    public Mf.from_code (int code)
+    {
+      this (get_five2_gpr (code), get_five3_gpr (code), get_three (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_mf (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← CPR[0,$rd,$sel]";
     }
   }
 
@@ -6183,6 +3398,41 @@ namespace Mips
     }
   }
 
+  public class Cop2.Mf : Instruction
+  {
+    /* COP2
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Register rt;
+    public uint16 impl;
+
+    public Mf (Register rt, uint16 impl)
+    {
+      this.rt = rt;
+      this.impl = impl;
+    }
+
+    public Mf.from_code (int code)
+    {
+      this (get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop2_mf (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← CP2CPR[$impl]";
+    }
+  }
+
   public class Cop1.Mfh : Instruction
   {
     /* COP1
@@ -6219,29 +3469,28 @@ namespace Mips
     }
   }
 
-  public class Cop1.Mth : Instruction
+  public class Cop2.Mfh : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    /* COP2
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
     */
-
     public Register rt;
-    public FpuRegister fs;
+    public uint16 impl;
 
-    public Mth (Register rt, FpuRegister fs)
+    public Mfh (Register rt, uint16 impl)
     {
       this.rt = rt;
-      this.fs = fs;
+      this.impl = impl;
     }
 
-    public Mth.from_code (int code)
+    public Mfh.from_code (int code)
     {
-      this (get_five2_gpr (code), get_five3_fpr (code));
+      this (get_five2_gpr (code), get_half (code));
     }
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_cop1_mth (this);
+      visitor.visit_cop2_mfh (this);
     }
 
     public override string get_mnemonic ()
@@ -6251,34 +3500,131 @@ namespace Mips
 
     public override string? get_description ()
     {
-      return @"FPR[$fs]63..32 ← GPR[$rt]";
+      return @"GPR[$rt] ← CP2CPR[$impl]63..32";
     }
   }
 
-  public class Cop1.Recip : Instruction
+  public class Mfhi : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    /* SPECIAL
+       000000 rs(5) rt(5) rd(5) 00000 100001
     */
+
+    public Register rd;
+
+    public Mfhi (Register rd)
+      {
+        this.rd = rd;
+      }
+
+    public Mfhi.from_code (int code)
+    {
+      this (get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_mfhi (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← HI";
+    }
+  }
+
+  public class Mflo : Instruction
+  {
+    /* SPECIAL
+       000000 rs(5) rt(5) rd(5) 00000 100001
+    */
+
+    public Register rd;
+
+    public Mflo (Register rd)
+      {
+        this.rd = rd;
+      }
+
+    public Mflo.from_code (int code)
+    {
+      this (get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_mflo (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← LO";
+    }
+  }
+
+  public class Cop0.Mfmc0 : Instruction
+  {
+    public Register rt;
+    public bool sc;
+
+    public Mfmc0 (Register rt, bool sc)
+    {
+      this.rt = rt;
+      this.sc = sc;
+    }
+
+    public Mfmc0.from_code (int code)
+    {
+      this (get_five2_gpr (code), (bool)(code & 0x20));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_mfmc0 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← Status; StatusIE ← $sc";
+    }
+  }
+
+  public class Cop1.Mov : Instruction
+  {
     public Format fmt;
     public FpuRegister fs;
     public FpuRegister fd;
 
-    public Recip (Format fmt, FpuRegister fs, FpuRegister fd)
+    public Mov (Format fmt, FpuRegister fs, FpuRegister fd)
     {
       this.fmt = fmt;
       this.fs = fs;
       this.fd = fd;
     }
 
-    public Recip.from_code (int code)
+    public Mov.from_code (int code)
     {
       this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
     }
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_cop1_recip (this);
+      visitor.visit_cop1_mov (this);
     }
 
     public override string get_mnemonic ()
@@ -6288,47 +3634,7 @@ namespace Mips
 
     public override string? get_description ()
     {
-      return @"FPR[$fd] ← 1.0 / FPR[$fs]";
-    }
-  }
-
-  public class Movci : Instruction
-  {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
-    public Register rs;
-    public uint8 cc;
-    public bool test_true;
-    public Register rd;
-
-    public Movci (Register rs, uint8 cc, bool test_true, Register rd)
-    {
-      this.rs = rs;
-      this.cc = cc;
-      this.test_true = test_true;
-      this.rd = rd;
-    }
-
-    public Movci.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2 (code) >> 2, (code & 0x10000) == 1, get_five3_gpr (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_movci (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if FPConditionCode($cc) = $test_true then GPR[$rd] ← GPR[$rs]";
+      return @"FPR[$fd] ← FPR[$fs]";
     }
   }
 
@@ -6374,225 +3680,33 @@ namespace Mips
     }
   }
 
-  public class Jump : Instruction
-  {
-    public uint instr_index;
-
-    public Jump (uint instr_index)
-    {
-      this.instr_index = instr_index;
-    }
-
-    public Jump.from_code (int code)
-    {
-      this (code & 0x3FFFFFF);
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_jump (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return "branch within the current 256 MB-aligned region";
-    }
-  }
-
-  public class Cop0.Wait : Instruction
-  {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
-    public uint code;
-
-    public Wait (uint code)
-    {
-      this.code = code;
-    }
-
-    public Wait.from_code (int code)
-    {
-      this (code & 0x7FFFF);
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop0_wait (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return "Wait for Event";
-    }
-  }
-
-  public class Cop0.Mfmc0 : Instruction
-  {
-    public Register rt;
-    public bool sc;
-
-    public Mfmc0 (Register rt, bool sc)
-    {
-      this.rt = rt;
-      this.sc = sc;
-    }
-
-    public Mfmc0.from_code (int code)
-    {
-      this (get_five2_gpr (code), (bool)(code & 0x20));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_cop0_mfmc0 (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"GPR[$rt] ← Status; StatusIE ← $sc";
-    }
-  }
-
-  public class Jal : Instruction
-  {
-    public uint instr_index;
-
-    public Jal (uint instr_index)
-    {
-      this.instr_index = instr_index;
-    }
-
-    public Jal.from_code (int code)
-    {
-      this (code & 0x3FFFFFF);
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_jal (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return "execute a procedure call within the current 256 MB-aligned region";
-    }
-  }
-
-  public class Sdbbp : Instruction
-  {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
-    public uint code;
-
-    public Sdbbp (uint code)
-    {
-      this.code = code;
-    }
-
-    public Sdbbp.from_code (int code)
-    {
-      this ((code >> 6) & 0xFFFFF);
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_sdbbp (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"debug breakpoint";
-    }
-  }
-
-  public class Syscall : Instruction
-  {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
-    public uint code;
-
-    public Syscall (uint code)
-    {
-      this.code = code;
-    }
-
-    public Syscall.from_code (int code)
-    {
-      this ((code >> 6) & 0xFFFFF);
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_syscall (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return "cause a System Call exception";
-    }
-  }
-
-  public class Teq : Instruction
+  public class Movci : Instruction
   {
     /* COP1
        010001 01000 cc(3) nd(1) tf(1) offset(16)
     */
 
     public Register rs;
-    public Register rt;
-    public uint16 code;
+    public uint8 cc;
+    public bool test_true;
+    public Register rd;
 
-    public Teq (Register rs, Register rt, uint16 code)
+    public Movci (Register rs, uint8 cc, bool test_true, Register rd)
     {
       this.rs = rs;
-      this.rt = rt;
-      this.code = code;
+      this.cc = cc;
+      this.test_true = test_true;
+      this.rd = rd;
     }
 
-    public Teq.from_code (int code)
+    public Movci.from_code (int code)
     {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_ten (code));
+      this (get_five1_gpr (code), get_five2 (code) >> 2, (code & 0x10000) == 1, get_five3_gpr (code));
     }
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_teq (this);
+      visitor.visit_movci (this);
     }
 
     public override string get_mnemonic ()
@@ -6602,35 +3716,35 @@ namespace Mips
 
     public override string? get_description ()
     {
-      return @"if GPR[$rs] = GPR[$rt] then Trap";
+      return @"if FPConditionCode($cc) = $test_true then GPR[$rd] ← GPR[$rs]";
     }
   }
 
-  public class Tltu : Instruction
+  public class Movn : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    /*
+      001001 rs(5) rt(5) immediate(16)
     */
 
     public Register rs;
     public Register rt;
-    public uint16 code;
+    public Register rd;
 
-    public Tltu (Register rs, Register rt, uint16 code)
+    public Movn (Register rs, Register rt, Register rd)
     {
       this.rs = rs;
       this.rt = rt;
-      this.code = code;
+      this.rd = rd;
     }
 
-    public Tltu.from_code (int code)
+    public Movn.from_code (int code)
     {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_ten (code));
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
     }
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_tltu (this);
+      visitor.visit_movn (this);
     }
 
     public override string get_mnemonic ()
@@ -6640,35 +3754,71 @@ namespace Mips
 
     public override string? get_description ()
     {
-      return @"if GPR[$rs] < GPR[$rt] then Trap";
+      return @"if GPR[$rt] ≠ 0 then GPR[$rd] ← GPR[$rs]";
     }
   }
 
-  public class Tne : Instruction
+  public class Cop1.Movn : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    public Format fmt;
+    public Register rt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Movn (Format fmt, Register rt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.rt = rt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Movn.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five2_gpr (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_movn (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rt] ≠ 0 then FPR[$fd] ← FPR[$fs]";
+    }
+  }
+
+  public class Movz : Instruction
+  {
+    /*
+      001001 rs(5) rt(5) immediate(16)
     */
 
     public Register rs;
     public Register rt;
-    public uint16 code;
+    public Register rd;
 
-    public Tne (Register rs, Register rt, uint16 code)
+    public Movz (Register rs, Register rt, Register rd)
     {
       this.rs = rs;
       this.rt = rt;
-      this.code = code;
+      this.rd = rd;
     }
 
-    public Tne.from_code (int code)
+    public Movz.from_code (int code)
     {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_ten (code));
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
     }
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_tne (this);
+      visitor.visit_movz (this);
     }
 
     public override string get_mnemonic ()
@@ -6678,35 +3828,72 @@ namespace Mips
 
     public override string? get_description ()
     {
-      return @"if GPR[$rs] ≠ GPR[$rt] then Trap";
+      return @"if GPR[$rt] = 0 then GPR[$rd] ← GPR[$rs]";
     }
   }
 
-  public class Tlt : Instruction
+  public class Cop1.Movz : Instruction
   {
     /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Format fmt;
+    public Register rt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Movz (Format fmt, Register rt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.rt = rt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Movz.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five2_gpr (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_movz (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rt] = 0 then FPR[$fd] ← FPR[$fs]";
+    }
+  }
+
+  public class Msub : Instruction
+  {
+    /*
+      001001 rs(5) rt(5) immediate(16)
     */
 
     public Register rs;
     public Register rt;
-    public uint16 code;
 
-    public Tlt (Register rs, Register rt, uint16 code)
+    public Msub (Register rs, Register rt)
     {
       this.rs = rs;
       this.rt = rt;
-      this.code = code;
     }
 
-    public Tlt.from_code (int code)
+    public Msub.from_code (int code)
     {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_ten (code));
+      this (get_five1_gpr (code), get_five2_gpr (code));
     }
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_tlt (this);
+      visitor.visit_msub (this);
     }
 
     public override string get_mnemonic ()
@@ -6716,87 +3903,11 @@ namespace Mips
 
     public override string? get_description ()
     {
-      return @"if GPR[$rs] < GPR[$rt] then Trap";
+      return @"(HI,LO) ← (HI,LO) - (GPR[$rs] × GPR[$rt])";
     }
   }
 
-  public class Tgeu : Instruction
-  {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public uint16 code;
-
-    public Tgeu (Register rs, Register rt, uint16 code)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.code = code;
-    }
-
-    public Tgeu.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_ten (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_tgeu (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] ≥ GPR[$rt] then Trap";
-    }
-  }
-
-  public class Tge : Instruction
-  {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
-    */
-
-    public Register rs;
-    public Register rt;
-    public uint16 code;
-
-    public Tge (Register rs, Register rt, uint16 code)
-    {
-      this.rs = rs;
-      this.rt = rt;
-      this.code = code;
-    }
-
-    public Tge.from_code (int code)
-    {
-      this (get_five1_gpr (code), get_five2_gpr (code), get_ten (code));
-    }
-
-    public override void accept (Visitor visitor)
-    {
-      visitor.visit_tge (this);
-    }
-
-    public override string get_mnemonic ()
-    {
-      return "";
-    }
-
-    public override string? get_description ()
-    {
-      return @"if GPR[$rs] ≥ GPR[$rt] then Trap";
-    }
-  }
-
-  public class Cop1x.Madd : Instruction
+  public class Cop1x.Msub : Instruction
   {
     /* COP1
        010001 01000 cc(3) nd(1) tf(1) offset(16)
@@ -6808,7 +3919,7 @@ namespace Mips
     public FpuRegister fd;
     public Format fmt;
 
-    public Madd (FpuRegister fr, FpuRegister ft, FpuRegister fs, FpuRegister fd, Format fmt)
+    public Msub (FpuRegister fr, FpuRegister ft, FpuRegister fs, FpuRegister fd, Format fmt)
     {
       this.fr = fr;
       this.ft = ft;
@@ -6817,14 +3928,14 @@ namespace Mips
       this.fmt = fmt;
     }
 
-    public Madd.from_code (int code)
+    public Msub.from_code (int code)
     {
       this (get_five1_fpr (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code), (Format)get_three (code));
     }
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_cop1x_madd (this);
+      visitor.visit_cop1x_msub (this);
     }
 
     public override string get_mnemonic ()
@@ -6834,7 +3945,477 @@ namespace Mips
 
     public override string? get_description ()
     {
-      return @"FPR[$fd] ← (FPR[$fs] × FPR[$ft]) + FPR[$fr]";
+      return @"FPR[$fd] ← (FPR[$fs] × FPR[$ft]) − FPR[$fr]";
+    }
+  }
+
+  public class Msubu : Instruction
+  {
+    /*
+      001001 rs(5) rt(5) immediate(16)
+    */
+
+    public Register rs;
+    public Register rt;
+
+    public Msubu (Register rs, Register rt)
+    {
+      this.rs = rs;
+      this.rt = rt;
+    }
+
+    public Msubu.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_msubu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"(HI,LO) ← (HI,LO) - (GPR[$rs] × GPR[$rt])";
+    }
+  }
+
+  public class Cop0.Mt : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Register rt;
+    public Register rd;
+    public uint8 sel;
+
+    public Mt (Register rt, Register rd, uint8 sel)
+    {
+      this.rt = rt;
+      this.rd = rd;
+      this.sel = sel;
+    }
+
+    public Mt.from_code (int code)
+    {
+      this (get_five2_gpr (code), get_five3_gpr (code), get_three (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_mt (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"CPR[0, $rd, $sel] ← GPR[$rt]";
+    }
+  }
+
+  public class Cop1.Mt : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public Register rt;
+    public FpuRegister fs;
+
+    public Mt (Register rt, FpuRegister fs)
+    {
+      this.rt = rt;
+      this.fs = fs;
+    }
+
+    public Mt.from_code (int code)
+    {
+      this (get_five2_gpr (code), get_five3_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_mt (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fs] ← GPR[$rt]";
+    }
+  }
+
+  public class Cop2.Mt : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public Register rt;
+    public uint16 impl;
+
+    public Mt (Register rt, uint16 impl)
+    {
+      this.rt = rt;
+      this.impl = impl;
+    }
+
+    public Mt.from_code (int code)
+    {
+      this (get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop2_mt (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"CP2CPR[$impl] ← GPR[$rt]";
+    }
+  }
+
+  public class Cop1.Mth : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public Register rt;
+    public FpuRegister fs;
+
+    public Mth (Register rt, FpuRegister fs)
+    {
+      this.rt = rt;
+      this.fs = fs;
+    }
+
+    public Mth.from_code (int code)
+    {
+      this (get_five2_gpr (code), get_five3_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_mth (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fs]63..32 ← GPR[$rt]";
+    }
+  }
+
+  public class Cop2.Mth : Instruction
+  {
+    /* COP2
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Register rt;
+    public uint16 impl;
+
+    public Mth (Register rt, uint16 impl)
+    {
+      this.rt = rt;
+      this.impl = impl;
+    }
+
+    public Mth.from_code (int code)
+    {
+      this (get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop2_mth (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"CP2CPR[$impl]63..32 ← GPR[$rt]";
+    }
+  }
+
+  public class Mthi : Instruction
+  {
+    /* SPECIAL
+       000000 rs(5) rt(5) rd(5) 00000 100001
+    */
+
+    public Register rs;
+
+    public Mthi (Register rs)
+      {
+        this.rs = rs;
+      }
+
+    public Mthi.from_code (int code)
+    {
+      this (get_five1_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_mthi (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"HI ← GPR[$rs]";
+    }
+  }
+
+  public class Mtlo : Instruction
+  {
+    /* SPECIAL
+       000000 rs(5) rt(5) rd(5) 00000 100001
+    */
+
+    public Register rs;
+
+    public Mtlo (Register rs)
+      {
+        this.rs = rs;
+      }
+
+    public Mtlo.from_code (int code)
+    {
+      this (get_five1_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_mtlo (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"LO ← GPR[$rs]";
+    }
+  }
+
+  public class Mul : Instruction
+  {
+    /*
+      001001 rs(5) rt(5) immediate(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public Register rd;
+
+    public Mul (Register rs, Register rt, Register rd)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.rd = rd;
+    }
+
+    public Mul.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_mul (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rs] × GPR[$rt]";
+    }
+  }
+
+  public class Cop1.Mul : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Format fmt;
+    public FpuRegister ft;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Mul (Format fmt, FpuRegister ft, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.ft = ft;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Mul.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_mul (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← FPR[$fs] × FPR[$ft]";
+    }
+  }
+
+  public class Mult : Instruction
+  {
+    /* SPECIAL
+       000000 rs(5) rt(5) rd(5) 00000 100001
+    */
+
+    public Register rs;
+    public Register rt;
+
+    public Mult (Register rs, Register rt)
+      {
+        this.rs = rs;
+        this.rt = rt;
+      }
+
+    public Mult.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_mult (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"(HI, LO) ← GPR[$rs] × GPR[$rt]";
+    }
+  }
+
+  public class Multu : Instruction
+  {
+    /* SPECIAL
+       000000 rs(5) rt(5) rd(5) 00000 100001
+    */
+
+    public Register rs;
+    public Register rt;
+
+    public Multu (Register rs, Register rt)
+      {
+        this.rs = rs;
+        this.rt = rt;
+      }
+
+    public Multu.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_multu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"(HI, LO) ← GPR[$rs] × GPR[$rt]";
+    }
+  }
+
+  public class Cop1.Neg : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Neg (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Neg.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_neg (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← −FPR[$fs]";
     }
   }
 
@@ -6922,35 +4503,31 @@ namespace Mips
     }
   }
 
-  public class Cop1x.Msub : Instruction
+  public class Nor : Instruction
   {
-    /* COP1
-       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    /*
+      001001 rs(5) rt(5) immediate(16)
     */
 
-    public FpuRegister fr;
-    public FpuRegister ft;
-    public FpuRegister fs;
-    public FpuRegister fd;
-    public Format fmt;
+    public Register rs;
+    public Register rt;
+    public Register rd;
 
-    public Msub (FpuRegister fr, FpuRegister ft, FpuRegister fs, FpuRegister fd, Format fmt)
+    public Nor (Register rs, Register rt, Register rd)
     {
-      this.fr = fr;
-      this.ft = ft;
-      this.fs = fs;
-      this.fd = fd;
-      this.fmt = fmt;
+      this.rs = rs;
+      this.rt = rt;
+      this.rd = rd;
     }
 
-    public Msub.from_code (int code)
+    public Nor.from_code (int code)
     {
-      this (get_five1_fpr (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code), (Format)get_three (code));
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
     }
 
     public override void accept (Visitor visitor)
     {
-      visitor.visit_cop1x_msub (this);
+      visitor.visit_nor (this);
     }
 
     public override string get_mnemonic ()
@@ -6960,7 +4537,195 @@ namespace Mips
 
     public override string? get_description ()
     {
-      return @"FPR[$fd] ← (FPR[$fs] × FPR[$ft]) − FPR[$fr]";
+      return @"GPR[$rd] ← GPR[$rs] NOR GPR[$rt]";
+    }
+  }
+
+  public class Or : Instruction
+  {
+    /* SPECIAL
+       000000 rs(5) rt(5) rd(5) 00000 100001
+    */
+
+    public Register rs;
+    public Register rt;
+    public Register rd;
+
+    public Or (Register rs, Register rt, Register rd)
+      {
+        this.rs = rs;
+        this.rt = rt;
+        this.rd = rd;
+      }
+
+    public Or.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_or (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rs] or GPR[$rt]";
+    }
+  }
+
+  public class Ori : Instruction
+  {
+    /*
+      001011 rs(5) rt(5) immediate(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public int16 immediate;
+
+    public Ori (Register rs, Register rt, int16 immediate)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.immediate = immediate;
+    }
+
+    public Ori.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), (int16)get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_ori (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← GPR[$rs] or $immediate";
+    }
+  }
+
+  public class Cop1.Pll : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public FpuRegister ft;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Pll (FpuRegister ft, FpuRegister fs, FpuRegister fd)
+    {
+      this.ft = ft;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Pll.from_code (int code)
+    {
+      this (get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_pll (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← lower(FPR[$fs]) || lower(FPR[$ft])";
+    }
+  }
+
+  public class Cop1.Plu : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public FpuRegister ft;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Plu (FpuRegister ft, FpuRegister fs, FpuRegister fd)
+    {
+      this.ft = ft;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Plu.from_code (int code)
+    {
+      this (get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_plu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← lower(FPR[$fs]) || upper(FPR[$ft])";
+    }
+  }
+
+  public class Pref : Instruction
+  {
+    /* PREF
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public uint8 hint;
+    public uint16 offset;
+
+    public Pref (Register @base, uint8 hint, uint16 offset)
+      {
+        this.@base = @base;
+        this.hint = hint;
+        this.offset = offset;
+      }
+
+    public Pref.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2 (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_pref (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"prefetch_memory(GPR[$base] + $offset)";
     }
   }
 
@@ -6999,6 +4764,80 @@ namespace Mips
     public override string? get_description ()
     {
       return @"prefetch_memory[GPR[$base] + GPR[$index]]";
+    }
+  }
+
+  public class Cop1.Pul : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public FpuRegister ft;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Pul (FpuRegister ft, FpuRegister fs, FpuRegister fd)
+    {
+      this.ft = ft;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Pul.from_code (int code)
+    {
+      this (get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_pul (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← upper(FPR[$fs]) || lower(FPR[$ft])";
+    }
+  }
+
+  public class Cop1.Puu : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public FpuRegister ft;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Puu (FpuRegister ft, FpuRegister fs, FpuRegister fd)
+    {
+      this.ft = ft;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Puu.from_code (int code)
+    {
+      this (get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_puu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← upper(FPR[$fs]) || upper(FPR[$ft])";
     }
   }
 
@@ -7074,6 +4913,2055 @@ namespace Mips
     }
   }
 
+  public class Cop1.Recip : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Recip (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Recip.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_recip (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← 1.0 / FPR[$fs]";
+    }
+  }
+
+  public class Cop1.Roundl : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Roundl (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Roundl.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_roundl (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
+  }
+
+  public class Cop1.Roundw : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Roundw (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Roundw.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_roundw (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
+  }
+
+  public class Cop1.Rsqrt : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Rsqrt (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Rsqrt.from_code (int code)
+    {
+      this ((Format)(Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_rsqrt (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← 1.0 / sqrt(FPR[$fs])";
+    }
+  }
+
+  public class Sb : Instruction
+  {
+    /* SB
+       101000 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Sb (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Sb.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_sb (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
+    }
+  }
+
+  public class Sc : Instruction
+  {
+    /* SB
+       101000 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Sc (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Sc.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_sc (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if atomic_update then memory[GPR[$base] + $offset] ← GPR[$rt], GPR[$rt] ← 1 else GPR[$rt] ← 0";
+    }
+  }
+
+  public class Sdbbp : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint code;
+
+    public Sdbbp (uint code)
+    {
+      this.code = code;
+    }
+
+    public Sdbbp.from_code (int code)
+    {
+      this ((code >> 6) & 0xFFFFF);
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_sdbbp (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"debug breakpoint";
+    }
+  }
+
+  public class Sdc1 : Instruction
+  {
+    /* SDC1
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public FpuRegister ft;
+    public uint16 offset;
+
+    public Sdc1 (Register @base, FpuRegister ft, uint16 offset)
+      {
+        this.@base = @base;
+        this.ft = ft;
+        this.offset = offset;
+      }
+
+    public Sdc1.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_fpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_sdc1 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ←FPR[$ft]";
+    }
+  }
+
+  public class Sdc2 : Instruction
+  {
+    /* SDC2
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Sdc2 (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Sdc2.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_sdc2 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ← CPR[2,$rt,0]";
+    }
+  }
+
+  public class Cop1x.Sdxc1 : Instruction
+  {
+    public Register @base;
+    public uint8 index;
+    public FpuRegister fs;
+
+    public Sdxc1 (Register @base, uint8 index, FpuRegister fs)
+      {
+        this.@base = @base;
+        this.index = index;
+        this.fs = fs;
+      }
+
+    public Sdxc1.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2 (code), get_five3_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1x_sdxc1 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + GPR[$index]] ← FPR[$fs]";
+    }
+  }
+
+  public class Seb : Instruction
+  {
+    /* SEB
+       101000 base(5) rt(5) offset(16)
+    */
+
+    public Register rt;
+    public Register rd;
+
+    public Seb (Register rt, Register rd)
+      {
+        this.rt = rt;
+        this.rd = rd;
+      }
+
+    public Seb.from_code (int code)
+    {
+      this (get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_seb (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← SignExtend(GPR[$rt]7..0)";
+    }
+  }
+
+  public class Seh : Instruction
+  {
+    /* SEH
+       101000 base(5) rt(5) offset(16)
+    */
+
+    public Register rt;
+    public Register rd;
+
+    public Seh (Register rt, Register rd)
+      {
+        this.rt = rt;
+        this.rd = rd;
+      }
+
+    public Seh.from_code (int code)
+    {
+      this (get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_seh (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← SignExtend(GPR[$rt]15..0)";
+    }
+  }
+
+  public class Sh : Instruction
+  {
+    /* SH
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Sh (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Sh.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_sh (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
+    }
+  }
+
+  public class Sll : Instruction
+  {
+    public Register rt;
+    public Register rd;
+    public uint8 sa;
+
+    public Sll (Register rt, Register rd, uint8 sa)
+      {
+        this.rt = rt;
+        this.rd = rd;
+        this.sa = sa;
+      }
+
+    public Sll.from_code (int code)
+      {
+        this (get_five2_gpr (code), get_five3_gpr (code), get_five4_gpr (code));
+      }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_sll (this);
+    }
+
+    public bool is_nop ()
+    {
+      return rt == 0 && rd == 0 && sa == 0;
+    }
+
+    public bool is_ssnop ()
+    {
+      return rt == 0 && rd == 0 && sa == 1;
+    }
+
+    public bool is_ehb ()
+    {
+      return rt == 0 && rd == 0 && sa == 3;
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      if (is_ehb ())
+        return @"stop instruction execution until all execution hazards have been cleared";
+      else if (is_ssnop ())
+        return @"break superscalar issue on a superscalar processor";
+      else if (!is_nop ())
+        return @"GPR[$rd] ← GPR[$rt] << $sa";
+      return null;
+    }
+  } 
+
+  public class Sllv : Instruction
+  {
+    /* SPECIAL
+       000000 rs(5) rt(5) rd(5) 00000 100001
+    */
+
+    public Register rs;
+    public Register rt;
+    public Register rd;
+
+    public Sllv (Register rs, Register rt, Register rd)
+      {
+        this.rs = rs;
+        this.rt = rt;
+        this.rd = rd;
+      }
+
+    public Sllv.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_sllv (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rt] << rs";
+    }
+  }
+
+  public class Slt : Instruction
+  {
+    /* SPECIAL
+       000000 rs(5) rt(5) rd(5) 00000 100001
+    */
+
+    public Register rs;
+    public Register rt;
+    public Register rd;
+
+    public Slt (Register rs, Register rt, Register rd)
+      {
+        this.rs = rs;
+        this.rt = rt;
+        this.rd = rd;
+      }
+
+    public Slt.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_slt (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← (GPR[$rs] < GPR[$rt])";
+    }
+  }
+
+  public class Slti : Instruction
+  {
+    /*
+      001011 rs(5) rt(5) immediate(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public int16 immediate;
+
+    public Slti (Register rs, Register rt, int16 immediate)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.immediate = immediate;
+    }
+
+    public Slti.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), (int16)get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_slti (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← (GPR[$rs] < $immediate)";
+    }
+  }
+
+  public class Sltiu : Instruction
+  {
+    /*
+      001011 rs(5) rt(5) immediate(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public uint16 immediate;
+
+    public Sltiu (Register rs, Register rt, uint16 immediate)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.immediate = immediate;
+    }
+
+    public Sltiu.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_sltiu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← (GPR[$rs] < $immediate)";
+    }
+  }
+
+  public class Sltu : Instruction
+  {
+    /* SPECIAL
+       000000 rs(5) rt(5) rd(5) 00000 100001
+    */
+
+    public Register rs;
+    public Register rt;
+    public Register rd;
+
+    public Sltu (Register rs, Register rt, Register rd)
+      {
+        this.rs = rs;
+        this.rt = rt;
+        this.rd = rd;
+      }
+
+    public Sltu.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_sltu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← (GPR[$rs] < GPR[$rt])";
+    }
+  }
+
+  public class Cop1.Sqrt : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Sqrt (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Sqrt.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_sqrt (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← SQRT(FPR[$fs])";
+    }
+  }
+
+  public class Sra : Instruction
+  {
+    /* SPECIAL
+       000000 00000 rt(5) rd(5) sa(5) 000000
+    */
+    public Register rt;
+    public Register rd;
+    public uint8 sa;
+
+    public Sra (Register rt, Register rd, uint8 sa)
+      {
+        this.rt = rt;
+        this.rd = rd;
+        this.sa = sa;
+      }
+
+    public Sra.from_code (int code)
+      {
+        this (get_five2_gpr (code), get_five3_gpr (code), get_five4 (code));
+      }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_sra (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rt] >> $sa (arithmetic)";
+    }
+  }
+
+  public class Srav : Instruction
+  {
+    /*
+      001001 rs(5) rt(5) immediate(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public Register rd;
+
+    public Srav (Register rs, Register rt, Register rd)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.rd = rd;
+    }
+
+    public Srav.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_srav (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rt] >> $rs (arithmetic)";
+    }
+  }
+
+  public class Srl : Instruction
+  {
+    /* SPECIAL
+       000000 00000 rt(5) rd(5) sa(5) 000000
+    */
+    public bool rotr;
+    public Register rt;
+    public Register rd;
+    public uint8 sa;
+
+    public Srl (bool rotr, Register rt, Register rd, uint8 sa)
+      {
+        this.rotr = rotr;
+        this.rt = rt;
+        this.rd = rd;
+        this.sa = sa;
+      }
+
+    public Srl.from_code (int code)
+      {
+        this ((bool) get_five1 (code), get_five2_gpr (code), get_five3_gpr (code), get_five4 (code));
+      }
+
+    public bool is_rotr ()
+    {
+      return rotr;
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_srl (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      if (is_rotr ())
+        return @"GPR[$rd] ← GPR[$rt] ↔(right) $sa";
+      return @"GPR[$rd] ← GPR[$rt] >> $sa (logical)";
+    }
+  } 
+
+  public class Srlv : Instruction
+  {
+    /*
+      001001 rs(5) rt(5) immediate(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public Register rd;
+    public bool rotr;
+
+    public Srlv (Register rs, Register rt, Register rd, bool rotr)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.rd = rd;
+      this.rotr = rotr;
+    }
+
+    public Srlv.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code), (bool) get_five4 (code));
+    }
+
+    public bool is_rotr ()
+    {
+      return rotr;
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_srlv (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      if (is_rotr ())
+        return @"GPR[$rd] ← GPR[$rt] ↔(right) GPR[$rs]";
+      return @"GPR[$rd] ← GPR[$rt] >> GPR[$rs] (logical)";
+    }
+  }
+
+  public class Sub : Instruction
+  {
+    public Register rs;
+    public Register rt;
+    public Register rd;
+
+    public Sub (Register rs, Register rt, Register rd)
+      {
+        this.rs = rs;
+        this.rt = rt;
+        this.rd = rd;
+      }
+
+    public Sub.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_sub (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rs] - GPR[$rt]";
+    }
+  }
+
+  public class Cop1.Sub : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Format fmt;
+    public FpuRegister ft;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Sub (Format fmt, FpuRegister ft, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.ft = ft;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Sub.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five2_fpr (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_sub (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← FPR[$fs] - FPR[$ft]";
+    }
+  }
+
+  public class Subu : Instruction
+  {
+    /* SPECIAL
+       000000 rs(5) rt(5) rd(5) 00000 100001
+    */
+
+    public Register rs;
+    public Register rt;
+    public Register rd;
+
+    public Subu (Register rs, Register rt, Register rd)
+      {
+        this.rs = rs;
+        this.rt = rt;
+        this.rd = rd;
+      }
+
+    public Subu.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_subu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rs] - GPR[$rt]";
+    }
+  }
+
+  public class Cop1x.Suxc1 : Instruction
+  {
+    /* SUXC1
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public uint8 index;
+    public FpuRegister fs;
+
+    public Suxc1 (Register @base, uint8 index, FpuRegister fs)
+      {
+        this.@base = @base;
+        this.index = index;
+        this.fs = fs;
+      }
+
+    public Suxc1.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2 (code), get_five3_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1x_suxc1 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"memory[(GPR[$base] + GPR[$index])PSIZE-1..3] ← FPR[$fs]";
+    }
+  }
+
+  public class Sw : Instruction
+  {
+    /* SW
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Sw (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Sw.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_sw (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
+    }
+  }
+
+  public class Swc1 : Instruction
+  {
+    /* SWC1
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public FpuRegister ft;
+    public uint16 offset;
+
+    public Swc1 (Register @base, FpuRegister ft, uint16 offset)
+      {
+        this.@base = @base;
+        this.ft = ft;
+        this.offset = offset;
+      }
+
+    public Swc1.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_fpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_swc1 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ← FPR[$ft]";
+    }
+  }
+
+  public class Swc2 : Instruction
+  {
+    /* SWC2
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Swc2 (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Swc2.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_swc2 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ← CPR[2,$rt,0]";
+    }
+  }
+
+  public class Swl : Instruction
+  {
+    /* SWL
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Swl (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Swl.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_swl (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
+    }
+  }
+
+  public class Swr : Instruction
+  {
+    /* SWR
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public Register rt;
+    public uint16 offset;
+
+    public Swr (Register @base, Register rt, uint16 offset)
+      {
+        this.@base = @base;
+        this.rt = rt;
+        this.offset = offset;
+      }
+
+    public Swr.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_swr (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + $offset] ← GPR[$rt]";
+    }
+  }
+
+  public class Cop1x.Swxc1 : Instruction
+  {
+    /* SWXC1
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public uint8 index;
+    public FpuRegister fs;
+
+    public Swxc1 (Register @base, uint8 index, FpuRegister fs)
+      {
+        this.@base = @base;
+        this.index = index;
+        this.fs = fs;
+      }
+
+    public Swxc1.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2 (code), get_five3_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1x_swxc1 (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"memory[GPR[$base] + GPR[$index]] ← FPR[$fs]";
+    }
+  }
+
+  public class Sync : Instruction
+  {
+    /* SYNC
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public uint8 stype;
+
+    public Sync (uint8 stype)
+      {
+        this.stype = stype;
+      }
+
+    public Sync.from_code (int code)
+    {
+      this (get_five4 (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_sync (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return "order loads and stores";
+    }
+  }
+
+  public class Regimm.Synci : Instruction
+  {
+    /* SYNCI
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register @base;
+    public uint16 offset;
+
+    public Synci (Register @base, uint16 offset)
+      {
+        this.@base = @base;
+        this.offset = offset;
+      }
+
+    public Synci.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_synci (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return "synchronize all caches to make instruction writes effective";
+    }
+  }
+
+  public class Syscall : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint code;
+
+    public Syscall (uint code)
+    {
+      this.code = code;
+    }
+
+    public Syscall.from_code (int code)
+    {
+      this ((code >> 6) & 0xFFFFF);
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_syscall (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return "cause a System Call exception";
+    }
+  }
+
+  public class Teq : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public uint16 code;
+
+    public Teq (Register rs, Register rt, uint16 code)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.code = code;
+    }
+
+    public Teq.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_ten (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_teq (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] = GPR[$rt] then Trap";
+    }
+  }
+
+  public class Regimm.Teqi : Instruction
+  {
+    /* TEQI
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register rs;
+    public uint16 immediate;
+
+    public Teqi (Register rs, uint16 immediate)
+      {
+        this.rs = rs;
+        this.immediate = immediate;
+      }
+
+    public Teqi.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_teqi (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] = $immediate then Trap";
+    }
+  }
+
+  public class Tge : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public uint16 code;
+
+    public Tge (Register rs, Register rt, uint16 code)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.code = code;
+    }
+
+    public Tge.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_ten (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_tge (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≥ GPR[$rt] then Trap";
+    }
+  }
+
+  public class Regimm.Tgei : Instruction
+  {
+    /* TGEI
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register rs;
+    public uint16 immediate;
+
+    public Tgei (Register rs, uint16 immediate)
+      {
+        this.rs = rs;
+        this.immediate = immediate;
+      }
+
+    public Tgei.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_tgei (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≥ $immediate then Trap";
+    }
+  }
+
+  public class Regimm.Tgeiu : Instruction
+  {
+    /* TGEIU
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register rs;
+    public uint16 immediate;
+
+    public Tgeiu (Register rs, uint16 immediate)
+      {
+        this.rs = rs;
+        this.immediate = immediate;
+      }
+
+    public Tgeiu.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_tgeiu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≥ $immediate then Trap";
+    }
+  }
+
+  public class Tgeu : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public uint16 code;
+
+    public Tgeu (Register rs, Register rt, uint16 code)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.code = code;
+    }
+
+    public Tgeu.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_ten (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_tgeu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≥ GPR[$rt] then Trap";
+    }
+  }
+
+  public class Cop0.Tlbp : Instruction
+  {
+    /* SPECIAL
+       000000 code(20) 001101
+    */
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_tlbp (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return "find a matching entry in the TLB";
+    }
+  }
+
+  public class Cop0.Tlbr : Instruction
+  {
+    /* SPECIAL
+       000000 code(20) 001101
+    */
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_tlbr (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return "read an entry from the TLB";
+    }
+  }
+
+  public class Cop0.Tlbwi : Instruction
+  {
+    /* SPECIAL
+       000000 code(20) 001101
+    */
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_tlbwi (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return "write a TLB entry indexed by the Index register";
+    }
+  }
+
+  public class Cop0.Tlbwr : Instruction
+  {
+    /* SPECIAL
+       000000 code(20) 001101
+    */
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_tlbwr (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return "write a TLB entry indexed by the Random register";
+    }
+  }
+
+  public class Tlt : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public uint16 code;
+
+    public Tlt (Register rs, Register rt, uint16 code)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.code = code;
+    }
+
+    public Tlt.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_ten (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_tlt (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] < GPR[$rt] then Trap";
+    }
+  }
+
+  public class Regimm.Tlti : Instruction
+  {
+    /* TLTI
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register rs;
+    public uint16 immediate;
+
+    public Tlti (Register rs, uint16 immediate)
+      {
+        this.rs = rs;
+        this.immediate = immediate;
+      }
+
+    public Tlti.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_tlti (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] < $immediate then Trap";
+    }
+  }
+
+  public class Regimm.Tltiu : Instruction
+  {
+    /* TLTIU
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register rs;
+    public uint16 immediate;
+
+    public Tltiu (Register rs, uint16 immediate)
+      {
+        this.rs = rs;
+        this.immediate = immediate;
+      }
+
+    public Tltiu.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_tltiu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] < $immediate then Trap";
+    }
+  }
+
+  public class Tltu : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public uint16 code;
+
+    public Tltu (Register rs, Register rt, uint16 code)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.code = code;
+    }
+
+    public Tltu.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_ten (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_tltu (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] < GPR[$rt] then Trap";
+    }
+  }
+
+  public class Tne : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public uint16 code;
+
+    public Tne (Register rs, Register rt, uint16 code)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.code = code;
+    }
+
+    public Tne.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_ten (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_tne (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≠ GPR[$rt] then Trap";
+    }
+  }
+
+  public class Regimm.Tnei : Instruction
+  {
+    /* TNEI
+       101011 base(5) rt(5) offset(16)
+    */
+
+    public Register rs;
+    public uint16 immediate;
+
+    public Tnei (Register rs, uint16 immediate)
+      {
+        this.rs = rs;
+        this.immediate = immediate;
+      }
+
+    public Tnei.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_regimm_tnei (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"if GPR[$rs] ≠ $immediate then Trap";
+    }
+  }
+
+  public class Cop1.Truncl : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Truncl (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Truncl.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_truncl (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
+  }
+
+  public class Cop1.Truncw : Instruction
+  {
+    /* COP1
+       010001 fmt(5) 00000 fs(5) fd(5) 000101
+    */
+    public Format fmt;
+    public FpuRegister fs;
+    public FpuRegister fd;
+
+    public Truncw (Format fmt, FpuRegister fs, FpuRegister fd)
+    {
+      this.fmt = fmt;
+      this.fs = fs;
+      this.fd = fd;
+    }
+
+    public Truncw.from_code (int code)
+    {
+      this ((Format)get_five1 (code), get_five3_fpr (code), get_five4_fpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop1_truncw (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"FPR[$fd] ← convert_and_round(FPR[$fs])";
+    }
+  }
+
+  public class Cop0.Wait : Instruction
+  {
+    /* COP1
+       010001 01000 cc(3) nd(1) tf(1) offset(16)
+    */
+
+    public uint code;
+
+    public Wait (uint code)
+    {
+      this.code = code;
+    }
+
+    public Wait.from_code (int code)
+    {
+      this (code & 0x7FFFF);
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_cop0_wait (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return "Wait for Event";
+    }
+  }
+
   public class Cop0.Wrpgpr : Instruction
   {
     /* COP1
@@ -7107,6 +6995,118 @@ namespace Mips
     public override string? get_description ()
     {
       return @"SGPR[SRSCtlPSS, $rd] ← GPR[$rt]";
+    }
+  }
+
+  public class Wsbh : Instruction
+  {
+    /* WSBH
+       101000 base(5) rt(5) offset(16)
+    */
+
+    public Register rt;
+    public Register rd;
+
+    public Wsbh (Register rt, Register rd)
+      {
+        this.rt = rt;
+        this.rd = rd;
+      }
+
+    public Wsbh.from_code (int code)
+    {
+      this (get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_wsbh (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← SwapBytesWithinHalfwords(GPR[$rt])";
+    }
+  }
+
+  public class Xor : Instruction
+  {
+    /* SPECIAL
+       000000 rs(5) rt(5) rd(5) 00000 100001
+    */
+
+    public Register rs;
+    public Register rt;
+    public Register rd;
+
+    public Xor (Register rs, Register rt, Register rd)
+      {
+        this.rs = rs;
+        this.rt = rt;
+        this.rd = rd;
+      }
+
+    public Xor.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_five3_gpr (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_xor (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rd] ← GPR[$rs] XOR GPR[$rt]";
+    }
+  }
+
+  public class Xori : Instruction
+  {
+    /*
+      001001 rs(5) rt(5) immediate(16)
+    */
+
+    public Register rs;
+    public Register rt;
+    public uint16 immediate;
+
+    public Xori (Register rs, Register rt, uint16 immediate)
+    {
+      this.rs = rs;
+      this.rt = rt;
+      this.immediate = immediate;
+    }
+
+    public Xori.from_code (int code)
+    {
+      this (get_five1_gpr (code), get_five2_gpr (code), get_half (code));
+    }
+
+    public override void accept (Visitor visitor)
+    {
+      visitor.visit_xori (this);
+    }
+
+    public override string get_mnemonic ()
+    {
+      return "";
+    }
+
+    public override string? get_description ()
+    {
+      return @"GPR[$rt] ← GPR[$rs] XOR $immediate";
     }
   }
 }
