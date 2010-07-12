@@ -5145,6 +5145,11 @@ namespace Mips
       return rt == 0 && rd == 0 && sa == 3;
     }
 
+    public bool is_normal ()
+    {
+      return !is_nop() && !is_ehb() && !is_ssnop();
+    }
+
     public override string get_mnemonic ()
     {
       if (is_ehb ())
