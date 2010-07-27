@@ -1,0 +1,11 @@
+MipsDis 1.0 is a Mips32 disassembler for ELF binaries whose binary sections are stripped.
+
+For installation instructions please read `INSTALL'.
+For license information please read `COPYING'.
+Homepage: http://lethalman.hostei.com/mipsdis.html
+
+How it works:
+MipsDis will read a Mips32 ELF binary executable. It will disassemble binaries without a table of sections.
+This table is used to determinate the offset inside the binary of the TEXT and RODATA segments which contain instructions and strings.
+MipsDis will guess the offsets of these sections and disassemble the binary showing the assembly code on standard output.
+Comments on each line are copied from Mips32 instructions specification.

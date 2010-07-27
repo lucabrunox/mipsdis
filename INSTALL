@@ -1,0 +1,11 @@
+Requirements:
+- Make
+- C compiler
+- Vala
+- GLib/GObject/GIO
+
+Compilation:
+To compile type `make'. The `mipsdis' executable will be created.
+
+Installation:
+To install type `make install' as root. The `mipsdis` executable will be installed under DESTDIR/bin.
