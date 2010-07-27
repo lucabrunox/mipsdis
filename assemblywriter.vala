@@ -370,7 +370,7 @@ namespace Mips
     {
       write_line ("%4s, %4s, %u", inst.rt.to_string (), inst.rs.to_string (), inst.immediate);
       if (inst.reference != null)
-        write_line ("# %s", inst.reference.to_string ());
+        builder.append_printf ("\t# %s", inst.reference.to_string ());
     }
 
     public override void visit_addi (Addi inst)
