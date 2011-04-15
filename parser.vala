@@ -22,38 +22,62 @@
  */
 
 namespace Mips {
+	public uint16 read_uint16 (InputStream stream) throws Error {
+		uint16 result = 0;
+		unowned uint8[] ptr = (uint8[])(&result);
+		ptr.length = (int) sizeof (uint16);
+		stream.read (ptr);
+		return result.to_big_endian ();
+	}
+
+	public int read_int32 (InputStream stream) throws Error {
+		int result = 0;
+		unowned uint8[] ptr = (uint8[])(&result);
+		ptr.length = (int) sizeof (int);
+		stream.read (ptr);
+		return result.to_big_endian ();
+	}
+
+	public uint read_uint32 (InputStream stream) throws Error {
+		uint result = 0;
+		unowned uint8[] ptr = (uint8[])(&result);
+		ptr.length = (int) sizeof (uint32);
+		stream.read (ptr);
+		return result.to_big_endian ();
+	}
+
 	public errordomain ParserError {
 		INVALID_INSTRUCTION,
+		UNSUPPORTED_HEADER,
 	}
 
 	public class Parser {
-		private DataInputStream stream;
+		private InputStream stream;
+		private Seekable seekable;
 		private BinaryCode binary_code = new BinaryCode ();
 
-		public Parser (DataInputStream stream) {
+		public Parser (InputStream stream) {
 			this.stream = stream;
+			this.seekable = (Seekable) stream;
 		}
 
 		public BinaryCode parse () throws Error {
-			stream.set_byte_order (DataStreamByteOrder.BIG_ENDIAN);
-
-			// current file offset
-			uint offset = 0;
-
 			// read elf header
 			var elfh = new ELFHeader.from_stream (stream);
-			offset += elfh.ehsize;
-
 			if (elfh.type == ELFHeader.Type.EXEC) {
-				parse_exec (elfh, offset);
+				//			parse_exec (elfh);
 			} else if (elfh.type == ELFHeader.Type.REL) {
-				parse_rel (elfh, offset);
+				parse_rel (elfh);
 			}
 			return binary_code;
 		}
-
+#if 0
 		public void parse_exec (ELFHeader elfh, uint offset) throws Error {
-			stream.skip (elfh.phoff-offset, null);
+			if (elfh.phentsize != 32) {
+				throw new ParserError.UNSUPPORTED_HEADER ("Unsupported program header size %d\n", elfh.phentsize);
+			}
+
+			stream.skip (elfh.phoff-offset);
 			ProgramHeader? dynamic = null;
 			binary_code.address_mapping = new AddressMapping ();
 			for (int i=0; i < elfh.phnum; i++) {
@@ -66,19 +90,19 @@ namespace Mips {
 			}
 			offset += elfh.phentsize * elfh.phnum;
 
-			stream.skip (dynamic.offset - offset, null);
+			stream.skip (dynamic.offset - offset);
 			offset = dynamic.offset;
 			var dynamic_header = new DynamicHeader.from_stream (stream);
 			offset += dynamic_header.get_size() * 8;
 
 			var symtab_offset = binary_code.address_mapping.get_physical_address (dynamic_header.get_section_by_type(DynamicSection.Type.SYMTAB).value);
-			stream.skip (symtab_offset - offset, null);
+			stream.skip (symtab_offset - offset);
 			offset = symtab_offset;
 			binary_code.symbol_table = new SymbolTable.from_stream (stream, dynamic_header);
 			offset += binary_code.symbol_table.get_size ();
 
 			var strtab_offset = binary_code.address_mapping.get_physical_address (dynamic_header.get_section_by_type(DynamicSection.Type.STRTAB).value);
-			stream.skip (strtab_offset - offset, null);
+			stream.skip (strtab_offset - offset);
 			offset = strtab_offset;
 			var strtab_size = dynamic_header.get_section_by_type(DynamicSection.Type.STRSZ).value;
 			binary_code.string_table = new StringTable.from_stream (stream, offset, strtab_size);
@@ -89,7 +113,7 @@ namespace Mips {
 			var fini_address = dynamic_header.get_section_by_type(DynamicSection.Type.FINI).value;
 			var init_file_offset = binary_code.address_mapping.get_physical_address (init_address);
 			var fini_file_offset = binary_code.address_mapping.get_physical_address (fini_address);
-			stream.skip (init_file_offset - offset, null);
+			stream.skip (init_file_offset - offset);
 			offset = init_file_offset;
 
 			var base_address = binary_code.address_mapping.get_virtual_base_address (init_address);
@@ -110,7 +134,7 @@ namespace Mips {
 
 			// _fini function is 50 bytes large.
 			var rodata_file_offset = fini_file_offset + 50;
-			stream.skip (rodata_file_offset - offset, null);
+			stream.skip (rodata_file_offset - offset);
 			offset = rodata_file_offset;
 
 			var pltgot_offset = binary_code.address_mapping.get_physical_address (dynamic_header.get_section_by_type(DynamicSection.Type.PLTGOT).value);
@@ -120,8 +144,42 @@ namespace Mips {
 
 			binary_code.plt_table = new PltTable.from_stream (stream, dynamic_header);
 		}
+#endif
+		public void parse_rel (ELFHeader elfh) throws Error {
+			if (elfh.shentsize != 40) {
+				throw new ParserError.UNSUPPORTED_HEADER ("Unsupported section header size %d\n", elfh.shentsize);
+			}
 
-		public void parse_rel (ELFHeader elfh, uint offset) {
+			seekable.seek (elfh.shoff, SeekType.SET);
+			SectionHeader[] headers = new SectionHeader[elfh.shnum];
+			headers.length = 0;
+			for (int i=0; i < elfh.shnum; i++) {
+				var shdr = new SectionHeader.from_stream (stream);
+				headers += shdr;
+				message ("%s %x %x", shdr.type.to_string (), shdr.offset, shdr.size);
+			}
+
+			// FIXME:
+			var text_section = headers[2];
+			var text_start = text_section.offset;
+			var text_end = text_start + text_section.size;
+
+			seekable.seek (text_start, SeekType.SET);
+
+			binary_code.text_section = new TextSection (text_start, text_start);
+			binary_code.text_section.set_instructions ((int)((text_end - text_start)/4));
+
+			for (uint offset=0; offset < text_end; offset += 4) {
+				var code = read_int32 (stream);
+				Instruction instruction;
+				try {
+					instruction = instruction_from_code (code);
+				} catch (Error e) {
+					stderr.printf ("At file offset 0x%x\n", offset);
+					throw e;
+				}
+				binary_code.text_section.add_instruction (new BinaryInstruction (instruction, offset, code, offset));
+			}
 		}
 
 		private Instruction instruction_from_code (int code) throws ParserError {

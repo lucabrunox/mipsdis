@@ -37,8 +37,7 @@ public class Mips.Disassembler
   {
     try
       {
-        var fstream = File.new_for_path(binary[0]).read (null);
-        var stream = new DataInputStream (fstream);
+        var stream = File.new_for_path(binary[0]).read ();
 
         var parser = new Parser (stream);
         var binary_code = parser.parse ();

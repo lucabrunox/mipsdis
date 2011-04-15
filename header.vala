@@ -24,7 +24,6 @@
 namespace Mips {
 	public errordomain HeaderError {
 		NOT_ELF,
-		UNSUPPORTED_PROGRAM_HEADER,
 		INVALID_SECTION,
 		INVALID_ADDRESS
 	}
@@ -52,26 +51,26 @@ namespace Mips {
 		public uint16 shnum;
 		public uint16 shstrndx;
 
-		public ELFHeader.from_stream (DataInputStream stream) throws Error {
+		public ELFHeader.from_stream (InputStream stream) throws Error {
 			uint8[] magic = new uint8[16];
 			stream.read (magic);
 			if (magic[0] != 0x7f || magic[1] != 'E' || magic[2] != 'L' || magic[3] != 'F') {
 				throw new HeaderError.NOT_ELF ("Unknown magic value");
 			}
 
-			type = (Type) stream.read_uint16 ();
-			machine = stream.read_uint16 ();
-			version = stream.read_uint32 ();
-			entry = stream.read_uint32 ();
-			phoff = stream.read_uint32 ();
-			shoff = stream.read_uint32 ();
-			flags = stream.read_uint32 ();
-			ehsize = stream.read_uint16 ();
-			phentsize = stream.read_uint16 ();
-			phnum = stream.read_uint16 ();
-			shentsize = stream.read_uint16 ();
-			shnum = stream.read_uint16 ();
-			shstrndx = stream.read_uint16 ();
+			type = (Type) read_uint16 (stream);
+			machine = read_uint16 (stream);
+			version = read_uint32 (stream);
+			entry = read_uint32 (stream);
+			phoff = read_uint32 (stream);
+			shoff = read_uint32 (stream);
+			flags = read_uint32 (stream);
+			ehsize = read_uint16 (stream);
+			phentsize = read_uint16 (stream);
+			phnum = read_uint16 (stream);
+			shentsize = read_uint16 (stream);
+			shnum = read_uint16 (stream);
+			shstrndx = read_uint16 (stream);
 		}
 	}
 
@@ -111,6 +110,60 @@ namespace Mips {
       align = stream.read_uint32 ();
     }
   }
+
+	public class SectionHeader {
+		public enum Type {
+			NULL,
+			PROGBITS,
+			SYMTAB,
+			STRTAB,
+			RELA,
+			HASH,
+			DYNAMIC,
+			NOTE,
+			NOBITS,
+			REL,
+			SHLIB,
+			DYNSYM,
+			LOPROC,
+			HIPROC,
+			LOUSER,
+			HIUSER,
+			MIPS_REGINFO = 0x70000006
+		}
+
+		[Flags]
+		public enum Flags {
+			WRITE,
+			ALLOC,
+			EXECINSTR,
+			MASKPROC
+		}
+
+		public uint name;
+		public Type type;
+		public Flags flags;
+		public uint addr;
+		public uint offset;
+		public uint size;
+		public uint link;
+		public uint info;
+		public uint addralign;
+		public uint entsize;
+
+		public SectionHeader.from_stream (InputStream stream) throws Error {
+			name = read_uint32 (stream);
+			type = (Type) read_uint32 (stream);
+			flags = (Flags) read_uint32 (stream);
+			addr = read_uint32 (stream);
+			offset = read_uint32 (stream);
+			size = read_uint32 (stream);
+			link = read_uint32 (stream);
+			info = read_uint32 (stream);
+			addralign = read_uint32 (stream);
+			entsize = read_uint32 (stream);
+		}
+	}
 
   public class DynamicSection
   {
