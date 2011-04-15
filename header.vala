@@ -21,57 +21,59 @@
  *      Luca Bruno <lethalman88@gmail.com>
  */
 
-namespace Mips
-{
-  public errordomain HeaderError
-  {
-    NOT_ELF,
-    UNSUPPORTED_PROGRAM_HEADER,
-    INVALID_SECTION,
-    INVALID_ADDRESS;
-  }
+namespace Mips {
+	public errordomain HeaderError {
+		NOT_ELF,
+		UNSUPPORTED_PROGRAM_HEADER,
+		INVALID_SECTION,
+		INVALID_ADDRESS
+	}
 
-  public class ELFHeader
-  {
-    public uint16 type;
-    public uint16 machine;
-    public uint32 version;
-    public uint32 entry;
-    public uint32 phoff;
-    public uint32 shoff;
-    public uint32 flags;
-    public uint16 ehsize;
-    public uint16 phentsize;
-    public uint16 phnum;
-    public uint16 shentsize;
-    public uint16 shnum;
-    public uint16 shstrndx;
+	public class ELFHeader {
+		public enum Type {
+			NONE,
+			REL,
+			EXEC,
+			DYN,
+			CORE
+		}
 
-    public ELFHeader.from_stream (DataInputStream stream) throws Error
-    {
-      char[] magic = new char[16];
-      stream.read (magic, 16, null);
-      if (magic[0] != 0x7f || magic[1] != 'E' || magic[2] != 'L' || magic[3] != 'F')
-        throw new HeaderError.NOT_ELF ("Unknown magic value");
+		public Type type;
+		public uint16 machine;
+		public uint32 version;
+		public uint32 entry;
+		public uint32 phoff;
+		public uint32 shoff;
+		public uint32 flags;
+		public uint16 ehsize;
+		public uint16 phentsize;
+		public uint16 phnum;
+		public uint16 shentsize;
+		public uint16 shnum;
+		public uint16 shstrndx;
 
-      type = stream.read_uint16 (null);
-      machine = stream.read_uint16 (null);
-      version = stream.read_uint32 (null);
-      entry = stream.read_uint32 (null);
-      phoff = stream.read_uint32 (null);
-      shoff = stream.read_uint32 (null);
-      flags = stream.read_uint32 (null);
-      ehsize = stream.read_uint16 (null);
-      phentsize = stream.read_uint16 (null);
-      phnum = stream.read_uint16 (null);
-      shentsize = stream.read_uint16 (null);
-      shnum = stream.read_uint16 (null);
-      shstrndx = stream.read_uint16 (null);
+		public ELFHeader.from_stream (DataInputStream stream) throws Error {
+			uint8[] magic = new uint8[16];
+			stream.read (magic);
+			if (magic[0] != 0x7f || magic[1] != 'E' || magic[2] != 'L' || magic[3] != 'F') {
+				throw new HeaderError.NOT_ELF ("Unknown magic value");
+			}
 
-      if (phentsize != 32)
-        throw new HeaderError.UNSUPPORTED_PROGRAM_HEADER ("Unsupported program header size %d\n", phentsize);
-    }
-  }
+			type = (Type) stream.read_uint16 ();
+			machine = stream.read_uint16 ();
+			version = stream.read_uint32 ();
+			entry = stream.read_uint32 ();
+			phoff = stream.read_uint32 ();
+			shoff = stream.read_uint32 ();
+			flags = stream.read_uint32 ();
+			ehsize = stream.read_uint16 ();
+			phentsize = stream.read_uint16 ();
+			phnum = stream.read_uint16 ();
+			shentsize = stream.read_uint16 ();
+			shnum = stream.read_uint16 ();
+			shstrndx = stream.read_uint16 ();
+		}
+	}
 
   public class ProgramHeader
   {
@@ -99,14 +101,14 @@ namespace Mips
 
     public ProgramHeader.from_stream (DataInputStream stream) throws Error
     {
-      type = (Type)stream.read_uint32 (null);
-      offset = stream.read_uint32 (null);
-      virtual_addr = stream.read_uint32 (null);
-      physical_addr = stream.read_uint32 (null);
-      file_size = stream.read_uint32 (null);
-      mem_size = stream.read_uint32 (null);
-      flags = stream.read_uint32 (null);
-      align = stream.read_uint32 (null);
+      type = (Type)stream.read_uint32 ();
+      offset = stream.read_uint32 ();
+      virtual_addr = stream.read_uint32 ();
+      physical_addr = stream.read_uint32 ();
+      file_size = stream.read_uint32 ();
+      mem_size = stream.read_uint32 ();
+      flags = stream.read_uint32 ();
+      align = stream.read_uint32 ();
     }
   }
 
@@ -139,17 +141,17 @@ namespace Mips
     {
       while (true)
         {
-          var type = (DynamicSection.Type)stream.read_uint32 (null);
+          var type = (DynamicSection.Type)stream.read_uint32 ();
           if (type == DynamicSection.Type.NULL)
             break;
 
           var section = new DynamicSection ();
           section.type = type;
-          section.value = stream.read_uint32 (null);
+          section.value = stream.read_uint32 ();
           sections.resize (sections.length+1);
           sections[sections.length-1] = section;
         }
-      if (stream.read_uint32(null) != 0)
+      if (stream.read_uint32() != 0)
         throw new HeaderError.INVALID_SECTION ("Invalid NULL dynamic section");
     }
 
@@ -194,12 +196,12 @@ namespace Mips
 
     public Symbol.from_stream (DataInputStream stream) throws Error
     {
-      name = stream.read_uint32 (null);
-      value = stream.read_uint32 (null);
-      size = stream.read_uint32 (null);
-      info = (Info) stream.read_byte (null);
-      other = (Other) stream.read_byte (null);
-      shndx = stream.read_uint16 (null);
+      name = stream.read_uint32 ();
+      value = stream.read_uint32 ();
+      size = stream.read_uint32 ();
+      info = (Info) stream.read_byte ();
+      other = (Other) stream.read_byte ();
+      shndx = stream.read_uint16 ();
     }
   }
 
@@ -246,13 +248,13 @@ namespace Mips
   public class StringTable
   {
     public uint base_address;
-    private char[] strings;
+    private uint8[] strings;
 
     public StringTable.from_stream (DataInputStream stream, uint base_address, uint size) throws Error
     {
       this.base_address = base_address;
-      strings = new char[size];
-      assert (stream.read (strings, size, null) == size);
+      strings = new uint8[size];
+      assert (stream.read (strings) == size);
     }
 
     public unowned string string_at_offset (uint offset)
@@ -285,7 +287,7 @@ namespace Mips
       var table_size = dh.get_section_by_type(DynamicSection.Type.MIPS_LOCAL_GOTNO).value;
       initials = new uint32[table_size];
       for (int i=0; i < table_size; i++)
-        initials[i] = stream.read_uint32 (null);
+        initials[i] = stream.read_uint32 ();
     }
 
     public uint32 get_initial_for_gp_offset (int16 offset)
