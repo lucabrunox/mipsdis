@@ -145,6 +145,7 @@ namespace Mips {
 			binary_code.plt_table = new PltTable.from_stream (stream, dynamic_header);
 		}
 #endif
+
 		public void parse_rel (ELFHeader elfh) throws Error {
 			if (elfh.shentsize != 40) {
 				throw new ParserError.UNSUPPORTED_HEADER ("Unsupported section header size %d\n", elfh.shentsize);
@@ -156,26 +157,21 @@ namespace Mips {
 			for (int i=0; i < elfh.shnum; i++) {
 				var shdr = new SectionHeader.from_stream (stream);
 				headers += shdr;
-				message ("%s %x %x", shdr.type.to_string (), shdr.offset, shdr.size);
 			}
 
 			// FIXME:
 			var text_section = headers[2];
-			var text_start = text_section.offset;
-			var text_end = text_start + text_section.size;
+			seekable.seek (text_section.offset, SeekType.SET);
 
-			seekable.seek (text_start, SeekType.SET);
-
-			binary_code.text_section = new TextSection (text_start, text_start);
-			binary_code.text_section.set_instructions ((int)((text_end - text_start)/4));
-
-			for (uint offset=0; offset < text_end; offset += 4) {
+			binary_code.text_section = new TextSection (text_section.offset, text_section.offset);
+			binary_code.text_section.set_instructions ((int) (text_section.size-4*10)/4);
+			for (uint offset=0; offset < text_section.size-4*10; offset += 4) {
 				var code = read_int32 (stream);
 				Instruction instruction;
 				try {
 					instruction = instruction_from_code (code);
 				} catch (Error e) {
-					stderr.printf ("At file offset 0x%x\n", offset);
+					stderr.printf ("At file offset 0x%x\n", text_section.offset+offset);
 					throw e;
 				}
 				binary_code.text_section.add_instruction (new BinaryInstruction (instruction, offset, code, offset));

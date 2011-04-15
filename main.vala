@@ -42,8 +42,8 @@ public class Mips.Disassembler
         var parser = new Parser (stream);
         var binary_code = parser.parse ();
 
-        var resolver = new SymbolResolver (binary_code);
-        resolver.resolve ();
+//        var resolver = new SymbolResolver (binary_code);
+//        resolver.resolve ();
 
         var writer = new AssemblyWriter ();
         var result = writer.write (binary_code);

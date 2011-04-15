@@ -21,8 +21,7 @@
  *      Luca Bruno <lethalman88@gmail.com>
  */
 
-namespace Mips
-{
+namespace Mips {
   public errordomain OpcodeError
   {
     INVALID_OPCODE,
@@ -30,37 +29,33 @@ namespace Mips
     INVALID_REGISTER,
   }
 
-  public class AssemblyWriter : Visitor
-  {
-    private StringBuilder builder = new StringBuilder ();
+  public class AssemblyWriter : Visitor {
+	  private StringBuilder builder = new StringBuilder ();
 
-    [PrintfFormat]
-    private void write_line (string format, ...)
-    {
-      va_list ap = va_list ();
-      builder.append_printf ("%-30s", format.vprintf (ap));
-    }
+	  [PrintfFormat]
+	  private void write_line (string format, ...) {
+		  va_list ap = va_list ();
+		  builder.append_printf ("%-30s", format.vprintf (ap));
+	  }
 
-    public string write (BinaryCode binary_code)
-    {
-      foreach (var binary_instruction in binary_code.text_section.binary_instructions)
-        {
-          if (binary_instruction.label != null)
-            {
-              if (binary_instruction.is_func_start)
-                builder.append_printf ("# function <%s>:\n", binary_instruction.label);
-              else
-                builder.append_printf ("%s:\n", binary_instruction.label);
-            }
-          builder.append_printf ("%.8x: %.8x  %-10s ", binary_instruction.virtual_address, binary_instruction.file_value, binary_instruction.instruction.get_mnemonic ());
-          binary_instruction.instruction.accept (this);
-          var desc = binary_instruction.instruction.get_description ();
-          if (desc != null)
-            builder.append_printf ("\t# %s", desc);
-          builder.append_c ('\n');
-        }
-      return builder.str;
-    }
+	  public string write (BinaryCode binary_code) {
+		  foreach (var binary_instruction in binary_code.text_section.binary_instructions) {
+			  if (binary_instruction.label != null) {
+				  if (binary_instruction.is_func_start)
+					  builder.append_printf ("# function <%s>:\n", binary_instruction.label);
+				  else
+					  builder.append_printf ("%s:\n", binary_instruction.label);
+			  }
+			  builder.append_printf ("%.8x: %.8x  %-10s ", binary_instruction.virtual_address, binary_instruction.file_value, binary_instruction.instruction.get_mnemonic ());
+			  binary_instruction.instruction.accept (this);
+			  var desc = binary_instruction.instruction.get_description ();
+			  if (desc != null) {
+				  builder.append_printf ("\t# %s", desc);
+			  }
+			  builder.append_c ('\n');
+		  }
+		  return builder.str;
+	  }
 
     public override void visit_cop1_abs (Cop1.Abs inst)
     {
@@ -422,17 +417,28 @@ namespace Mips
       write_line ("%4s, %d(%s)", inst.rt.to_string(), inst.offset, inst.@base.to_string());
     }
 
-    public override void visit_regimm_bgezal (Regimm.Bgezal inst)
-    {
-      if (inst.is_unconditional ())
-        write_line ("%s", inst.reference.to_string());
-      else
-        write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+    public override void visit_regimm_bgezal (Regimm.Bgezal inst) {
+		if (inst.is_unconditional ()) {
+			if (inst.reference != null) {
+				write_line ("%s", inst.reference.to_string());
+			} else {
+				write_line ("0x%x", inst.offset);
+			}
+		} else {
+			if (inst.reference != null) {
+				write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+			} else {
+				write_line ("%4s, 0x%x", inst.rs.to_string(), inst.offset);
+			}
+		}
     }
 
-    public override void visit_regimm_bgezall (Regimm.Bgezall inst)
-    {
-      write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+    public override void visit_regimm_bgezall (Regimm.Bgezall inst) {
+		if (inst.reference != null) {
+			write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+		} else {
+			write_line ("%4s, 0x%x", inst.rs.to_string(), inst.offset);
+		}
     }
 
     public override void visit_regimm_synci (Regimm.Synci inst)
@@ -530,14 +536,20 @@ namespace Mips
         write_line ("%s", inst.rs.to_string());
     }
 
-    public override void visit_regimm_bltzal (Regimm.Bltzal inst)
-    {
-      write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+    public override void visit_regimm_bltzal (Regimm.Bltzal inst) {
+		if (inst.reference != null) {
+			write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+		} else {
+			write_line ("%4s, 0x%x", inst.rs.to_string(), inst.offset);
+		}
     }
 
-    public override void visit_regimm_bltzall (Regimm.Bltzall inst)
-    {
-      write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+    public override void visit_regimm_bltzall (Regimm.Bltzall inst) {
+		if (inst.reference != null) {
+			write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+		} else {
+			write_line ("%4s, 0x%x", inst.rs.to_string(), inst.offset);
+		}
     }
 
     public override void visit_sll (Sll inst)
@@ -546,27 +558,44 @@ namespace Mips
         write_line ("%4s, %4s, 0x%x", inst.rd.to_string(), inst.rt.to_string(), inst.sa);
     }
 
-    public override void visit_beq (Beq inst)
-    {
-      if (inst.is_unconditional ())
-        write_line ("%4s", inst.reference.to_string());
-      else
-        write_line ("%4s, %4s, %s", inst.rs.to_string(), inst.rt.to_string(), inst.reference.to_string ());
+    public override void visit_beq (Beq inst) {
+		if (inst.is_unconditional ()) {
+			if (inst.reference != null) {
+				write_line ("%4s", inst.reference.to_string());
+			} else {
+				write_line ("0x%x", inst.offset);
+			}
+		} else {
+			if (inst.reference != null) {
+				write_line ("%4s, %4s, %s", inst.rs.to_string(), inst.rt.to_string(), inst.reference.to_string ());
+			} else {
+				write_line ("%4s, %4s, 0x%x", inst.rs.to_string(), inst.rt.to_string(), inst.offset);
+			}
+		}
     }
 
-    public override void visit_beql (Beql inst)
-    {
-      write_line ("%4s, %4s, %s", inst.rs.to_string(), inst.rt.to_string(), inst.reference.to_string());
+    public override void visit_beql (Beql inst) {
+		if (inst.reference != null) {
+			write_line ("%4s, %4s, %s", inst.rs.to_string(), inst.rt.to_string(), inst.reference.to_string());
+		} else {
+			write_line ("%4s, %4s, 0x%x", inst.rs.to_string(), inst.rt.to_string(), inst.offset);
+		}
     }
 
-    public override void visit_bne (Bne inst)
-    {
-      write_line ("%4s, %4s, %s", inst.rs.to_string(), inst.rt.to_string(), inst.reference.to_string());
+    public override void visit_bne (Bne inst) {
+		if (inst.reference != null) {
+			write_line ("%4s, %4s, %s", inst.rs.to_string(), inst.rt.to_string(), inst.reference.to_string());
+		} else {
+			write_line ("%4s, %4s, 0x%x", inst.rs.to_string(), inst.rt.to_string(), inst.offset);
+		}
     }
 
-    public override void visit_bnel (Bnel inst)
-    {
-      write_line ("%4s, %4s, %s", inst.rs.to_string(), inst.rt.to_string(), inst.reference.to_string());
+    public override void visit_bnel (Bnel inst) {
+		if (inst.reference != null) {
+			write_line ("%4s, %4s, %s", inst.rs.to_string(), inst.rt.to_string(), inst.reference.to_string());
+		} else {
+			write_line ("%4s, %4s, 0x%x", inst.rs.to_string(), inst.rt.to_string(), inst.offset);
+		}
     }
 
     public override void visit_lbu (Lbu inst)
@@ -672,9 +701,12 @@ namespace Mips
       write_line ("%4s, %4s, %d", inst.rs.to_string(), inst.rt.to_string(), inst.immediate);
     }
 
-    public override void visit_regimm_bgez (Regimm.Bgez inst)
-    {
-      write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+    public override void visit_regimm_bgez (Regimm.Bgez inst) {
+		if (inst.reference != null) {
+			write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+		} else {
+			write_line ("%4s, 0x%x", inst.rs.to_string(), inst.offset);
+		}
     }
 
     public override void visit_sra (Sra inst)
@@ -692,19 +724,28 @@ namespace Mips
       write_line ("%4s, %d(%s)", inst.rt.to_string(), inst.offset, inst.@base.to_string());
     }
 
-    public override void visit_regimm_bltz (Regimm.Bltz inst)
-    {
-      write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+    public override void visit_regimm_bltz (Regimm.Bltz inst) {
+		if (inst.reference != null) {
+			write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+		} else {
+			write_line ("%4s, 0x%x", inst.rs.to_string(), inst.offset);
+		}
     }
 
-    public override void visit_regimm_bltzl (Regimm.Bltzl inst)
-    {
-      write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+    public override void visit_regimm_bltzl (Regimm.Bltzl inst) {
+		if (inst.reference != null) {
+			write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+		} else {
+			write_line ("%4s, 0x%x", inst.rs.to_string(), inst.offset);
+		}
     }
 
-    public override void visit_regimm_bgezl (Regimm.Bgezl inst)
-    {
-      write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+    public override void visit_regimm_bgezl (Regimm.Bgezl inst) {
+		if (inst.reference != null) {
+			write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+		} else {
+			write_line ("%4s, 0x%x", inst.rs.to_string(), inst.offset);
+		}
     }
 
     public override void visit_slt (Slt inst)
@@ -732,19 +773,28 @@ namespace Mips
       write_line ("%s", inst.rs.to_string());
     }
 
-    public override void visit_blez (Blez inst)
-    {
-      write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+    public override void visit_blez (Blez inst) {
+		if (inst.reference != null) {
+			write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+		} else {
+			write_line ("%4s, 0x%x", inst.rs.to_string(), inst.offset);
+		}
     }
 
-    public override void visit_bgtz (Bgtz inst)
-    {
-      write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+    public override void visit_bgtz (Bgtz inst) {
+		if (inst.reference != null) {
+			write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+		} else {
+			write_line ("%4s, 0x%x", inst.rs.to_string(), inst.offset);
+		}
     }
 
-    public override void visit_bgtzl (Bgtzl inst)
-    {
-      write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+    public override void visit_bgtzl (Bgtzl inst) {
+		if (inst.reference != null) {
+			write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+		} else {
+			write_line ("%4s, 0x%x", inst.rs.to_string(), inst.offset);
+		}
     }
 
     public override void visit_xori (Xori inst)
@@ -824,9 +874,12 @@ namespace Mips
       write_line ("%4s, %s", inst.rs.to_string(), inst.rt.to_string());
     }
 
-    public override void visit_blezl (Blezl inst)
-    {
-      write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+    public override void visit_blezl (Blezl inst) {
+		if (inst.reference != null) {
+			write_line ("%4s, %s", inst.rs.to_string(), inst.reference.to_string());
+		} else {
+			write_line ("%4s, 0x%x", inst.rs.to_string(), inst.offset);
+		}
     }
 
     public override void visit_sdc1 (Sdc1 inst)
